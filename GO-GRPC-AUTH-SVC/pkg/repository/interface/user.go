@@ -11,6 +11,7 @@ type UserRepository interface {
 	CheckUserExistsByPhone(phone string) (*domain.User, error)
 	UserSignUp(user models.UserSignUpRequest) (models.UserResponse, error)
 	FindUserByEmail(user models.UserLoginRequest) (models.UserResponsewithPassword, error)
+	FindUserBlockorNot(email string)(bool,error)
 	FindUserByMobileNumber(phone string) bool
 	FindIdFromPhone(phone string) (int, error)
 	ChangePassword(id int, password string) error

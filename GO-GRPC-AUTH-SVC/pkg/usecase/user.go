@@ -3,11 +3,11 @@ package usecase
 import (
 	"errors"
 
+	"github.com/akhi9550/auth-svc/pkg/config"
 	"github.com/akhi9550/auth-svc/pkg/helper"
 	interfaces "github.com/akhi9550/auth-svc/pkg/repository/interface"
 	services "github.com/akhi9550/auth-svc/pkg/usecase/interface"
 	"github.com/akhi9550/auth-svc/pkg/utils/models"
-	"github.com/akhi9550/auth-svc/pkg/config"
 
 	"github.com/jinzhu/copier"
 	"golang.org/x/crypto/bcrypt"
@@ -79,6 +79,13 @@ func (ur *userUseCase) UserLogin(user models.UserLoginRequest) (*models.ReponseW
 		return &models.ReponseWithToken{}, errors.New("email doesn't exist")
 	}
 	userdeatils, err := ur.userRepository.FindUserByEmail(user)
+	if err != nil {
+		return &models.ReponseWithToken{}, err
+	}
+	ok, err := ur.userRepository.FindUserBlockorNot(user.Email)
+	if ok {
+		return &models.ReponseWithToken{}, errors.New("user is blocked")
+	}
 	if err != nil {
 		return &models.ReponseWithToken{}, err
 	}
@@ -162,7 +169,7 @@ func (ur *userUseCase) UpdateUserDetails(userDetails models.UsersProfileDetails,
 	}
 	if userDetails.Lastname != "" {
 		ok := ur.userRepository.ExistUsername(userDetails.Username)
-		if !ok {
+		if ok {
 			return models.UsersProfileDetails{}, errors.New("username already exist")
 		}
 		ur.userRepository.UpdateUserName(userDetails.Username, userID)
@@ -174,15 +181,15 @@ func (ur *userUseCase) UpdateUserDetails(userDetails models.UsersProfileDetails,
 		ur.userRepository.UpdateGender(userDetails.Gender, userID)
 	}
 	if userDetails.Phone != "" {
-		ok := ur.userRepository.ExistPhone(userDetails.Username)
-		if !ok {
+		ok := ur.userRepository.ExistPhone(userDetails.Phone)
+		if ok {
 			return models.UsersProfileDetails{}, errors.New("phone already exist")
 		}
 		ur.userRepository.UpdateUserPhone(userDetails.Phone, userID)
 	}
 	if userDetails.Email != "" {
-		ok := ur.userRepository.ExistEmail(userDetails.Username)
-		if !ok {
+		ok := ur.userRepository.ExistEmail(userDetails.Email)
+		if ok {
 			return models.UsersProfileDetails{}, errors.New("email already exist")
 		}
 		ur.userRepository.UpdateUserEmail(userDetails.Email, userID)

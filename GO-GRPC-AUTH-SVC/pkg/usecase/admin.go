@@ -58,7 +58,7 @@ func (ad *adminUseCase) AdminLogin(admin models.AdminLoginRequest) (*models.Admi
 }
 
 func (ad *adminUseCase) ShowAllUsers(page, count int) ([]models.UserDetailsAtAdmin, error) {
-	users,err := ad.adminRepository.ShowAllUsers(page, count)
+	users, err := ad.adminRepository.ShowAllUsers(page, count)
 	if err != nil {
 		return []models.UserDetailsAtAdmin{}, err
 	}

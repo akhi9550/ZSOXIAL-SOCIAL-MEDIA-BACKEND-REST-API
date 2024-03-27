@@ -72,6 +72,13 @@ func (ur *userRepository) FindUserByEmail(user models.UserLoginRequest) (models.
 	}
 	return userDetails, nil
 }
+func (ur *userRepository) FindUserBlockorNot(email string) (bool, error) {
+	var a bool
+	if err := ur.DB.Raw("SELECT blocked FROM users WHERE email = ?", email).Scan(&a).Error; err != nil {
+		return false, err
+	}
+	return a, nil
+}
 
 func (ur *userRepository) FindUserByMobileNumber(phone string) bool {
 	var count int

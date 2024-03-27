@@ -218,7 +218,7 @@ func (au *AuthSever) AdminBlockUser(ctx context.Context, req *pb.AdminBlockUserR
 	return &pb.AdminBlockUserResponse{}, nil
 }
 
-func (au *AuthSever) AdminUnBlockUser(ctx context.Context, req *pb.AdminUnblockUserRequest) (*pb.AdminUnblockUserResponse, error) {
+func (au *AuthSever) AdminUnblockUser(ctx context.Context, req *pb.AdminUnblockUserRequest) (*pb.AdminUnblockUserResponse, error) {
 	userID := req.Id
 	err := au.adminUsecase.AdminUnBlockUser(uint(userID))
 	if err != nil {
