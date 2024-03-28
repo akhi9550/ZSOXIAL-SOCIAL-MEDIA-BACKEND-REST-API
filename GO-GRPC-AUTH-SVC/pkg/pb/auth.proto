@@ -31,8 +31,11 @@ message UserSignUpRequest {
     string phone = 6; 
     string email = 7;
     string password = 8;  
-    string bio = 9;      
-    string profile_photo = 10;        
+    string bio = 9;  
+    UserProfile profile_photo = 10;
+}
+message UserProfile {
+    bytes profile_photo = 1; 
 }
 
 message UserInfo {
@@ -132,8 +135,20 @@ message UserDetailsResponse {
     string error = 2;
 }
 
+message UserDataUpdate {
+    string firstname = 1;
+    string lastname = 2;
+    string username = 3; 
+    string dob = 4;
+    string gender = 5;
+    string phone = 6; 
+    string email = 7;
+    string bio = 8;      
+    UserProfile profile_photo = 9; 
+}
+
 message UpdateUserDetailsRequest {
-    UserData userDetails = 1;
+    UserDataUpdate userDetails = 1;
     int64 id = 2;
 }
 
@@ -165,7 +180,7 @@ message AdminLoginRequest {
 message AdminInfo {
     int64 id = 1;
     string email = 2;
-    string profile_photo = 3;
+    bytes profile_photo = 3;
     bool isadmin = 4;
 }
 

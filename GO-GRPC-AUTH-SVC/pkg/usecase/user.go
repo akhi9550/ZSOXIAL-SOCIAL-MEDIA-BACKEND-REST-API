@@ -22,7 +22,7 @@ func NewUserUseCase(repository interfaces.UserRepository) services.UserUseCase {
 		userRepository: repository,
 	}
 }
-func (ur *userUseCase) UserSignUp(user models.UserSignUpRequest) (*models.ReponseWithToken, error) {
+func (ur *userUseCase) UserSignUp(user models.UserSignUpRequest, file []byte) (*models.ReponseWithToken, error) {
 	username, err := ur.userRepository.CheckUserExistsByUsername(user.Username)
 	if err != nil {
 		return &models.ReponseWithToken{}, errors.New("error with server")
@@ -51,7 +51,12 @@ func (ur *userUseCase) UserSignUp(user models.UserSignUpRequest) (*models.Repons
 		return &models.ReponseWithToken{}, errors.New("error in hashing password")
 	}
 	user.Password = hashPassword
-	userData, err := ur.userRepository.UserSignUp(user)
+	filename := user.Firstname
+	url, err := helper.AddImageToAwsS3(file, filename)
+	if err != nil {
+		return &models.ReponseWithToken{}, err
+	}
+	userData, err := ur.userRepository.UserSignUp(user, url)
 	if err != nil {
 		return &models.ReponseWithToken{}, errors.New("could not add the user")
 	}
@@ -113,7 +118,7 @@ func (ur *userUseCase) UserLogin(user models.UserLoginRequest) (*models.ReponseW
 	}, nil
 }
 
-func (ur *userUseCase) ForgotPasswordSend(phone string) error {
+func (ur *userUseCase) ForgotPassword(phone string) error {
 	cfg, _ := config.LoadConfig()
 	ok := ur.userRepository.FindUserByMobileNumber(phone)
 	if !ok {
@@ -156,7 +161,7 @@ func (ur *userUseCase) UserDetails(userID int) (models.UsersProfileDetails, erro
 	return ur.userRepository.UserDetails(userID)
 }
 
-func (ur *userUseCase) UpdateUserDetails(userDetails models.UsersProfileDetails, userID int) (models.UsersProfileDetails, error) {
+func (ur *userUseCase) UpdateUserDetails(userDetails models.UsersProfileDetail, file []byte, userID int) (models.UsersProfileDetails, error) {
 	userExist := ur.userRepository.CheckUserAvailabilityWithUserID(userID)
 	if !userExist {
 		return models.UsersProfileDetails{}, errors.New("user doesn't exist")
@@ -197,8 +202,13 @@ func (ur *userUseCase) UpdateUserDetails(userDetails models.UsersProfileDetails,
 	if userDetails.Phone != "" {
 		ur.userRepository.UpdateBIO(userDetails.Bio, userID)
 	}
-	if userDetails.Phone != "" {
-		ur.userRepository.UpdatePhoto(userDetails.Imageurl, userID)
+	filename := userDetails.Firstname
+	url, err := helper.AddImageToAwsS3(file, filename)
+	if err != nil {
+		return models.UsersProfileDetails{}, errors.New("passing aws")
+	}
+	if string(file) != "" {
+		ur.userRepository.UpdatePhoto(url, userID)
 	}
 	return ur.userRepository.UserDetails(userID)
 }

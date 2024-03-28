@@ -35,9 +35,12 @@ func (au *AuthSever) UserSignUp(ctx context.Context, user *pb.UserSignUpRequest)
 		Email:     user.Email,
 		Password:  user.Password,
 		Bio:       user.Bio,
-		Imageurl:  user.ProfilePhoto,
 	}
-	data, err := au.userUseCase.UserSignUp(signup)
+	file := models.UserProfilePhoto{
+		Imageurl: user.ProfilePhoto.ProfilePhoto,
+	}
+	File := file.Imageurl
+	data, err := au.userUseCase.UserSignUp(signup, File)
 	if err != nil {
 		return &pb.UserSignUpResponse{}, err
 	}
@@ -93,9 +96,9 @@ func (au *AuthSever) VerifyOtp(ctx context.Context, req *pb.VerifyOtpRequest) (*
 	}, nil
 }
 
-func (au *AuthSever) ForgotPasswordSend(ctx context.Context, req *pb.ForgotPasswordRequest) (*pb.ForgotPasswordResponse, error) {
+func (au *AuthSever) ForgotPassword(ctx context.Context, req *pb.ForgotPasswordRequest) (*pb.ForgotPasswordResponse, error) {
 	phone := req.Phone
-	err := au.userUseCase.ForgotPasswordSend(phone)
+	err := au.userUseCase.ForgotPassword(phone)
 	if err != nil {
 		return &pb.ForgotPasswordResponse{}, nil
 	}
@@ -128,7 +131,7 @@ func (au *AuthSever) UserDetails(ctx context.Context, req *pb.UserDetailsRequest
 }
 
 func (au *AuthSever) UpdateUserDetails(ctx context.Context, req *pb.UpdateUserDetailsRequest) (*pb.UpdateUserDetailsResponse, error) {
-	userData := models.UsersProfileDetails{
+	userData := models.UsersProfileDetail{
 		Firstname: req.UserDetails.Firstname,
 		Lastname:  req.UserDetails.Lastname,
 		Username:  req.UserDetails.Username,
@@ -137,10 +140,13 @@ func (au *AuthSever) UpdateUserDetails(ctx context.Context, req *pb.UpdateUserDe
 		Phone:     req.UserDetails.Phone,
 		Email:     req.UserDetails.Email,
 		Bio:       req.UserDetails.Bio,
-		Imageurl:  req.UserDetails.ProfilePhoto,
 	}
+	file := models.UserProfilePhoto{
+		Imageurl: req.UserDetails.ProfilePhoto.ProfilePhoto,
+	}
+	File := file.Imageurl
 	userID := req.Id
-	data, err := au.userUseCase.UpdateUserDetails(userData, int(userID))
+	data, err := au.userUseCase.UpdateUserDetails(userData,File, int(userID))
 	if err != nil {
 		return &pb.UpdateUserDetailsResponse{}, err
 	}
@@ -173,7 +179,7 @@ func (au *AuthSever) AdminLogin(ctx context.Context, req *pb.AdminLoginRequest) 
 	if err != nil {
 		return &pb.AdminLoginResponse{}, err
 	}
-	adminDetails := &pb.AdminInfo{Id: int64(data.Users.Id), Email: data.Users.Email, ProfilePhoto: data.Users.Imageurl, Isadmin: data.Users.Isadmin}
+	adminDetails := &pb.AdminInfo{Id: int64(data.Users.Id), Email: data.Users.Email, ProfilePhoto: []byte(data.Users.Imageurl), Isadmin: data.Users.Isadmin}
 	AdminResponse := &pb.AdminResponse{Info: adminDetails, Accesstoken: data.AccessToken, Refreshtoken: data.RefreshToken}
 	return &pb.AdminLoginResponse{
 		Reposnse: AdminResponse,
