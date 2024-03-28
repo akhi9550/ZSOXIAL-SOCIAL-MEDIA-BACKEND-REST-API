@@ -3,6 +3,8 @@ package client
 import (
 	"context"
 	"fmt"
+	"io"
+	"mime/multipart"
 	"time"
 
 	interfaces "github.com/akhi9550/api-gateway/pkg/client/interface"
@@ -30,7 +32,19 @@ func NewAuthClient(cfg config.Config) interfaces.AuthClient {
 	}
 }
 
-func (au *AuthClient) UserSignUp(user models.UserSignUpRequest) (*models.ReponseWithToken, error) {
+func (au *AuthClient) UserSignUp(user models.UserSignUpRequest, file *multipart.FileHeader) (*models.ReponseWithToken, error) {
+	f, err := file.Open()
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+
+	// Read the file content
+	fileData, err := io.ReadAll(f)
+	if err != nil {
+		return nil, err
+	}
+	files := &pb.UserProfile{ProfilePhoto: fileData}
 	data, err := au.Client.UserSignUp(context.Background(), &pb.UserSignUpRequest{
 		Firstname:    user.Firstname,
 		Lastname:     user.Lastname,
@@ -41,11 +55,12 @@ func (au *AuthClient) UserSignUp(user models.UserSignUpRequest) (*models.Reponse
 		Email:        user.Email,
 		Password:     user.Password,
 		Bio:          user.Bio,
-		ProfilePhoto: user.Imageurl,
+		ProfilePhoto: files,
 	})
 	if err != nil {
 		return nil, err
 	}
+
 	userData := models.UserResponse{
 		Id:       uint(data.Reposnse.Info.Id),
 		Username: data.Reposnse.Info.Username,
@@ -80,7 +95,7 @@ func (au *AuthClient) UserLogin(user models.UserLoginRequest) (*models.ReponseWi
 	}, nil
 }
 
-func (au *AuthClient) ForgotPasswordSend(phone string) error {
+func (au *AuthClient) ForgotPassword(phone string) error {
 	_, err := au.Client.ForgotPassword(context.Background(), &pb.ForgotPasswordRequest{
 		Phone: phone,
 	})
@@ -121,8 +136,20 @@ func (au *AuthClient) UserDetails(userID int) (models.UsersProfileDetails, error
 	}, nil
 }
 
-func (au *AuthClient) UpdateUserDetails(userDetails models.UsersProfileDetails, userID int) (models.UsersProfileDetails, error) {
-	userData := &pb.UserData{
+func (au *AuthClient) UpdateUserDetails(userDetails models.UsersProfileDetail, file *multipart.FileHeader, userID int) (models.UsersProfileDetails, error) {
+	f, err := file.Open()
+	if err != nil {
+		return models.UsersProfileDetails{}, err
+	}
+	defer f.Close()
+
+	// Read the file content
+	fileData, err := io.ReadAll(f)
+	if err != nil {
+		return models.UsersProfileDetails{}, err
+	}
+	files := &pb.UserProfile{ProfilePhoto: fileData}
+	userData := &pb.UserDataUpdate{
 		Firstname:    userDetails.Firstname,
 		Lastname:     userDetails.Lastname,
 		Username:     userDetails.Username,
@@ -131,7 +158,7 @@ func (au *AuthClient) UpdateUserDetails(userDetails models.UsersProfileDetails, 
 		Phone:        userDetails.Phone,
 		Email:        userDetails.Email,
 		Bio:          userDetails.Bio,
-		ProfilePhoto: userDetails.Imageurl,
+		ProfilePhoto: files,
 	}
 	data, err := au.Client.UpdateUserDetails(context.Background(), &pb.UpdateUserDetailsRequest{
 		UserDetails: userData,
@@ -196,7 +223,7 @@ func (au *AuthClient) VerifyOTP(code models.VerifyData) (models.ReponseWithToken
 	userData := models.UserResponse{
 		Id:       uint(data.Reposnse.Info.Id),
 		Username: data.Reposnse.Info.Username,
-		Imageurl: data.Reposnse.Info.ProfilePhoto,
+		Imageurl: string(data.Reposnse.Info.ProfilePhoto),
 		Isadmin:  data.Reposnse.Info.Isadmin,
 	}
 	return models.ReponseWithToken{
@@ -217,7 +244,7 @@ func (au *AuthClient) AdminLogin(admin models.AdminLoginRequest) (*models.AdminR
 	adminData := models.AdminResponse{
 		Id:       uint(data.Reposnse.Info.Id),
 		Email:    data.Reposnse.Info.Email,
-		Imageurl: data.Reposnse.Info.ProfilePhoto,
+		Imageurl: string(data.Reposnse.Info.ProfilePhoto),
 		Isadmin:  data.Reposnse.Info.Isadmin,
 	}
 	return &models.AdminReponseWithToken{
@@ -247,7 +274,7 @@ func (au *AuthClient) ShowAllUsers(page, count int) ([]models.UserDetailsAtAdmin
 			Gender:    userData.Gender,
 			Phone:     userData.Phone,
 			Email:     userData.Email,
-			Imageurl:  userData.ProfilePhoto,
+			Imageurl:  string(userData.ProfilePhoto),
 			CreatedAt: time.Unix(userData.CreatedAt.Seconds, 0),
 			Blocked:   userData.Blocked,
 		}

@@ -22,19 +22,42 @@ func NewAuthHandler(authClient interfaces.AuthClient) *AuthHandler {
 }
 
 func (au *AuthHandler) UserSignup(c *gin.Context) {
-	var SignupDetail models.UserSignUpRequest
-	if err := c.ShouldBindJSON(&SignupDetail); err != nil {
-		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
-		c.JSON(http.StatusBadRequest, errs)
-		return
+	firstname := c.PostForm("firstname")
+	lastname := c.PostForm("lastname")
+	username := c.PostForm("username")
+	dob := c.PostForm("dob")
+	gender := c.PostForm("gender")
+	phone := c.PostForm("phone")
+	email := c.PostForm("email")
+	password := c.PostForm("password")
+	bio := c.PostForm("bio")
+
+	SignupDetail := models.UserSignUpRequest{
+		Firstname: firstname,
+		Lastname:  lastname,
+		Username:  username,
+		Dob:       dob,
+		Gender:    gender,
+		Phone:     phone,
+		Email:     email,
+		Password:  password,
+		Bio:       bio,
 	}
+
 	err := validator.New().Struct(SignupDetail)
 	if err != nil {
 		errs := response.ClientResponse(http.StatusBadRequest, "Constraints not statisfied", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
 		return
 	}
-	user, err := au.GRPC_Client.UserSignUp(SignupDetail)
+
+	file, err := c.FormFile("photo")
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "No file provided", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+	user, err := au.GRPC_Client.UserSignUp(SignupDetail, file)
 	if err != nil {
 		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
@@ -100,14 +123,14 @@ func (au *AuthHandler) VerifyOtp(c *gin.Context) {
 	c.JSON(http.StatusOK, sucess)
 }
 
-func (au *AuthHandler) ForgotPasswordSend(c *gin.Context) {
+func (au *AuthHandler) ForgotPassword(c *gin.Context) {
 	var model models.ForgotPasswordSend
 	if err := c.BindJSON(&model); err != nil {
 		errs := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
 		return
 	}
-	err := au.GRPC_Client.ForgotPasswordSend(model.Phone)
+	err := au.GRPC_Client.ForgotPassword(model.Phone)
 	if err != nil {
 		errs := response.ClientResponse(http.StatusBadRequest, "Could not send OTP", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
@@ -151,14 +174,43 @@ func (au *AuthHandler) UserDetails(c *gin.Context) {
 }
 
 func (au *AuthHandler) UpdateUserDetails(c *gin.Context) {
-	user_id, _ := c.Get("user_id")
-	var user models.UsersProfileDetails
-	if err := c.ShouldBindJSON(&user); err != nil {
-		errs := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
+	firstname := c.PostForm("firstname")
+	lastname := c.PostForm("lastname")
+	username := c.PostForm("username")
+	dob := c.PostForm("dob")
+	gender := c.PostForm("gender")
+	phone := c.PostForm("phone")
+	email := c.PostForm("email")
+	bio := c.PostForm("bio")
+
+	user := models.UsersProfileDetail{
+		Firstname: firstname,
+		Lastname:  lastname,
+		Username:  username,
+		Dob:       dob,
+		Gender:    gender,
+		Phone:     phone,
+		Email:     email,
+		Bio:       bio,
+	}
+
+	err := validator.New().Struct(user)
+	if err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "Constraints not statisfied", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
 		return
 	}
-	updateDetails, err := au.GRPC_Client.UpdateUserDetails(user, user_id.(int))
+
+	file, err := c.FormFile("photo")
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "No file provided", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+
+	user_id, _ := c.Get("user_id")
+
+	updateDetails, err := au.GRPC_Client.UpdateUserDetails(user, file, user_id.(int))
 	if err != nil {
 		errs := response.ClientResponse(http.StatusInternalServerError, "failed update user", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errs)

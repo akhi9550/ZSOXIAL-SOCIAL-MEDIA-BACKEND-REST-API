@@ -10,7 +10,6 @@ type UserSignUpRequest struct {
 	Email     string `json:"email" validate:"email"`
 	Password  string `json:"password" validate:"min=6,max=20"`
 	Bio       string `json:"bio"`
-	Imageurl  string `json:"imageurl" gorm:"validate:required"`
 }
 
 type UserLoginRequest struct {
@@ -62,6 +61,17 @@ type UpdatePassword struct {
 	OldPassword        string `json:"old_password" binding:"required"`
 	NewPassword        string `json:"new_password" binding:"required"`
 	ConfirmNewPassword string `json:"confirm_new_password" binding:"required"`
+}
+
+type UsersProfileDetail struct {
+	Firstname string `json:"firstname"`
+	Lastname  string `json:"lastname"`
+	Username  string `json:"username"`
+	Dob       string `json:"dob"`
+	Gender    string `json:"gender"`
+	Phone     string `json:"phone" validate:"e164"`
+	Email     string `json:"email" validate:"email"`
+	Bio       string `json:"bio"`
 }
 
 type UsersProfileDetails struct {

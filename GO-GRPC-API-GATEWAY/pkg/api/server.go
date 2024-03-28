@@ -5,6 +5,7 @@ import (
 
 	"github.com/akhi9550/api-gateway/pkg/api/handler"
 	"github.com/akhi9550/api-gateway/pkg/api/middleware"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -18,21 +19,22 @@ func NewServerHTTP(authHandler *handler.AuthHandler) *ServerHTTP {
 	r.Use(gin.Logger())
 	r.POST("/login", authHandler.AdminLogin)
 
+	// r.Use(middleware.AdminAuthMiddleware())
+	// {
+	// 	r.GET("admin/users", authHandler.ShowAllUsers)
+	// 	r.PUT("admin/user/block", authHandler.BlockUser)
+	// 	r.PUT("admin/user/unblock", authHandler.UnBlockUser)
+	// }
+
 	r.POST("user/signup", authHandler.UserSignup)
 	r.POST("user/login", authHandler.Userlogin)
 
 	r.POST("user/send-otp", authHandler.SendOtp)
 	r.POST("user/verify-otp", authHandler.VerifyOtp)
 
-	r.POST("user/forgot-password", authHandler.ForgotPasswordSend)
+	r.POST("user/forgot-password", authHandler.ForgotPassword)
 	r.POST("user/forgot-password-verify", authHandler.ForgotPasswordVerifyAndChange)
 
-	r.GET("admin/users", authHandler.ShowAllUsers)
-	r.PUT("admin/user/block", authHandler.BlockUser)
-	r.PUT("admin/user/unblock", authHandler.UnBlockUser)
-
-	// r.Use(middleware.AdminAuthMiddleware())
-	// {
 	r.Use(middleware.UserAuthMiddleware())
 	{
 		r.GET("user/users", authHandler.UserDetails)
