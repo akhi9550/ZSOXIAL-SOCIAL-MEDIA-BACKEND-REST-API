@@ -124,6 +124,7 @@ func (ur *userUseCase) ForgotPassword(phone string) error {
 	if !ok {
 		return errors.New("the user does not exist")
 	}
+
 	helper.TwilioSetup(cfg.ACCOUNTSID, cfg.AUTHTOKEN)
 	_, err := helper.TwilioSendOTP(phone, cfg.SERVICESSID)
 	if err != nil {
@@ -134,23 +135,21 @@ func (ur *userUseCase) ForgotPassword(phone string) error {
 
 func (ur *userUseCase) ForgotPasswordVerifyAndChange(model models.ForgotVerify) error {
 	cfg, _ := config.LoadConfig()
-	helper.TwilioSetup(cfg.ACCOUNTSID, cfg.AUTHTOKEN)
-	err := helper.TwilioVerifyOTP(cfg.SERVICESSID, model.Otp, model.Phone)
-	if err != nil {
-		return errors.New("error while verifying")
-	}
-
-	id, err := ur.userRepository.FindIdFromPhone(model.Phone)
+	phone, err := ur.userRepository.FindIdFromPhone(model.Phone)
 	if err != nil {
 		return errors.New("cannot find user from mobile number")
 	}
-
+	helper.TwilioSetup(cfg.ACCOUNTSID, cfg.AUTHTOKEN)
+	err = helper.TwilioVerifyOTP(cfg.SERVICESSID, model.Otp, model.Phone)
+	if err != nil {
+		return errors.New("error while verifying")
+	}
 	newpassword, err := helper.PasswordHashing(model.NewPassword)
 	if err != nil {
 		return errors.New("error in hashing password")
 	}
 
-	if err := ur.userRepository.ChangePassword(id, string(newpassword)); err != nil {
+	if err := ur.userRepository.ChangePassword(phone, newpassword); err != nil {
 		return errors.New("could not change password")
 	}
 
@@ -229,5 +228,5 @@ func (ur *userUseCase) ChangePassword(id int, change models.ChangePassword) erro
 	if err != nil {
 		return errors.New("error in hashing password")
 	}
-	return ur.userRepository.ChangePassword(id, string(newpassword))
+	return ur.userRepository.Changepassword(id, string(newpassword))
 }

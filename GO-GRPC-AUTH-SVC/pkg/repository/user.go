@@ -90,16 +90,16 @@ func (ur *userRepository) FindUserByMobileNumber(phone string) bool {
 
 }
 
-func (ur *userRepository) FindIdFromPhone(phone string) (int, error) {
-	var id int
+func (ur *userRepository) FindIdFromPhone(phone string) (string, error) {
+	var id string
 	if err := ur.DB.Raw("SELECT id FROM users WHERE phone=?", phone).Scan(&id).Error; err != nil {
 		return id, err
 	}
 	return id, nil
 }
 
-func (ur *userRepository) ChangePassword(id int, password string) error {
-	err := ur.DB.Exec("UPDATE users SET password = $1 WHERE id = $2", password, id).Error
+func (ur *userRepository) ChangePassword(phone string, password string) error {
+	err := ur.DB.Exec("UPDATE users SET password = $1 WHERE phone = $2", password, phone).Error
 	if err != nil {
 		return err
 	}
@@ -226,4 +226,12 @@ func (ur *userRepository) ExistEmail(email string) bool {
 		return false
 	}
 	return count > 0
+}
+
+func (ur *userRepository) Changepassword(id int, password string) error {
+	err := ur.DB.Exec("UPDATE users SET password = $1 WHERE id = $2", password, id).Error
+	if err != nil {
+		return err
+	}
+	return nil
 }

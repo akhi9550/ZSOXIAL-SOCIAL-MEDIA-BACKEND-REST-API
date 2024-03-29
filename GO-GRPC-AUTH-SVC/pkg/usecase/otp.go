@@ -3,10 +3,10 @@ package usecase
 import (
 	"errors"
 
-	interfaces "github.com/akhi9550/auth-svc/pkg/repository/interface"
-	services "github.com/akhi9550/auth-svc/pkg/usecase/interface"
 	"github.com/akhi9550/auth-svc/pkg/config"
 	"github.com/akhi9550/auth-svc/pkg/helper"
+	interfaces "github.com/akhi9550/auth-svc/pkg/repository/interface"
+	services "github.com/akhi9550/auth-svc/pkg/usecase/interface"
 	"github.com/akhi9550/auth-svc/pkg/utils/models"
 	"github.com/jinzhu/copier"
 )
@@ -32,7 +32,7 @@ func (op *otpUseCase) SendOtp(phone string) error {
 		return errors.New("error with server")
 	}
 	if user == nil {
-		return errors.New("user with this phone is not exists")
+		return errors.New("user with this phonenumber is not exists")
 	}
 	helper.TwilioSetup(cfg.ACCOUNTSID, cfg.AUTHTOKEN)
 	_, err = helper.TwilioSendOTP(phone, cfg.SERVICESSID)

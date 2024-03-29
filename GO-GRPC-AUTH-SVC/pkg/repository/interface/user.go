@@ -13,8 +13,8 @@ type UserRepository interface {
 	FindUserByEmail(user models.UserLoginRequest) (models.UserResponsewithPassword, error)
 	FindUserBlockorNot(email string)(bool,error)
 	FindUserByMobileNumber(phone string) bool
-	FindIdFromPhone(phone string) (int, error)
-	ChangePassword(id int, password string) error
+	FindIdFromPhone(phone string) (string, error)
+	ChangePassword(phone string, password string) error
 	UserDetails(userID int) (models.UsersProfileDetails, error)
 	CheckUserAvailabilityWithUserID(userID int) bool
 	UpdateFirstName(firstname string, userID int) error
@@ -30,4 +30,5 @@ type UserRepository interface {
 	ExistUsername(username string) bool
 	ExistPhone(phone string) bool
 	ExistEmail(email string) bool
+	Changepassword(phone int, password string) error
 }
