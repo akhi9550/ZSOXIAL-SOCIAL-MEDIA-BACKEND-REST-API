@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"regexp"
 	"strconv"
 
 	interfaces "github.com/akhi9550/api-gateway/pkg/client/interface"
@@ -31,6 +32,13 @@ func (au *AuthHandler) UserSignup(c *gin.Context) {
 	email := c.PostForm("email")
 	password := c.PostForm("password")
 	bio := c.PostForm("bio")
+
+	pattern := `^\d{10}$`
+	regex := regexp.MustCompile(pattern)
+	value := regex.MatchString(phone)
+	if !value {
+		return
+	}
 
 	SignupDetail := models.UserSignUpRequest{
 		Firstname: firstname,
@@ -287,7 +295,7 @@ func (au *AuthHandler) ShowAllUsers(c *gin.Context) {
 func (au *AuthHandler) BlockUser(c *gin.Context) {
 	id := c.Query("id")
 	userID, _ := strconv.Atoi(id)
-	err := au.GRPC_Client.AdminBlockUser(uint(userID))
+	err := au.GRPC_Client.AdminBlockUser(int(userID))
 	if err != nil {
 		errs := response.ClientResponse(http.StatusInternalServerError, "user could not be blocked", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errs)
@@ -300,7 +308,7 @@ func (au *AuthHandler) BlockUser(c *gin.Context) {
 func (au *AuthHandler) UnBlockUser(c *gin.Context) {
 	id := c.Query("id")
 	userID, _ := strconv.Atoi(id)
-	err := au.GRPC_Client.AdminUnblockUser(uint(userID))
+	err := au.GRPC_Client.AdminUnblockUser(int(userID))
 	if err != nil {
 		errs := response.ClientResponse(http.StatusInternalServerError, "user could not be unblocked", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errs)

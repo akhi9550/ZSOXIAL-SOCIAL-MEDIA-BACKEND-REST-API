@@ -18,6 +18,6 @@ type AuthClient interface {
 	VerifyOTP(code models.VerifyData) (models.ReponseWithToken, error)
 	AdminLogin(admin models.AdminLoginRequest) (*models.AdminReponseWithToken, error)
 	ShowAllUsers(page, count int) ([]models.UserDetailsAtAdmin, error)
-	AdminBlockUser(userID uint) error
-	AdminUnblockUser(userID uint) error
+	AdminBlockUser(userID int) error
+	AdminUnblockUser(userID int) error
 }

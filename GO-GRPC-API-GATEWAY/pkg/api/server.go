@@ -13,7 +13,7 @@ type ServerHTTP struct {
 	engine *gin.Engine
 }
 
-func NewServerHTTP(authHandler *handler.AuthHandler) *ServerHTTP {
+func NewServerHTTP(authHandler *handler.AuthHandler, postHandler *handler.PostHandler) *ServerHTTP {
 	r := gin.New()
 
 	r.Use(gin.Logger())
@@ -40,6 +40,10 @@ func NewServerHTTP(authHandler *handler.AuthHandler) *ServerHTTP {
 		r.GET("user/users", authHandler.UserDetails)
 		r.PUT("user/update", authHandler.UpdateUserDetails)
 		r.PUT("user/changepassword", authHandler.ChangePassword)
+		r.POST("/post", postHandler.CreatePost)
+		r.GET("/getpost", postHandler.GetPost)
+		r.PUT("/updatepost", postHandler.UpdatePost)
+		r.DELETE("/deletepost", postHandler.DeletePost)
 	}
 	return &ServerHTTP{engine: r}
 }

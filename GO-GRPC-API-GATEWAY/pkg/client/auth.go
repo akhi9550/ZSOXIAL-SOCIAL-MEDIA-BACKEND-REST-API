@@ -284,7 +284,7 @@ func (au *AuthClient) ShowAllUsers(page, count int) ([]models.UserDetailsAtAdmin
 	return result, nil
 }
 
-func (au *AuthClient) AdminBlockUser(userID uint) error {
+func (au *AuthClient) AdminBlockUser(userID int) error {
 	_, err := au.Client.AdminBlockUser(context.Background(), &pb.AdminBlockUserRequest{
 		Id: int64(userID),
 	})
@@ -294,7 +294,7 @@ func (au *AuthClient) AdminBlockUser(userID uint) error {
 	return nil
 }
 
-func (au *AuthClient) AdminUnblockUser(userID uint) error {
+func (au *AuthClient) AdminUnblockUser(userID int) error {
 	_, err := au.Client.AdminUnblockUser(context.Background(), &pb.AdminUnblockUserRequest{
 		Id: int64(userID),
 	})
