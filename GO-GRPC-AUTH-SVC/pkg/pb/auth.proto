@@ -20,6 +20,8 @@ service AuthService {
     rpc ShowAllUsers (ShowAllUsersRequest) returns (ShowAllUsersResponse){}
     rpc AdminBlockUser(AdminBlockUserRequest) returns (AdminBlockUserResponse) {}
     rpc AdminUnblockUser(AdminUnblockUserRequest) returns (AdminUnblockUserResponse) {}
+    rpc CheckUserAvalilabilityWithUserID (CheckUserAvalilabilityWithUserIDRequest) returns (CheckUserAvalilabilityWithUserIDResponse){}
+    rpc UserData (UserDataRequest) returns (UserDataResponse){}
 }
 
 message UserSignUpRequest {
@@ -233,4 +235,22 @@ message AdminUnblockUserRequest {
 
 message AdminUnblockUserResponse {
     string error = 1;
+}
+
+message CheckUserAvalilabilityWithUserIDRequest {
+    int64 id = 1;
+}
+
+message CheckUserAvalilabilityWithUserIDResponse {
+    bool valid = 1;
+}
+
+message UserDataRequest{
+      int64 id = 1;
+}
+
+message UserDataResponse {
+    int64 id = 1;
+    string username = 2;
+    string profile_photo = 3;
 }

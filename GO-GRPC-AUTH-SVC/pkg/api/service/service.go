@@ -146,7 +146,7 @@ func (au *AuthSever) UpdateUserDetails(ctx context.Context, req *pb.UpdateUserDe
 	}
 	File := file.Imageurl
 	userID := req.Id
-	data, err := au.userUseCase.UpdateUserDetails(userData,File, int(userID))
+	data, err := au.userUseCase.UpdateUserDetails(userData, File, int(userID))
 	if err != nil {
 		return &pb.UpdateUserDetailsResponse{}, err
 	}
@@ -231,4 +231,31 @@ func (au *AuthSever) AdminUnblockUser(ctx context.Context, req *pb.AdminUnblockU
 		return &pb.AdminUnblockUserResponse{}, err
 	}
 	return &pb.AdminUnblockUserResponse{}, nil
+}
+
+func (au *AuthSever) CheckUserAvalilabilityWithUserID(ctx context.Context, req *pb.CheckUserAvalilabilityWithUserIDRequest) (*pb.CheckUserAvalilabilityWithUserIDResponse, error) {
+	userId := req.Id
+	ok, err := au.userUseCase.CheckUserAvalilabilityWithUserID(int(userId))
+	if !ok {
+		return &pb.CheckUserAvalilabilityWithUserIDResponse{}, err
+	}
+	if err != nil {
+		return &pb.CheckUserAvalilabilityWithUserIDResponse{}, err
+	}
+	return &pb.CheckUserAvalilabilityWithUserIDResponse{
+		Valid: ok,
+	}, nil
+}
+
+func (au *AuthSever) UserData(ctx context.Context, req *pb.UserDataRequest) (*pb.UserDataResponse, error) {
+	userId := req.Id
+	data, err := au.userUseCase.UserData(int(userId))
+	if err != nil {
+		return &pb.UserDataResponse{}, err
+	}
+	return &pb.UserDataResponse{
+		Id:           int64(data.UserId),
+		Username:     data.Username,
+		ProfilePhoto: data.Profile,
+	}, err
 }

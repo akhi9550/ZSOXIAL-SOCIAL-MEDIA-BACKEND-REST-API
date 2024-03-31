@@ -123,6 +123,23 @@ func (ur *userRepository) CheckUserAvailabilityWithUserID(userID int) bool {
 	return count > 0
 }
 
+func (ur *userRepository) CheckUserAvalilabilityWithUserID(userID int) (bool, error) {
+	var count int
+	if err := ur.DB.Raw("SELECT COUNT(*) FROM users WHERE id= ?", userID).Scan(&count).Error; err != nil {
+		return false, err
+	}
+	return count > 0, nil
+}
+
+func (ur *userRepository) UserData(userID int) (models.UserData, error) {
+	var user models.UserData
+	err := ur.DB.Raw(`SELECT id, username, imageurl FROM users WHERE id = ?`, userID).Scan(&user).Error
+	if err != nil {
+		return models.UserData{}, err
+	}
+	return user, nil
+}
+
 func (ur *userRepository) UpdateFirstName(firstname string, userID int) error {
 	err := ur.DB.Exec("UPDATE users SET firstname= ? WHERE id = ?", firstname, userID).Error
 	if err != nil {

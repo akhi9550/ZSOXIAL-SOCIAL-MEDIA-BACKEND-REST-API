@@ -230,3 +230,16 @@ func (ur *userUseCase) ChangePassword(id int, change models.ChangePassword) erro
 	}
 	return ur.userRepository.Changepassword(id, string(newpassword))
 }
+
+func (ur *userUseCase) CheckUserAvalilabilityWithUserID(userID int) (bool, error) {
+	ok, _ := ur.userRepository.CheckUserAvalilabilityWithUserID(userID)
+	return ok, nil
+}
+
+func (ur *userUseCase) UserData(userID int) (models.UserData, error) {
+	data, err := ur.userRepository.UserData(userID)
+	if err != nil {
+		return models.UserData{}, err
+	}
+	return data, nil
+}

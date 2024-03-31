@@ -95,3 +95,9 @@ type ChangePassword struct {
 	Password    string `json:"password"`
 	Repassword  string `json:"re_password"`
 }
+
+type UserData struct {
+	UserId   uint   `json:"user_id"`
+	Username string `json:"username"`
+	Profile  string `json:"profile" gorm:"column:imageurl"`
+}

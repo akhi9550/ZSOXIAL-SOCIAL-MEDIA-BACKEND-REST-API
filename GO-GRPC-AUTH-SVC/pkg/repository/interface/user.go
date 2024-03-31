@@ -1,8 +1,8 @@
 package interfaces
 
 import (
-	"github.com/akhi9550/auth-svc/pkg/utils/models"
 	"github.com/akhi9550/auth-svc/pkg/domain"
+	"github.com/akhi9550/auth-svc/pkg/utils/models"
 )
 
 type UserRepository interface {
@@ -17,6 +17,8 @@ type UserRepository interface {
 	ChangePassword(phone string, password string) error
 	UserDetails(userID int) (models.UsersProfileDetails, error)
 	CheckUserAvailabilityWithUserID(userID int) bool
+	UserData(userID int)(models.UserData,error)
+	CheckUserAvalilabilityWithUserID(userID int) (bool,error)
 	UpdateFirstName(firstname string, userID int) error
 	UpdateLastName(lastname string, userID int) error
 	UpdateUserName(username string, userID int) error
