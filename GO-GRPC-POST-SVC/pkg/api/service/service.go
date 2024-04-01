@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"fmt"
 
 	pb "github.com/akhi9550/post-svc/pkg/pb/post"
 	interfaces "github.com/akhi9550/post-svc/pkg/usecase/interface"
@@ -26,10 +25,7 @@ func (p *PostServer) CreatePost(ctx context.Context, req *pb.CreatePostRequest) 
 		Caption: req.Caption,
 		TypeId:  uint(req.Typeid),
 	}
-	file := models.Url{
-		ImageUrls: req.Post.Postimages,
-	}
-	File := file.ImageUrls
+	File := req.Post.Url
 	users := models.Tags{
 		User1: uint(req.Tag.User1),
 		User2: uint(req.Tag.User2),
@@ -53,20 +49,13 @@ func (p *PostServer) CreatePost(ctx context.Context, req *pb.CreatePostRequest) 
 		User4: int64(data.Tag.User4),
 		User5: int64(data.Tag.User5),
 	}
-	var urls []*pb.Urls
-	for _, url := range data.ImageUrls {
-		urls = append(urls, &pb.Urls{
-			Imageurl: string(url.ImageUrls),
-		})
-	}
-	fmt.Println("image", urls)
 
 	return &pb.CreatePostResponse{
 		Id:        int64(data.ID),
 		User:      Users,
 		Caption:   data.Caption,
 		Tag:       tags,
-		Url:       urls,
+		Url:       data.Url,
 		Like:      int64(data.Likes),
 		Comment:   int64(data.Comments),
 		CreatedAt: timestamppb.New(data.CreatedAt),
@@ -91,18 +80,12 @@ func (p *PostServer) GetPost(ctx context.Context, req *pb.GetPostRequest) (*pb.G
 		User4: int64(data.Tag.User4),
 		User5: int64(data.Tag.User5),
 	}
-	var urls []*pb.Urls
-	for _, url := range data.ImageUrls {
-		urls = append(urls, &pb.Urls{
-			Imageurl: string(url.ImageUrls),
-		})
-	}
 	details := &pb.CreatePostResponse{
 		Id:        int64(data.ID),
 		User:      Users,
 		Caption:   data.Caption,
 		Tag:       tags,
-		Url:       urls,
+		Url:       data.Url,
 		Like:      int64(data.Likes),
 		Comment:   int64(data.Comments),
 		CreatedAt: timestamppb.New(data.CreatedAt),
@@ -114,20 +97,17 @@ func (p *PostServer) GetPost(ctx context.Context, req *pb.GetPostRequest) (*pb.G
 
 func (p *PostServer) UpdatePost(ctx context.Context, req *pb.UpdatePostRequest) (*pb.UpdatePostResponse, error) {
 	userID := req.Userid
-	users := models.Tags{
-		User1: uint(req.Tag.User1),
-		User2: uint(req.Tag.User2),
-		User3: uint(req.Tag.User3),
-		User4: uint(req.Tag.User4),
-		User5: uint(req.Tag.User5),
-	}
 	user := models.UpdatePostReq{
 		PostID:  uint(req.Postid),
 		Caption: req.Caption,
 		TypeID:  uint(req.Typeid),
-		Tags:    users,
 	}
-	data, err := p.postUseCase.UpdatePost(int(userID), user)
+	var users []models.Tag
+	for _, user := range req.Tag.User {
+		tag := models.Tag{User: user}
+		users = append(users, tag)
+	}
+	data, err := p.postUseCase.UpdatePost(int(userID), user, users)
 	if err != nil {
 		return &pb.UpdatePostResponse{}, err
 	}
@@ -136,31 +116,19 @@ func (p *PostServer) UpdatePost(ctx context.Context, req *pb.UpdatePostRequest) 
 		Username: data.Author.Username,
 		Imageurl: data.Author.Profile,
 	}
-	tags := &pb.Tags{
-		User1: int64(data.Tag.User1),
-		User2: int64(data.Tag.User2),
-		User3: int64(data.Tag.User3),
-		User4: int64(data.Tag.User4),
-		User5: int64(data.Tag.User5),
+	var tags []string
+	for _, tag := range data.Tag {
+		tags = append(tags, tag.User)
 	}
-	var urls []*pb.Urls
-	for _, url := range data.ImageUrls {
-		urls = append(urls, &pb.Urls{
-			Imageurl: string(url.ImageUrls),
-		})
-	}
-	details := &pb.CreatePostResponse{
+	return &pb.UpdatePostResponse{
 		Id:        int64(data.ID),
 		User:      Users,
 		Caption:   data.Caption,
 		Tag:       tags,
-		Url:       urls,
+		Url:       data.Url,
 		Like:      int64(data.Likes),
 		Comment:   int64(data.Comments),
 		CreatedAt: timestamppb.New(data.CreatedAt),
-	}
-	return &pb.UpdatePostResponse{
-		Updatepost: details,
 	}, nil
 }
 

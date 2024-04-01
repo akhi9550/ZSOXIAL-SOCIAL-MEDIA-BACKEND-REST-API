@@ -32,7 +32,6 @@ func (c *clientAuth) CheckUserAvalilabilityWithUserID(userID int) bool {
 	ok, _ := c.Client.CheckUserAvalilabilityWithUserID(context.Background(), &pb.CheckUserAvalilabilityWithUserIDRequest{
 		Id: int64(userID),
 	})
-	fmt.Println("valid", ok)
 	return ok.Valid
 }
 

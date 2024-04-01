@@ -5,6 +5,7 @@ import "time"
 type Post struct {
 	ID            uint      `json:"id" gorm:"uniquekey; not null"`
 	UserID        uint      `json:"user_id"`
+	Url           string    `json:"url"`
 	Caption       string    `json:"caption"`
 	TypeID        uint      `json:"type_id"`
 	LikesCount    uint      `json:"likes_count" gorm:"default:0"`
@@ -21,12 +22,7 @@ type Tags struct {
 	User4  uint `json:"user4" gorm:"default:null"`
 	User5  uint `json:"user5" gorm:"default:null"`
 }
-type Url struct {
-	ID     uint   `json:"id" gorm:"uniquekey; not null"`
-	UserID uint   `json:"user_id"`
-	PostID uint   `json:"post_id"`
-	Url    string `json:"url"`
-}
+
 type PostImages struct {
 	ID     uint   `json:"id" gorm:"uniquekey; not null"`
 	PostID uint   `json:"post_id"`

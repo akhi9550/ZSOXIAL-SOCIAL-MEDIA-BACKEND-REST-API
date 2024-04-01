@@ -25,13 +25,13 @@ service PostService {
 message CreatePostRequest {
     int64 userid = 1;
     string caption = 2;
-    PostImage post = 3;
+    PostPhoto post = 3;
     int64 typeid = 4; 
     tags tag = 5;
 }
 
-message PostImage {
-    bytes postimages = 1;
+message PostPhoto {
+    bytes url = 1; 
 }
 
 message UserData {
@@ -48,16 +48,12 @@ message tags {
     int64 user5 = 5;
 }
 
-message Urls {
-    string imageurl  = 1;
-}
-
 message CreatePostResponse {
     int64 id = 1;
     UserData user =2;
     string caption = 3;
     tags tag = 4; 
-    repeated Urls url = 5;
+    string url = 5;
     int64 like =6 ;
     int64 comment = 7;
     google.protobuf.Timestamp created_at = 8; 
@@ -77,11 +73,22 @@ message UpdatePostRequest {
     int64 postid = 2;
     string caption = 3;
     int64 typeid = 5; 
-    tags tag = 6;
+    Tag tag = 6;
+}
+
+message Tag {
+    repeated string user = 1;
 }
 
 message UpdatePostResponse{
-    CreatePostResponse updatepost = 1;
+    int64 id = 1;
+    UserData user =2;
+    string caption = 3;
+    repeated string tag = 4; 
+    string url = 5;
+    int64 like =6 ;
+    int64 comment = 7;
+    google.protobuf.Timestamp created_at = 8; 
 }
 
 message DeletePostRequest{

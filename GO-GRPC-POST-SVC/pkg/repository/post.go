@@ -1,8 +1,6 @@
 package repository
 
 import (
-	"fmt"
-
 	interfaces "github.com/akhi9550/post-svc/pkg/repository/interface"
 	"github.com/akhi9550/post-svc/pkg/utils/models"
 	"gorm.io/gorm"
@@ -45,32 +43,22 @@ func (p *postRepository) CheckPostAvalilabilityWithID(postID int) bool {
 	return count > 0
 }
 
-func (p *postRepository) CreatePost(userID int, Caption string, TypeId int, file string, users models.Tags) (models.Response, models.Tags, []models.Url, error) {
+func (p *postRepository) CreatePost(userID int, Caption string, TypeId int, file string, users models.Tags) (models.Response, models.Tags, error) {
 	var post models.Response
 	var tag models.Tags
-	var image []models.Url
-	err := p.DB.Raw(`INSERT INTO posts (user_id, caption, type_id, created_at) VALUES (?, ?, ?, NOW()) RETURNING id, caption, likes_count, comments_count, created_at`, userID, Caption, TypeId).Scan(&post).Error
+	err := p.DB.Raw(`INSERT INTO posts (user_id, url, caption, type_id, created_at) VALUES (?, ?,?, ?, NOW()) RETURNING id,url, caption, likes_count, comments_count, created_at`, userID, file, Caption, TypeId).Scan(&post).Error
 	if err != nil {
-		return models.Response{}, models.Tags{}, []models.Url{}, err
+		return models.Response{}, models.Tags{}, err
 	}
 	err = p.DB.Exec(`INSERT INTO tags(user_id,post_id,user1,user2,user3,user4,user5) VALUES ( ?,?,?,?,?,?,? )`, userID, post.ID, users.User1, users.User2, users.User3, users.User4, users.User5).Error
 	if err != nil {
-		return models.Response{}, models.Tags{}, []models.Url{}, err
-	}
-	err = p.DB.Exec(`INSERT INTO urls(user_id,post_id,url) VALUES ( ?,?,? )`, userID, post.ID, file).Error
-	if err != nil {
-		return models.Response{}, models.Tags{}, []models.Url{}, err
-	}
-	err = p.DB.Raw(`SELECT url FROM urls WHERE post_id = ? AND user_id = ?`, post.ID, userID).Scan(&image).Error
-	if err != nil {
-		return models.Response{}, models.Tags{}, []models.Url{}, err
+		return models.Response{}, models.Tags{}, err
 	}
 	err = p.DB.Raw(`SELECT user1, user2, user3, user4, user5 FROM tags WHERE post_id = ?`, post.ID).Scan(&tag).Error
 	if err != nil {
-		return models.Response{}, models.Tags{}, []models.Url{}, err
+		return models.Response{}, models.Tags{}, err
 	}
-	fmt.Println("imagessss:=", image)
-	return post, tag, image, nil
+	return post, tag, nil
 }
 func (p *postRepository) UserData(userID int) (models.UserData, error) {
 	var user models.UserData
@@ -80,23 +68,18 @@ func (p *postRepository) UserData(userID int) (models.UserData, error) {
 	}
 	return user, nil
 }
-func (p *postRepository) GetPost(userID, postID int) (models.Response, models.Tags, []models.Url, error) {
+func (p *postRepository) GetPost(userID, postID int) (models.Response, models.Tags, error) {
 	var post models.Response
 	var tag models.Tags
-	var image []models.Url
 	err := p.DB.Raw(`SELECT user1,user2,user3,user4,user5 FROM tags WHERE post_id = ?`, postID).Scan(&tag).Error
 	if err != nil {
-		return models.Response{}, models.Tags{}, []models.Url{}, err
+		return models.Response{}, models.Tags{}, err
 	}
-	err = p.DB.Raw(`SELECT id,caption,likes_count, comments_count,created_at FROM posts WHERE user_id = ? AND id = ?`, userID, postID).Scan(&post).Error
+	err = p.DB.Raw(`SELECT id,url,caption,likes_count, comments_count,created_at FROM posts WHERE user_id = ? AND id = ?`, userID, postID).Scan(&post).Error
 	if err != nil {
-		return models.Response{}, models.Tags{}, []models.Url{}, err
+		return models.Response{}, models.Tags{}, err
 	}
-	err = p.DB.Raw(`SELECT url FROM urls WHERE post_id = ? AND user_id = ?`, postID, userID).Scan(&image).Error
-	if err != nil {
-		return models.Response{}, models.Tags{}, []models.Url{}, err
-	}
-	return post, tag, image, nil
+	return post, tag, nil
 
 }
 
@@ -116,31 +99,29 @@ func (ur *postRepository) UpdateTypeID(postID, userID, typeID int) error {
 	return nil
 }
 
-func (ur *postRepository) UpdateTags(postID, userID int, data models.Tags) error {
-	err := ur.DB.Exec("UPDATE tags SET user1,user2,user3,user4,user5 WHERE post_id = ? AND user_id = ?", data.User1, data.User2, data.User3, data.User4, data.User5, postID, userID).Error
-	if err != nil {
-		return err
+func (ur *postRepository) UpdateTags(postID, userID int, tag []models.Tag) error {
+	for i := range tag {
+		err := ur.DB.Exec("UPDATE tags SET taguser = ? WHERE post_id = ? AND user_id = ?", i, postID, userID).Error
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }
 
-func (p *postRepository) PostDetails(userID, postID int) (models.Response, models.Tags, []models.Url, error) {
-	var post models.Response
-	var tag models.Tags
-	var image []models.Url
-	err := p.DB.Raw(`SELECT user1,user2,user3,user4,user5 FROM tags WHERE post_id = ?`, postID).Scan(&tag).Error
+func (p *postRepository) PostDetails(userID, postID int) (models.UpdateResponse, error) {
+	var post models.UpdateResponse
+	var tag []models.Tag
+	err := p.DB.Raw(`SELECT taguser FROM tags WHERE post_id = ?`, postID).Scan(&tag).Error
 	if err != nil {
-		return models.Response{}, models.Tags{}, []models.Url{}, err
+		return models.UpdateResponse{}, err
 	}
-	err = p.DB.Raw(`SELECT id,caption,likes_count, comments_count,created_at FROM posts WHERE user_id = ? AND id = ?`, userID, postID).Scan(&post).Error
+	err = p.DB.Raw(`SELECT id,url,caption,likes_count, comments_count,created_at FROM posts WHERE user_id = ? AND id = ?`, userID, postID).Scan(&post).Error
 	if err != nil {
-		return models.Response{}, models.Tags{}, []models.Url{}, err
+		return models.UpdateResponse{}, err
 	}
-	err = p.DB.Raw(`SELECT url FROM urls  WHERE post_id = ? AND user_id = ?`, postID, userID).Scan(&image).Error
-	if err != nil {
-		return models.Response{}, models.Tags{}, []models.Url{}, err
-	}
-	return post, tag, image, nil
+	post.Tag = tag
+	return post, nil
 
 }
 

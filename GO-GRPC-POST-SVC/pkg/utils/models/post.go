@@ -19,7 +19,7 @@ type PostResponse struct {
 	Author    UserData  `json:"author"`
 	Caption   string    `json:"caption"`
 	Tag       Tags      `json:"tag"`
-	ImageUrls []Url     `json:"image_urls"`
+	Url       string    `json:"url"`
 	Likes     uint      `json:"likes"`
 	Comments  uint      `json:"comments"`
 	CreatedAt time.Time `json:"created_at"`
@@ -27,6 +27,7 @@ type PostResponse struct {
 
 type Response struct {
 	ID        uint      `json:"id"`
+	Url       string    `json:"url"`
 	Caption   string    `json:"caption"`
 	Likes     uint      `json:"likes"`
 	Comments  uint      `json:"comments"`
@@ -99,5 +100,19 @@ type UpdatePostReq struct {
 	PostID  uint   `json:"post_id"`
 	Caption string `json:"caption"`
 	TypeID  uint   `json:"type_id"`
-	Tags    Tags   `json:"tags"`
+}
+
+type UpdateResponse struct {
+	ID        uint      `json:"id"`
+	Author    UserData  `json:"author"`
+	Tag       []Tag     `json:"tag"`
+	Url       string    `json:"url"`
+	Caption   string    `json:"caption"`
+	Likes     uint      `json:"likes"`
+	Comments  uint      `json:"comments"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
+type Tag struct {
+	User string `json:"user" gorm:"column:taguser"`
 }

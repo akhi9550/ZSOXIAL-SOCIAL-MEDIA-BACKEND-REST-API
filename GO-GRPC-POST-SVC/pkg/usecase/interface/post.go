@@ -5,7 +5,7 @@ import "github.com/akhi9550/post-svc/pkg/utils/models"
 type PostUseCase interface {
 	CreatePost(userID int, data models.PostRequest, file []byte, users models.Tags) (models.PostResponse, error)
 	GetPost(userID int, postID int) (models.PostResponse, error)
-	UpdatePost(userID int, data models.UpdatePostReq) (models.PostResponse, error)
+	UpdatePost(userID int, data models.UpdatePostReq,tag []models.Tag) (models.UpdateResponse, error)
 	DeletePost(userID int, postID int) error
 	// GetAllPost(userID int) ([]models.PostResponse, error)
 	// LikePost(userID int, postID int) (models.LikePostResponse, error)
