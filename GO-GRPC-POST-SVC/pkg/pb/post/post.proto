@@ -1,0 +1,193 @@
+syntax = "proto3";
+
+package post;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "./pkg/pb/post";
+
+service PostService {
+    rpc CreatePost (CreatePostRequest) returns (CreatePostResponse){}
+    rpc GetPost (GetPostRequest) returns (GetPostResponse){}
+    rpc UpdatePost (UpdatePostRequest) returns (UpdatePostResponse){}
+    rpc DeletePost (DeletePostRequest) returns (DeletePostResponse){}
+    // rpc GetAllPost (GetAllPostRequest) returns (GetAllPostResponse){}
+    // rpc LikePost (LikePostRequest) returns (LikePostResponse){}
+    // rpc PostComment (PostCommentRequest) returns (PostCommentResponse){}
+    // rpc GetComment (GetCommentRequest) returns (GetCommentResponse){}
+    // rpc ReplyComment (ReplyCommentRequest) returns (ReplyCommentResponse){}
+    // rpc DeleteComment (DeleteCommentRequest) returns (DeleteCommentResponse){}
+    // rpc CreateStory (CreateStoryRequest) returns (CreateStoryResponse){}
+    // rpc DeleteStory (DeleteStoryRequest) returns (DeleteStoryResponse){}
+    // rpc LikeStory (LikeStoryRequest) returns (LikeStoryResponse){}
+}
+
+message CreatePostRequest {
+    int64 userid = 1;
+    string caption = 2;
+    PostImage post = 3;
+    int64 typeid = 4; 
+    tags tag = 5;
+}
+
+message PostImage {
+    bytes postimages = 1;
+}
+
+message UserData {
+    int64 userid = 1;
+    string username = 2;
+    string imageurl = 3;
+}
+
+message tags {
+    int64 user1 = 1;
+    int64 user2 = 2;
+    int64 user3 = 3;
+    int64 user4 = 4;
+    int64 user5 = 5;
+}
+
+message Urls {
+    string imageurl  = 1;
+}
+
+message CreatePostResponse {
+    int64 id = 1;
+    UserData user =2;
+    string caption = 3;
+    tags tag = 4; 
+    repeated Urls url = 5;
+    int64 like =6 ;
+    int64 comment = 7;
+    google.protobuf.Timestamp created_at = 8; 
+}
+
+message GetPostRequest {
+    int64 userid = 1;
+    int64 postid =2;
+}
+
+message GetPostResponse{
+    CreatePostResponse postresponse = 1;
+}
+
+message UpdatePostRequest {
+    int64 userid = 1;
+    int64 postid = 2;
+    string caption = 3;
+    int64 typeid = 5; 
+    tags tag = 6;
+}
+
+message UpdatePostResponse{
+    CreatePostResponse updatepost = 1;
+}
+
+message DeletePostRequest{
+    int64 userid = 1;
+    int64 postid = 2;
+}
+
+message DeletePostResponse {}
+
+message GetAllPostRequest {
+    int64 userid = 1;
+}
+
+message GetAllPostResponse {
+    repeated CreatePostResponse allpost = 1;
+}
+
+message LikePostRequest {
+    int64 userid = 1;
+    int64 postid = 2;   
+}
+
+message LikePostResponse{
+    int64 id =1;
+    int64 userid = 2;
+    int64 username = 3;
+    string url = 4;
+    google.protobuf.Timestamp created_at = 5; 
+}
+
+message PostCommentRequest{
+    int64 userid = 1;
+    int64 postid = 2;
+    string comment = 3;
+}
+
+message PostCommentResponse {
+    int64 id = 1;
+    int64 userid = 2;
+    int64 username = 3;
+    string url = 4;
+    string comment = 5;
+    google.protobuf.Timestamp created_at = 6; 
+}
+
+message GetCommentRequest{
+    int64 postid=1;
+}
+
+message Comment {
+    string comment = 1;
+    google.protobuf.Timestamp created_at = 2; 
+}
+
+message GetCommentResponse{
+    int64 postid = 1;
+    repeated Comment getcomment = 2;
+}
+
+message ReplyCommentRequest {
+    int64 userid = 1;
+    int64 commentid = 2;
+    int64 postid = 3;
+    string message = 4;
+}
+
+message ReplyCommentResponse {}
+
+message DeleteCommentRequest {
+    int64 userid = 1;
+    int64 Commentid = 2;
+}
+
+message DeleteCommentResponse{}
+
+
+message story {
+    bytes photo = 1; 
+}
+
+
+message StoryUrl {
+    bytes postimages = 1;
+}
+
+message CreateStoryRequest{
+    int64 serid = 1;
+    StoryUrl story = 2;
+}
+
+message CreateStoryResponse {
+    UserData user =1;
+    string story = 2;
+    google.protobuf.Timestamp created_at = 3; 
+}
+
+message DeleteStoryRequest {
+    int64 userID = 1;
+    int64 storyid = 2;
+}
+
+message DeleteStoryResponse{}
+
+message LikeStoryRequest {
+    int64 userid = 1;
+    int64 storyid = 2;
+}
+
+message LikeStoryResponse {}
