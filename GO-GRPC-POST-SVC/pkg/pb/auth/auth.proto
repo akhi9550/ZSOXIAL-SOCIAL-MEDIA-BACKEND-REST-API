@@ -7,6 +7,8 @@ option go_package = "./pkg/pb/auth";
 service AuthService {
     rpc CheckUserAvalilabilityWithUserID (CheckUserAvalilabilityWithUserIDRequest) returns (CheckUserAvalilabilityWithUserIDResponse){}
     rpc UserData (UserDataRequest) returns (UserDataResponse){}
+    rpc CheckUserAvalilabilityWithTagUserID (CheckUserAvalilabilityWithTagUserIDRequest) returns (CheckUserAvalilabilityWithTagUserIDResponse){}
+    rpc GetUserNameWithTagUserID (GetUserNameWithTagUserIDRequest) returns (GetUserNameWithTagUserIDResponse){}
 }
 
 message CheckUserAvalilabilityWithUserIDRequest {
@@ -25,4 +27,28 @@ message UserDataResponse {
     int64 id = 1;
     string username = 2;
     string profile_photo = 3;
+}
+
+message  CheckUserAvalilabilityWithTagUserIDRequest {
+  Tag tag = 1;
+}
+
+message Tag {
+    repeated string user = 1;
+}
+
+message  CheckUserAvalilabilityWithTagUserIDResponse {
+    bool valid = 1;
+}
+
+message GetUserNameWithTagUserIDRequest{
+    Tag tag = 1;
+}
+
+message TagUsernames{
+    string username =1;
+}
+
+message GetUserNameWithTagUserIDResponse{
+    repeated TagUsernames name = 1;
 }

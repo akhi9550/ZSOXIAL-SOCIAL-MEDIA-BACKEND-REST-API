@@ -23,7 +23,7 @@ func NewPostUseCase(repository interfaces.PostRepository, authclient authclienti
 
 }
 
-func (p *postUseCase) CreatePost(userID int, data models.PostRequest, file []byte, users models.Tags) (models.PostResponse, error) {
+func (p *postUseCase) CreatePost(userID int, data models.PostRequest, file []byte, users []models.Tag) (models.PostResponse, error) {
 	userExist := p.authClient.CheckUserAvalilabilityWithUserID(int(userID))
 	if !userExist {
 		return models.PostResponse{}, errors.New("user doesn't exist")
@@ -37,11 +37,25 @@ func (p *postUseCase) CreatePost(userID int, data models.PostRequest, file []byt
 	if err != nil {
 		return models.PostResponse{}, err
 	}
+	usersExist := p.authClient.CheckUserAvalilabilityWithTagUserID(users)
+	if !usersExist {
+		return models.PostResponse{}, errors.New("user doesn't exist")
+	}
 	post, tag, err := p.postRepository.CreatePost(userID, data.Caption, int(data.TypeId), url, users)
 	if err != nil {
 		return models.PostResponse{}, err
 	}
-
+	username, err := p.authClient.GetUserNameWithTagUserID(tag)
+	if err != nil {
+		return models.PostResponse{}, err
+	}
+	var Users []models.Tag
+	for _, user := range username {
+		tag := models.Tag{
+			User: user.User,
+		}
+		Users = append(Users, tag)
+	}
 	userData, err := p.authClient.UserData(int(userID))
 	if err != nil {
 		return models.PostResponse{}, err
@@ -50,14 +64,52 @@ func (p *postUseCase) CreatePost(userID int, data models.PostRequest, file []byt
 		ID:        post.ID,
 		Author:    userData,
 		Caption:   post.Caption,
-		Tag:       tag,
+		Tag:       Users,
 		Url:       post.Url,
 		Likes:     post.Likes,
 		Comments:  post.Comments,
 		CreatedAt: post.CreatedAt,
 	}, nil
 }
-
+func(p *postUseCase)GetAllPost(userID int) ([]models.PostResponse, error){
+	userExist := p.authClient.CheckUserAvalilabilityWithUserID(int(userID))
+	if !userExist {
+		return models.PostResponse{}, errors.New("user doesn't exist")
+	}
+	ok := p.postRepository.CheckPostAvalilabilityWithID(postID)
+	if !ok {
+		return models.PostResponse{}, errors.New("post doesn't exist")
+	}
+	post, tag, err := p.postRepository.GetPost(userID)
+	if err != nil {
+		return []models.PostResponse{}, err
+	}
+	username, err := p.authClient.GetUserNameWithTagUserID(tag)
+	if err != nil {
+		return []models.PostResponse{}, err
+	}
+	var Users []models.Tag
+	for _, user := range username {
+		tag := models.Tag{
+			User: user.User,
+		}
+		Users = append(Users, tag)
+	}
+	userData, err := p.authClient.UserData(userID)
+	if err != nil {
+		return []models.PostResponse{}, err
+	}
+	return []models.PostResponse{
+		ID:        post.ID,
+		Author:    userData,
+		Caption:   post.Caption,
+		Tag:       Users,
+		Url:       post.Url,
+		Likes:     post.Likes,
+		Comments:  post.Comments,
+		CreatedAt: post.CreatedAt,
+	}, nil
+}
 func (p *postUseCase) GetPost(userID int, postID int) (models.PostResponse, error) {
 	userExist := p.authClient.CheckUserAvalilabilityWithUserID(int(userID))
 	if !userExist {
@@ -71,6 +123,17 @@ func (p *postUseCase) GetPost(userID int, postID int) (models.PostResponse, erro
 	if err != nil {
 		return models.PostResponse{}, err
 	}
+	username, err := p.authClient.GetUserNameWithTagUserID(tag)
+	if err != nil {
+		return models.PostResponse{}, err
+	}
+	var Users []models.Tag
+	for _, user := range username {
+		tag := models.Tag{
+			User: user.User,
+		}
+		Users = append(Users, tag)
+	}
 	userData, err := p.authClient.UserData(userID)
 	if err != nil {
 		return models.PostResponse{}, err
@@ -79,7 +142,7 @@ func (p *postUseCase) GetPost(userID int, postID int) (models.PostResponse, erro
 		ID:        post.ID,
 		Author:    userData,
 		Caption:   post.Caption,
-		Tag:       tag,
+		Tag:       Users,
 		Url:       post.Url,
 		Likes:     post.Likes,
 		Comments:  post.Comments,
@@ -87,7 +150,7 @@ func (p *postUseCase) GetPost(userID int, postID int) (models.PostResponse, erro
 	}, nil
 }
 
-func (p *postUseCase) UpdatePost(userID int, data models.UpdatePostReq,tag []models.Tag) (models.UpdateResponse, error) {
+func (p *postUseCase) UpdatePost(userID int, data models.UpdatePostReq, tag []models.Tag) (models.UpdateResponse, error) {
 	userExist := p.authClient.CheckUserAvalilabilityWithUserID(userID)
 	if !userExist {
 		return models.UpdateResponse{}, errors.New("user doesn't exist")
@@ -96,20 +159,40 @@ func (p *postUseCase) UpdatePost(userID int, data models.UpdatePostReq,tag []mod
 	if !ok {
 		return models.UpdateResponse{}, errors.New("post doesn't exist")
 	}
-	if data.Caption != "" {
-		p.postRepository.UpdateCaption(userID, int(data.PostID), data.Caption)
+	err := p.postRepository.UpdateCaption(userID, int(data.PostID), data.Caption)
+	if err != nil {
+		return models.UpdateResponse{}, err
 	}
 	mediatype := p.postRepository.CheckMediaAvalilabilityWithID(int(data.TypeID))
 	if !mediatype {
 		return models.UpdateResponse{}, errors.New("type doesn't exist")
 	}
-	if data.TypeID != 0 {
-		p.postRepository.UpdateTypeID(userID, int(data.PostID), int(data.TypeID))
-	}
-	p.postRepository.UpdateTags(userID, int(data.PostID), tag)
-	post, err := p.postRepository.PostDetails(int(data.PostID), userID)
+	err = p.postRepository.UpdateTypeID(userID, int(data.PostID), int(data.TypeID))
 	if err != nil {
 		return models.UpdateResponse{}, err
+	}
+	usersExist := p.authClient.CheckUserAvalilabilityWithTagUserID(tag)
+	if !usersExist {
+		return models.UpdateResponse{}, errors.New("users doesn't exist")
+	}
+	err = p.postRepository.UpdateTags(userID, int(data.PostID), tag)
+	if err != nil {
+		return models.UpdateResponse{}, err
+	}
+	post, tags, err := p.postRepository.PostDetails(int(data.PostID), userID)
+	if err != nil {
+		return models.UpdateResponse{}, err
+	}
+	username, err := p.authClient.GetUserNameWithTagUserID(tags)
+	if err != nil {
+		return models.UpdateResponse{}, err
+	}
+	var Users []models.Tag
+	for _, user := range username {
+		tag := models.Tag{
+			User: user.User,
+		}
+		Users = append(Users, tag)
 	}
 	userData, err := p.authClient.UserData(userID)
 	if err != nil {
@@ -119,7 +202,7 @@ func (p *postUseCase) UpdatePost(userID int, data models.UpdatePostReq,tag []mod
 		ID:        post.ID,
 		Author:    userData,
 		Caption:   post.Caption,
-		Tag:       post.Tag,
+		Tag:       Users,
 		Url:       post.Url,
 		Likes:     post.Likes,
 		Comments:  post.Comments,

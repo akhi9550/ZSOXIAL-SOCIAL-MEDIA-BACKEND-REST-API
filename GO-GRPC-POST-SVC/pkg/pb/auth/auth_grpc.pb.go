@@ -19,8 +19,10 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	AuthService_CheckUserAvalilabilityWithUserID_FullMethodName = "/user.AuthService/CheckUserAvalilabilityWithUserID"
-	AuthService_UserData_FullMethodName                         = "/user.AuthService/UserData"
+	AuthService_CheckUserAvalilabilityWithUserID_FullMethodName    = "/user.AuthService/CheckUserAvalilabilityWithUserID"
+	AuthService_UserData_FullMethodName                            = "/user.AuthService/UserData"
+	AuthService_CheckUserAvalilabilityWithTagUserID_FullMethodName = "/user.AuthService/CheckUserAvalilabilityWithTagUserID"
+	AuthService_GetUserNameWithTagUserID_FullMethodName            = "/user.AuthService/GetUserNameWithTagUserID"
 )
 
 // AuthServiceClient is the client API for AuthService service.
@@ -29,6 +31,8 @@ const (
 type AuthServiceClient interface {
 	CheckUserAvalilabilityWithUserID(ctx context.Context, in *CheckUserAvalilabilityWithUserIDRequest, opts ...grpc.CallOption) (*CheckUserAvalilabilityWithUserIDResponse, error)
 	UserData(ctx context.Context, in *UserDataRequest, opts ...grpc.CallOption) (*UserDataResponse, error)
+	CheckUserAvalilabilityWithTagUserID(ctx context.Context, in *CheckUserAvalilabilityWithTagUserIDRequest, opts ...grpc.CallOption) (*CheckUserAvalilabilityWithTagUserIDResponse, error)
+	GetUserNameWithTagUserID(ctx context.Context, in *GetUserNameWithTagUserIDRequest, opts ...grpc.CallOption) (*GetUserNameWithTagUserIDResponse, error)
 }
 
 type authServiceClient struct {
@@ -57,12 +61,32 @@ func (c *authServiceClient) UserData(ctx context.Context, in *UserDataRequest, o
 	return out, nil
 }
 
+func (c *authServiceClient) CheckUserAvalilabilityWithTagUserID(ctx context.Context, in *CheckUserAvalilabilityWithTagUserIDRequest, opts ...grpc.CallOption) (*CheckUserAvalilabilityWithTagUserIDResponse, error) {
+	out := new(CheckUserAvalilabilityWithTagUserIDResponse)
+	err := c.cc.Invoke(ctx, AuthService_CheckUserAvalilabilityWithTagUserID_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) GetUserNameWithTagUserID(ctx context.Context, in *GetUserNameWithTagUserIDRequest, opts ...grpc.CallOption) (*GetUserNameWithTagUserIDResponse, error) {
+	out := new(GetUserNameWithTagUserIDResponse)
+	err := c.cc.Invoke(ctx, AuthService_GetUserNameWithTagUserID_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthServiceServer is the server API for AuthService service.
 // All implementations must embed UnimplementedAuthServiceServer
 // for forward compatibility
 type AuthServiceServer interface {
 	CheckUserAvalilabilityWithUserID(context.Context, *CheckUserAvalilabilityWithUserIDRequest) (*CheckUserAvalilabilityWithUserIDResponse, error)
 	UserData(context.Context, *UserDataRequest) (*UserDataResponse, error)
+	CheckUserAvalilabilityWithTagUserID(context.Context, *CheckUserAvalilabilityWithTagUserIDRequest) (*CheckUserAvalilabilityWithTagUserIDResponse, error)
+	GetUserNameWithTagUserID(context.Context, *GetUserNameWithTagUserIDRequest) (*GetUserNameWithTagUserIDResponse, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
 
@@ -75,6 +99,12 @@ func (UnimplementedAuthServiceServer) CheckUserAvalilabilityWithUserID(context.C
 }
 func (UnimplementedAuthServiceServer) UserData(context.Context, *UserDataRequest) (*UserDataResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserData not implemented")
+}
+func (UnimplementedAuthServiceServer) CheckUserAvalilabilityWithTagUserID(context.Context, *CheckUserAvalilabilityWithTagUserIDRequest) (*CheckUserAvalilabilityWithTagUserIDResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CheckUserAvalilabilityWithTagUserID not implemented")
+}
+func (UnimplementedAuthServiceServer) GetUserNameWithTagUserID(context.Context, *GetUserNameWithTagUserIDRequest) (*GetUserNameWithTagUserIDResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserNameWithTagUserID not implemented")
 }
 func (UnimplementedAuthServiceServer) mustEmbedUnimplementedAuthServiceServer() {}
 
@@ -125,6 +155,42 @@ func _AuthService_UserData_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthService_CheckUserAvalilabilityWithTagUserID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CheckUserAvalilabilityWithTagUserIDRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).CheckUserAvalilabilityWithTagUserID(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_CheckUserAvalilabilityWithTagUserID_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).CheckUserAvalilabilityWithTagUserID(ctx, req.(*CheckUserAvalilabilityWithTagUserIDRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_GetUserNameWithTagUserID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserNameWithTagUserIDRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).GetUserNameWithTagUserID(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_GetUserNameWithTagUserID_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).GetUserNameWithTagUserID(ctx, req.(*GetUserNameWithTagUserIDRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AuthService_ServiceDesc is the grpc.ServiceDesc for AuthService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -139,6 +205,14 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UserData",
 			Handler:    _AuthService_UserData_Handler,
+		},
+		{
+			MethodName: "CheckUserAvalilabilityWithTagUserID",
+			Handler:    _AuthService_CheckUserAvalilabilityWithTagUserID_Handler,
+		},
+		{
+			MethodName: "GetUserNameWithTagUserID",
+			Handler:    _AuthService_GetUserNameWithTagUserID_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

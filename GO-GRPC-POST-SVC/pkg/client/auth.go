@@ -48,3 +48,39 @@ func (c *clientAuth) UserData(userID int) (models.UserData, error) {
 		Profile:  data.ProfilePhoto,
 	}, nil
 }
+
+func (c *clientAuth) CheckUserAvalilabilityWithTagUserID(users []models.Tag) bool {
+	var tags []string
+	for _, user := range users {
+		tags = append(tags, user.User)
+	}
+	tag := &pb.Tag{User: tags}
+	ok, _ := c.Client.CheckUserAvalilabilityWithTagUserID(context.Background(), &pb.CheckUserAvalilabilityWithTagUserIDRequest{
+		Tag: tag,
+	})
+	return ok.Valid
+}
+
+func (c *clientAuth) GetUserNameWithTagUserID(users []models.Tag) ([]models.Tag, error) {
+	var tags []string
+	for _, user := range users {
+		tags = append(tags, user.User)
+	}
+	tag := &pb.Tag{User: tags}
+	data, err := c.Client.GetUserNameWithTagUserID(context.Background(), &pb.GetUserNameWithTagUserIDRequest{
+		Tag: tag,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	var tagUsers []models.Tag
+	for _, pbTagUser := range data.Name {
+		tagUser := models.Tag{
+			User: pbTagUser.Username,
+		}
+		tagUsers = append(tagUsers, tagUser)
+	}
+
+	return tagUsers, nil
+}

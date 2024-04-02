@@ -17,9 +17,9 @@ type UserData struct {
 type PostResponse struct {
 	ID        uint      `json:"id"`
 	Author    UserData  `json:"author"`
-	Caption   string    `json:"caption"`
-	Tag       Tags      `json:"tag"`
+	Tag       []Tag     `json:"tag"`
 	Url       string    `json:"url"`
+	Caption   string    `json:"caption"`
 	Likes     uint      `json:"likes"`
 	Comments  uint      `json:"comments"`
 	CreatedAt time.Time `json:"created_at"`
@@ -29,8 +29,8 @@ type Response struct {
 	ID        uint      `json:"id"`
 	Url       string    `json:"url"`
 	Caption   string    `json:"caption"`
-	Likes     uint      `json:"likes"`
-	Comments  uint      `json:"comments"`
+	Likes     uint      `json:"likes"  gorm:"column:likes_count"`
+	Comments  uint      `json:"comments"  gorm:"column:comments_count"`
 	CreatedAt time.Time `json:"created_at"`
 }
 
@@ -38,21 +38,8 @@ type Url struct {
 	ImageUrls []byte `json:"image_urls" gorm:"column:url"`
 }
 
-type Tags struct {
-	User1 uint `json:"user1" gorm:"default:null"`
-	User2 uint `json:"user2" gorm:"default:null"`
-	User3 uint `json:"user3" gorm:"default:null"`
-	User4 uint `json:"user4" gorm:"default:null"`
-	User5 uint `json:"user5" gorm:"default:null"`
-}
-
 type Urls struct {
 	ImageUrls []byte `json:"url"`
-}
-
-type UpdatePost struct {
-	Caption string `json:"caption"`
-	Tag     Tags   `json:"tag"`
 }
 
 type GetAllPosts struct {
@@ -115,4 +102,10 @@ type UpdateResponse struct {
 
 type Tag struct {
 	User string `json:"user" gorm:"column:taguser"`
+}
+
+type TagUsers struct {
+	Id       string `json:"id"`
+	Username string `json:"username"`
+	Valid    bool   `json:"valid"`
 }

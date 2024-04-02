@@ -9,11 +9,11 @@ type PostRepository interface {
 	CheckMediaAvalilabilityWithID(typeID int) bool
 	CheckPostAvalilabilityWithID(postID int) bool
 	UserData(userID int) (models.UserData, error)
-	CreatePost(userID int, Caption string, TypeId int, file string, users models.Tags) (models.Response, models.Tags, error)
-	GetPost(userID, postID int) (models.Response, models.Tags, error)
+	CreatePost(userID int, Caption string, TypeId int, file string, users []models.Tag) (models.Response, []models.Tag, error)
+	GetPost(userID, postID int) (models.Response, []models.Tag, error)
 	UpdateCaption(postID, userID int, caption string) error
 	UpdateTypeID(userID, PostID, TypeID int) error
 	UpdateTags(userID, PostID int, tag []models.Tag) error
-	PostDetails(PostID, userID int) (models.UpdateResponse, error)
+	PostDetails(PostID, userID int) (models.Response, []models.Tag, error)
 	DeletePost(userID, postID int) error
 }

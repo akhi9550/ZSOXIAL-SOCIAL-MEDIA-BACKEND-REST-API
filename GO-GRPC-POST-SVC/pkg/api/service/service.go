@@ -26,12 +26,10 @@ func (p *PostServer) CreatePost(ctx context.Context, req *pb.CreatePostRequest) 
 		TypeId:  uint(req.Typeid),
 	}
 	File := req.Post.Url
-	users := models.Tags{
-		User1: uint(req.Tag.User1),
-		User2: uint(req.Tag.User2),
-		User3: uint(req.Tag.User3),
-		User4: uint(req.Tag.User4),
-		User5: uint(req.Tag.User5),
+	var users []models.Tag
+	for _, user := range req.Tag.User {
+		tag := models.Tag{User: user}
+		users = append(users, tag)
 	}
 	data, err := p.postUseCase.CreatePost(int(userID), createPost, File, users)
 	if err != nil {
@@ -42,14 +40,10 @@ func (p *PostServer) CreatePost(ctx context.Context, req *pb.CreatePostRequest) 
 		Username: data.Author.Username,
 		Imageurl: data.Author.Profile,
 	}
-	tags := &pb.Tags{
-		User1: int64(data.Tag.User1),
-		User2: int64(data.Tag.User2),
-		User3: int64(data.Tag.User3),
-		User4: int64(data.Tag.User4),
-		User5: int64(data.Tag.User5),
+	var tags []string
+	for _, tag := range data.Tag {
+		tags = append(tags, tag.User)
 	}
-
 	return &pb.CreatePostResponse{
 		Id:        int64(data.ID),
 		User:      Users,
@@ -73,12 +67,9 @@ func (p *PostServer) GetPost(ctx context.Context, req *pb.GetPostRequest) (*pb.G
 		Username: data.Author.Username,
 		Imageurl: data.Author.Profile,
 	}
-	tags := &pb.Tags{
-		User1: int64(data.Tag.User1),
-		User2: int64(data.Tag.User2),
-		User3: int64(data.Tag.User3),
-		User4: int64(data.Tag.User4),
-		User5: int64(data.Tag.User5),
+	var tags []string
+	for _, tag := range data.Tag {
+		tags = append(tags, tag.User)
 	}
 	details := &pb.CreatePostResponse{
 		Id:        int64(data.ID),
@@ -139,4 +130,35 @@ func (p *PostServer) DeletePost(ctx context.Context, req *pb.DeletePostRequest) 
 		return &pb.DeletePostResponse{}, err
 	}
 	return &pb.DeletePostResponse{}, nil
+}
+
+func (p *PostServer) GetAllPost(ctx context.Context, req *pb.GetAllPostRequest) (*pb.GetAllPostResponse, error) {
+	userID := req.Userid
+	data, err := p.postUseCase.GetAllPost(int(userID))
+	if err != nil {
+		return &pb.GetAllPostResponse{}, err
+	}
+	Users := &pb.UserData{
+		Userid:   userID,
+		Username: data.Author.Username,
+		Imageurl: data.Author.Profile,
+	}
+	var tags []string
+	for _, tag := range data.Tag {
+		tags = append(tags, tag.User)
+	}
+	details := &pb.CreatePostResponse{
+		Id:        int64(data.ID),
+		User:      Users,
+		Caption:   data.Caption,
+		Tag:       tags,
+		Url:       data.Url,
+		Like:      int64(data.Likes),
+		Comment:   int64(data.Comments),
+		CreatedAt: timestamppb.New(data.CreatedAt),
+	}
+
+	return &pb.GetAllPostResponse{
+		Allpost: []*pb.CreatePostResponse{details},
+	}, nil
 }
