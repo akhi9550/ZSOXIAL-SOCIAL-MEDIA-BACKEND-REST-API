@@ -16,4 +16,13 @@ type PostRepository interface {
 	UpdateTags(userID, PostID int, tag []models.Tag) error
 	PostDetails(PostID, userID int) (models.Response, []models.Tag, error)
 	DeletePost(userID, postID int) error
+	GetPostAll(userID int) ([]models.Response, error)
+	ArchivePost(userID, postID int) error
+	UnArchivePost(userID, postID int) error
+	GetAllArchivePost(userID int)([]models.ArchivePostResponse,error)
+	CheckAlreadyLiked(userID,PostID int)bool
+	LikePost(userID, postID int)(models.LikesReponse,error)
+	UnLikePost(userID, postID int)error
+	PostComment(userID int, data models.PostCommentReq) (models.PostCommentResponses, error)
+
 }

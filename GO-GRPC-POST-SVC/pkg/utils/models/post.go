@@ -25,6 +25,16 @@ type PostResponse struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
+type ArchivePostResponse struct {
+	ID        uint      `json:"id"`
+	Url       string    `json:"url"`
+	Caption   string    `json:"caption"`
+	Likes     uint      `json:"likes" gorm:"column:likes_count"`
+	Comments  uint      `json:"comments" gorm:"column:comments_count"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
+
 type Response struct {
 	ID        uint      `json:"id"`
 	Url       string    `json:"url"`
@@ -47,10 +57,14 @@ type GetAllPosts struct {
 }
 
 type LikePostResponse struct {
-	Id        uint      `json:"id"`
 	UserID    uint      `json:"user_id"`
-	Username  string    `json:"username"`
+	LikedUser string    `json:"liked_user"`
 	Profile   string    `json:"profile"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
+type LikesReponse struct{
+	UserID    uint      `json:"user_id" gorm:"column:liked_user"`
 	CreatedAt time.Time `json:"created_at"`
 }
 
@@ -60,13 +74,19 @@ type PostCommentReq struct {
 }
 
 type PostCommentResponse struct {
-	ID        uint      `json:"id"`
-	UserID    uint      `json:"user_id"`
-	Username  string    `json:"username"`
-	Profile   string    `json:"profile"`
-	Comment   string    `json:"comment"`
-	CreatedAt time.Time `json:"created_at"`
+	UserID        uint      `json:"user_id"`
+	CommentedUser string    `json:"commented_user"`
+	Profile       string    `json:"profile"`
+	Comment       string    `json:"comment"`
+	CreatedAt     time.Time `json:"created_at"`
 }
+
+type PostCommentResponses struct {
+	UserID        uint      `json:"user_id" gorm:"column:commented_user"`
+	Comment       string    `json:"comment" gorm:"column:comment_data"`
+	CreatedAt     time.Time `json:"created_at"`
+}
+
 
 type Comments struct {
 	Comment   string    `json:"comment"`
@@ -102,6 +122,10 @@ type UpdateResponse struct {
 
 type Tag struct {
 	User string `json:"user" gorm:"column:taguser"`
+}
+
+type PostID struct {
+	PostID int `json:"post_id"`
 }
 
 type TagUsers struct {

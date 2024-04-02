@@ -20,16 +20,6 @@ type Tags struct {
 	Taguser uint `json:"taguser" gorm:"default:null"`
 }
 
-// type Tags struct {
-// 	UserID uint `json:"user_id"`
-// 	PostID uint `json:"post_id"`
-// 	User1  uint `json:"user1" gorm:"default:null"`
-// 	User2  uint `json:"user2" gorm:"default:null"`
-// 	User3  uint `json:"user3" gorm:"default:null"`
-// 	User4  uint `json:"user4" gorm:"default:null"`
-// 	User5  uint `json:"user5" gorm:"default:null"`
-// }
-
 type PostImages struct {
 	ID     uint   `json:"id" gorm:"uniquekey; not null"`
 	PostID uint   `json:"post_id"`
@@ -60,13 +50,13 @@ type Comment struct {
 	CreatedAt     time.Time `json:"created_at"`
 }
 
-type CommentRepies struct {
-	ID          uint   `json:"id" gorm:"uniquekey; not null"`
-	CommentID   uint   `json:"comment_id"`
-	UserID      uint   `json:"user_id"`
-	CommentUser uint   `json:"comment_user"`
-	Replies     string `json:"replies"`
-}
+// type CommentRepies struct {
+// 	ID          uint   `json:"id" gorm:"uniquekey; not null"`
+// 	CommentID   uint   `json:"comment_id"`
+// 	UserID      uint   `json:"user_id"`
+// 	CommentUser uint   `json:"comment_user"`
+// 	Replies     string `json:"replies"`
+// }
 
 type SavedPost struct {
 	ID     uint `json:"id" gorm:"uniquekey; not null"`
@@ -74,9 +64,8 @@ type SavedPost struct {
 	UserId uint `json:"user_id"`
 }
 
-type Archive struct {
-	ID      uint `json:"id" gorm:"uniquekey; not null"`
-	UserID  uint `json:"user_id"`
-	PostID  uint `json:"post_id"`
-	StoryID uint `json:"story_id"`
+type ArchivePost struct {
+	ID     uint `json:"id" gorm:"uniquekey; not null"`
+	UserID uint `json:"user_id"`
+	PostID uint `json:"post_id"`
 }

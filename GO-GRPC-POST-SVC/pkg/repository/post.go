@@ -78,7 +78,7 @@ func (p *postRepository) GetPost(userID, postID int) (models.Response, []models.
 	if err != nil {
 		return models.Response{}, []models.Tag{}, err
 	}
-	err = p.DB.Raw(`SELECT id,url,caption,likes_count, comments_count,created_at FROM posts WHERE user_id = ? AND id = ?`, userID, postID).Scan(&post).Error
+	err = p.DB.Raw(`SELECT id,url,caption,likes_count, comments_count,created_at FROM posts WHERE user_id = ? AND id = ? AND is_archive = 'false' `, userID, postID).Scan(&post).Error
 	if err != nil {
 		return models.Response{}, []models.Tag{}, err
 	}
@@ -139,4 +139,92 @@ func (p *postRepository) DeletePost(userID, postID int) error {
 		return err
 	}
 	return nil
+}
+
+func (p *postRepository) GetPostAll(userID int) ([]models.Response, error) {
+	var post []models.Response
+	err := p.DB.Raw(`SELECT id,url,caption,likes_count, comments_count,created_at FROM posts WHERE user_id = ?  AND is_archive = 'false'`, userID).Scan(&post).Error
+	if err != nil {
+		return []models.Response{}, err
+	}
+	return post, nil
+}
+
+func (p *postRepository) ArchivePost(userID, postID int) error {
+	err := p.DB.Exec(`INSERT INTO archive_posts (user_id,post_id) VALUES (?,?)`, userID, postID).Error
+	if err != nil {
+		return err
+	}
+	err = p.DB.Exec(`UPDATE posts SET is_archive = 'true' WHERE id = ? AND user_id = ?`, postID, userID).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+func (p *postRepository) UnArchivePost(userID, postID int) error {
+	err := p.DB.Exec(`DELETE FROM archive_posts WHERE user_id = ? AND post_id = ?`, userID, postID).Error
+	if err != nil {
+		return err
+	}
+	err = p.DB.Exec(`UPDATE posts SET is_archive = 'false' WHERE id = ? AND user_id = ?`, postID, userID).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *postRepository) GetAllArchivePost(userID int) ([]models.ArchivePostResponse, error) {
+	var response []models.ArchivePostResponse
+	err := p.DB.Raw(`SELECT id,url,caption,likes_count, comments_count,created_at FROM posts WHERE user_id = ? AND is_archive = 'true'`, userID).Scan(&response).Error
+	if err != nil {
+		return []models.ArchivePostResponse{}, err
+	}
+	return response, nil
+}
+
+func (p *postRepository) CheckAlreadyLiked(userID, PostID int) bool {
+	var count int
+	err := p.DB.Raw(`SELECT COUNT(*) FROM likes WHERE post_id = ?  AND liked_user = ?`, PostID, userID).Scan(&count).Error
+	if err != nil {
+		return false
+	}
+	return count > 0
+}
+
+func (p *postRepository) LikePost(userID, postID int) (models.LikesReponse, error) {
+	var response models.LikesReponse
+	err := p.DB.Raw(`INSERT INTO likes(post_id,liked_user,created_at) VALUES (?,?,NOW()) RETURNING liked_user,created_at`, postID, userID).Scan(&response).Error
+	if err != nil {
+		return models.LikesReponse{}, err
+	}
+	err = p.DB.Exec(`UPDATE posts SET likes_count = likes_count + 1 WHERE id = ?`, postID).Error
+	if err != nil {
+		return models.LikesReponse{}, err
+	}
+	return response, err
+}
+
+func (p *postRepository) UnLikePost(userID, postID int) error {
+	err := p.DB.Exec(`UPDATE posts SET likes_count = likes_count - 1 WHERE id = ?`, postID).Error
+	if err != nil {
+		return err
+	}
+	err = p.DB.Exec(`DELETE FROM likes WHERE liked_user = ? AND post_id = ?`, userID, postID).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *postRepository) PostComment(userID int, data models.PostCommentReq) (models.PostCommentResponses, error) {
+	var response models.PostCommentResponses
+	err := p.DB.Raw(`INSERT INTO comments (post_id,commented_user,comment_data,created_at) VALUES (?,?,?,NOW()) RETURNING commented_user,comment_data,created_at`, data.PostID, userID, data.Comment).Scan(&response).Error
+	if err != nil {
+		return models.PostCommentResponses{}, err
+	}
+	err = p.DB.Exec(`UPDATE posts SET comments_count = comments_count + 1 WHERE id = ?`, data.PostID).Error
+	if err != nil {
+		return models.PostCommentResponses{}, err
+	}
+	return response, nil
 }

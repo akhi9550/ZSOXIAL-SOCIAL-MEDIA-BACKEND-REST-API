@@ -12,8 +12,12 @@ service PostService {
     rpc UpdatePost (UpdatePostRequest) returns (UpdatePostResponse){}
     rpc DeletePost (DeletePostRequest) returns (DeletePostResponse){}
     rpc GetAllPost (GetAllPostRequest) returns (GetAllPostResponse){}
-    // rpc LikePost (LikePostRequest) returns (LikePostResponse){}
-    // rpc PostComment (PostCommentRequest) returns (PostCommentResponse){}
+    rpc ArchivePost (ArchivePostRequest) returns (ArchivePostResponse){}
+    rpc UnArchivePost (UnArchivePostrequest) returns (UnArchivePostResponse){}
+    rpc GetAllArchivePost (GetAllArchivePostRequest) returns (GetAllArchivePostResponse){}
+    rpc LikePost (LikePostRequest) returns (LikePostResponse){}
+    rpc UnLinkPost (UnLikePostRequest) returns (UnLikePostResponse){}
+    rpc PostComment (PostCommentRequest) returns (PostCommentResponse){}
     // rpc GetComment (GetCommentRequest) returns (GetCommentResponse){}
     // rpc ReplyComment (ReplyCommentRequest) returns (ReplyCommentResponse){}
     // rpc DeleteComment (DeleteCommentRequest) returns (DeleteCommentResponse){}
@@ -88,6 +92,37 @@ message DeletePostRequest{
     int64 postid = 2;
 }
 
+message ArchivePostRequest{
+    int64 userid = 1;
+    int64 postid = 2;
+}
+
+message ArchivePostResponse{}
+
+message UnArchivePostrequest {
+    int64 userid = 1;
+    int64 postid = 2;
+}
+
+message UnArchivePostResponse {}
+
+message GetAllArchivePostRequest {
+    int64 userid = 1;
+}
+
+message ArchivePostResponses {
+    int64 id = 1;
+    string caption = 2;
+    string url = 3;
+    int64 like = 4;
+    int64 comment = 5;
+    google.protobuf.Timestamp created_at = 6; 
+}
+
+message GetAllArchivePostResponse{
+    repeated ArchivePostResponses allpost = 1;
+}
+
 message DeletePostResponse {}
 
 message GetAllPostRequest {
@@ -104,12 +139,18 @@ message LikePostRequest {
 }
 
 message LikePostResponse{
-    int64 id =1;
-    int64 userid = 2;
-    int64 username = 3;
-    string url = 4;
-    google.protobuf.Timestamp created_at = 5; 
+    int64 userid = 1;
+    string likedUser = 2;
+    string posturl = 3;
+    google.protobuf.Timestamp created_at = 4; 
 }
+
+message UnLikePostRequest{
+    int64 userid = 1;
+    int64 postid = 2;   
+}
+
+message UnLikePostResponse{}
 
 message PostCommentRequest{
     int64 userid = 1;
@@ -118,12 +159,11 @@ message PostCommentRequest{
 }
 
 message PostCommentResponse {
-    int64 id = 1;
-    int64 userid = 2;
-    int64 username = 3;
-    string url = 4;
-    string comment = 5;
-    google.protobuf.Timestamp created_at = 6; 
+    int64 userid = 1;
+    string CommentedUser = 2;
+    string posturl = 3;
+    string comment = 4;
+    google.protobuf.Timestamp created_at = 5; 
 }
 
 message GetCommentRequest{

@@ -4,6 +4,7 @@ go 1.21.2
 
 require (
 	github.com/aws/aws-sdk-go v1.51.11
+	github.com/google/uuid v1.4.0
 	github.com/spf13/viper v1.18.2
 	google.golang.org/grpc v1.59.0
 	google.golang.org/protobuf v1.31.0

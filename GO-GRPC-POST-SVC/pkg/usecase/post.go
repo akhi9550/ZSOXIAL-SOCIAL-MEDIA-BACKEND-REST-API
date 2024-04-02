@@ -8,6 +8,7 @@ import (
 	interfaces "github.com/akhi9550/post-svc/pkg/repository/interface"
 	services "github.com/akhi9550/post-svc/pkg/usecase/interface"
 	"github.com/akhi9550/post-svc/pkg/utils/models"
+	"github.com/google/uuid"
 )
 
 type postUseCase struct {
@@ -32,8 +33,10 @@ func (p *postUseCase) CreatePost(userID int, data models.PostRequest, file []byt
 	if !mediatype {
 		return models.PostResponse{}, errors.New("type doesn't exist")
 	}
-	filename := "posted"
-	url, err := helper.AddImageToAwsS3(file, filename)
+	fileUID := uuid.New()
+	fileName := fileUID.String()
+	s3Path := "posted/" + fileName
+	url, err := helper.AddImageToAwsS3(file, s3Path)
 	if err != nil {
 		return models.PostResponse{}, err
 	}
@@ -71,45 +74,7 @@ func (p *postUseCase) CreatePost(userID int, data models.PostRequest, file []byt
 		CreatedAt: post.CreatedAt,
 	}, nil
 }
-func(p *postUseCase)GetAllPost(userID int) ([]models.PostResponse, error){
-	userExist := p.authClient.CheckUserAvalilabilityWithUserID(int(userID))
-	if !userExist {
-		return models.PostResponse{}, errors.New("user doesn't exist")
-	}
-	ok := p.postRepository.CheckPostAvalilabilityWithID(postID)
-	if !ok {
-		return models.PostResponse{}, errors.New("post doesn't exist")
-	}
-	post, tag, err := p.postRepository.GetPost(userID)
-	if err != nil {
-		return []models.PostResponse{}, err
-	}
-	username, err := p.authClient.GetUserNameWithTagUserID(tag)
-	if err != nil {
-		return []models.PostResponse{}, err
-	}
-	var Users []models.Tag
-	for _, user := range username {
-		tag := models.Tag{
-			User: user.User,
-		}
-		Users = append(Users, tag)
-	}
-	userData, err := p.authClient.UserData(userID)
-	if err != nil {
-		return []models.PostResponse{}, err
-	}
-	return []models.PostResponse{
-		ID:        post.ID,
-		Author:    userData,
-		Caption:   post.Caption,
-		Tag:       Users,
-		Url:       post.Url,
-		Likes:     post.Likes,
-		Comments:  post.Comments,
-		CreatedAt: post.CreatedAt,
-	}, nil
-}
+
 func (p *postUseCase) GetPost(userID int, postID int) (models.PostResponse, error) {
 	userExist := p.authClient.CheckUserAvalilabilityWithUserID(int(userID))
 	if !userExist {
@@ -224,4 +189,166 @@ func (p *postUseCase) DeletePost(userID int, postID int) error {
 		return err
 	}
 	return nil
+}
+
+func (p *postUseCase) GetAllPost(userID int) ([]models.PostResponse, error) {
+	userExist := p.authClient.CheckUserAvalilabilityWithUserID(int(userID))
+	if !userExist {
+		return []models.PostResponse{}, errors.New("user doesn't exist")
+	}
+	post, err := p.postRepository.GetPostAll(userID)
+	if err != nil {
+		return []models.PostResponse{}, err
+	}
+
+	userData, err := p.authClient.UserData(userID)
+	if err != nil {
+		return []models.PostResponse{}, err
+	}
+	var postResponses []models.PostResponse
+	for _, singlePost := range post {
+		postResponses = append(postResponses, models.PostResponse{
+			ID:        singlePost.ID,
+			Author:    userData,
+			Caption:   singlePost.Caption,
+			Url:       singlePost.Url,
+			Likes:     singlePost.Likes,
+			Comments:  singlePost.Comments,
+			CreatedAt: singlePost.CreatedAt,
+		})
+	}
+
+	return postResponses, nil
+}
+
+func (p *postUseCase) ArchivePost(userID, postID int) error {
+	userExist := p.authClient.CheckUserAvalilabilityWithUserID(userID)
+	if !userExist {
+		return errors.New("user doesn't exist")
+	}
+	ok := p.postRepository.CheckPostAvalilabilityWithID(postID)
+	if !ok {
+		return errors.New("post doesn't exist")
+	}
+	err := p.postRepository.ArchivePost(userID, postID)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *postUseCase) UnArchivePost(userID, postID int) error {
+	userExist := p.authClient.CheckUserAvalilabilityWithUserID(userID)
+	if !userExist {
+		return errors.New("user doesn't exist")
+	}
+	ok := p.postRepository.CheckPostAvalilabilityWithID(postID)
+	if !ok {
+		return errors.New("post doesn't exist")
+	}
+	err := p.postRepository.UnArchivePost(userID, postID)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *postUseCase) GetAllArchivePost(userID int) ([]models.ArchivePostResponse, error) {
+	userExist := p.authClient.CheckUserAvalilabilityWithUserID(int(userID))
+	if !userExist {
+		return []models.ArchivePostResponse{}, errors.New("user doesn't exist")
+	}
+	post, err := p.postRepository.GetAllArchivePost(userID)
+	if err != nil {
+		return []models.ArchivePostResponse{}, err
+	}
+	var postResponses []models.ArchivePostResponse
+	for _, singlePost := range post {
+		postResponses = append(postResponses, models.ArchivePostResponse{
+			ID:        singlePost.ID,
+			Caption:   singlePost.Caption,
+			Url:       singlePost.Url,
+			Likes:     singlePost.Likes,
+			Comments:  singlePost.Comments,
+			CreatedAt: singlePost.CreatedAt,
+		})
+	}
+
+	return postResponses, nil
+}
+
+func (p *postUseCase) LikePost(userID int, postID int) (models.LikePostResponse, error) {
+	userExist := p.authClient.CheckUserAvalilabilityWithUserID(userID)
+	if !userExist {
+		return models.LikePostResponse{}, errors.New("user doesn't exist")
+	}
+	ok := p.postRepository.CheckPostAvalilabilityWithID(postID)
+	if !ok {
+		return models.LikePostResponse{}, errors.New("post doesn't exist")
+	}
+	ok = p.postRepository.CheckAlreadyLiked(userID, postID)
+	if ok {
+		return models.LikePostResponse{}, errors.New("already liked")
+	}
+	data, err := p.postRepository.LikePost(userID, postID)
+	if err != nil {
+		return models.LikePostResponse{}, err
+	}
+	userData, err := p.authClient.UserData(userID)
+	if err != nil {
+		return models.LikePostResponse{}, err
+	}
+	return models.LikePostResponse{
+		UserID:    data.UserID,
+		LikedUser: userData.Username,
+		Profile:   userData.Profile,
+		CreatedAt: data.CreatedAt,
+	}, nil
+}
+
+func (p *postUseCase) UnLinkPost(userID int, postID int) error {
+	userExist := p.authClient.CheckUserAvalilabilityWithUserID(userID)
+	if !userExist {
+		return errors.New("user doesn't exist")
+	}
+	ok := p.postRepository.CheckPostAvalilabilityWithID(postID)
+	if !ok {
+		return errors.New("post doesn't exist")
+	}
+	ok = p.postRepository.CheckAlreadyLiked(userID, postID)
+	if !ok {
+		p.postRepository.LikePost(userID, postID)
+		return errors.New("")
+	}
+	err := p.postRepository.UnLikePost(userID, postID)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *postUseCase) PostComment(userID int, data models.PostCommentReq) (models.PostCommentResponse, error) {
+	userExist := p.authClient.CheckUserAvalilabilityWithUserID(userID)
+	if !userExist {
+		return models.PostCommentResponse{}, errors.New("user doesn't exist")
+	}
+	ok := p.postRepository.CheckPostAvalilabilityWithID(int(data.PostID))
+	if !ok {
+		return models.PostCommentResponse{}, errors.New("post doesn't exist")
+	}
+	result, err := p.postRepository.PostComment(userID, data)
+	if err != nil {
+		return models.PostCommentResponse{}, err
+	}
+	userData, err := p.authClient.UserData(userID)
+	if err != nil {
+		return models.PostCommentResponse{}, err
+	}
+	return models.PostCommentResponse{
+		UserID:        result.UserID,
+		CommentedUser: userData.Username,
+		Profile:       userData.Profile,
+		Comment:       result.Comment,
+		CreatedAt:     result.CreatedAt,
+	}, nil
 }
