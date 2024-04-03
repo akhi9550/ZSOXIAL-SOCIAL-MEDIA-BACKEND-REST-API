@@ -18,6 +18,9 @@ service PostService {
     rpc LikePost (LikePostRequest) returns (LikePostResponse){}
     rpc UnLinkPost (UnLikePostRequest) returns (UnLikePostResponse){}
     rpc PostComment (PostCommentRequest) returns (PostCommentResponse){}
+    rpc SavedPost (SavedPostRequest) returns (SavedPostResponse){}
+    rpc UnSavedPost (UnSavedPostRequest) returns (UnSavedPostResponse){}
+    rpc GetSavedPost (GetSavedPostRequest) returns (GetSavedPostResponse){}
     // rpc GetComment (GetCommentRequest) returns (GetCommentResponse){}
     // rpc ReplyComment (ReplyCommentRequest) returns (ReplyCommentResponse){}
     // rpc DeleteComment (DeleteCommentRequest) returns (DeleteCommentResponse){}
@@ -165,6 +168,31 @@ message PostCommentResponse {
     string comment = 4;
     google.protobuf.Timestamp created_at = 5; 
 }
+
+message SavedPostRequest {
+    int64 userid = 1;
+    int64 postid = 2;
+}
+
+message SavedPostResponse {}
+
+message UnSavedPostRequest {
+    int64 userid = 1;
+    int64 postid = 2;
+}
+
+message UnSavedPostResponse{}
+
+message GetSavedPostRequest{
+    int64 userid = 1;
+}
+
+message GetSavedPostResponse{
+    repeated CreatePostResponse allpost = 1;
+}
+
+
+
 
 message GetCommentRequest{
     int64 postid=1;

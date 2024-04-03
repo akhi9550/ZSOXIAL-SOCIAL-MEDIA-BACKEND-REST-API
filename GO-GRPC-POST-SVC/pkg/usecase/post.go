@@ -352,3 +352,71 @@ func (p *postUseCase) PostComment(userID int, data models.PostCommentReq) (model
 		CreatedAt:     result.CreatedAt,
 	}, nil
 }
+
+func (p *postUseCase) SavedPost(userID, postID int) error {
+	userExist := p.authClient.CheckUserAvalilabilityWithUserID(userID)
+	if !userExist {
+		return errors.New("user doesn't exist")
+	}
+	ok := p.postRepository.CheckPostAvalilabilityWithID(postID)
+	if !ok {
+		return errors.New("post doesn't exist")
+	}
+	saved := p.postRepository.AllReadyExistPost(userID, postID)
+	if saved {
+		return errors.New("already saved")
+	}
+	err := p.postRepository.SavedPost(userID, postID)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *postUseCase) UnSavedPost(userID, postID int) error {
+	userExist := p.authClient.CheckUserAvalilabilityWithUserID(userID)
+	if !userExist {
+		return errors.New("user doesn't exist")
+	}
+	ok := p.postRepository.CheckPostAvalilabilityWithID(postID)
+	if !ok {
+		return errors.New("post doesn't exist")
+	}
+	saved := p.postRepository.AllReadyExistPost(userID, postID)
+	if !saved {
+		return errors.New("post doesn't exist")
+	}
+	err := p.postRepository.UnSavedPost(userID, postID)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+func (p *postUseCase) GetSavedPost(userID int) ([]models.PostResponse, error) {
+	userExist := p.authClient.CheckUserAvalilabilityWithUserID(int(userID))
+	if !userExist {
+		return []models.PostResponse{}, errors.New("user doesn't exist")
+	}
+	posts, err := p.postRepository.GetSavedPost(userID)
+	if err != nil {
+		return nil, err
+	}
+	var postResponses []models.PostResponse
+	for _, post := range posts {
+		userData, err := p.authClient.UserData(int(post.UserID))
+		if err != nil {
+			return nil, err
+		}
+		postResponse := models.PostResponse{
+			ID:        post.ID,
+			Author:    userData,
+			Caption:   post.Caption,
+			Url:       post.Url,
+			Likes:     post.Likes,
+			Comments:  post.Comments,
+			CreatedAt: post.CreatedAt,
+		}
+		postResponses = append(postResponses, postResponse)
+	}
+	return postResponses, nil
+}

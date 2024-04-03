@@ -34,9 +34,18 @@ type ArchivePostResponse struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
-
 type Response struct {
 	ID        uint      `json:"id"`
+	Url       string    `json:"url"`
+	Caption   string    `json:"caption"`
+	Likes     uint      `json:"likes"  gorm:"column:likes_count"`
+	Comments  uint      `json:"comments"  gorm:"column:comments_count"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
+type SavedResponse struct {
+	ID        uint      `json:"id"`
+	UserID    uint      `json:"user_id"`
 	Url       string    `json:"url"`
 	Caption   string    `json:"caption"`
 	Likes     uint      `json:"likes"  gorm:"column:likes_count"`
@@ -63,7 +72,7 @@ type LikePostResponse struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
-type LikesReponse struct{
+type LikesReponse struct {
 	UserID    uint      `json:"user_id" gorm:"column:liked_user"`
 	CreatedAt time.Time `json:"created_at"`
 }
@@ -82,11 +91,10 @@ type PostCommentResponse struct {
 }
 
 type PostCommentResponses struct {
-	UserID        uint      `json:"user_id" gorm:"column:commented_user"`
-	Comment       string    `json:"comment" gorm:"column:comment_data"`
-	CreatedAt     time.Time `json:"created_at"`
+	UserID    uint      `json:"user_id" gorm:"column:commented_user"`
+	Comment   string    `json:"comment" gorm:"column:comment_data"`
+	CreatedAt time.Time `json:"created_at"`
 }
-
 
 type Comments struct {
 	Comment   string    `json:"comment"`

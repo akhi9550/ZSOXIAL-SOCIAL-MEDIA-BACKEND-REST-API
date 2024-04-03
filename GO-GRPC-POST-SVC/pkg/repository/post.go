@@ -71,6 +71,7 @@ func (p *postRepository) UserData(userID int) (models.UserData, error) {
 	}
 	return user, nil
 }
+
 func (p *postRepository) GetPost(userID, postID int) (models.Response, []models.Tag, error) {
 	var post models.Response
 	var tag []models.Tag
@@ -101,6 +102,7 @@ func (ur *postRepository) UpdateTypeID(userID, postID, typeID int) error {
 	}
 	return nil
 }
+
 func (ur *postRepository) UpdateTags(userID, postID int, tag []models.Tag) error {
 	err := ur.DB.Exec(`DELETE FROM tags WHERE post_id = ? AND user_id = ?`, postID, userID).Error
 	if err != nil {
@@ -161,6 +163,7 @@ func (p *postRepository) ArchivePost(userID, postID int) error {
 	}
 	return nil
 }
+
 func (p *postRepository) UnArchivePost(userID, postID int) error {
 	err := p.DB.Exec(`DELETE FROM archive_posts WHERE user_id = ? AND post_id = ?`, userID, postID).Error
 	if err != nil {
@@ -225,6 +228,49 @@ func (p *postRepository) PostComment(userID int, data models.PostCommentReq) (mo
 	err = p.DB.Exec(`UPDATE posts SET comments_count = comments_count + 1 WHERE id = ?`, data.PostID).Error
 	if err != nil {
 		return models.PostCommentResponses{}, err
+	}
+	return response, nil
+}
+
+func (p *postRepository) SavedPost(userID, postID int) error {
+	err := p.DB.Exec(`INSERT INTO saved_posts (post_id,user_id) VALUES (?,?)`, postID, userID).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *postRepository) AllReadyExistPost(userID, postID int) bool {
+	var count int
+	err := p.DB.Raw(`SELECT COUNT(*) FROM saved_posts WHERE post_id = ? AND user_id = ?`, postID, userID).Scan(&count).Error
+	if err != nil {
+		return false
+	}
+	return count > 0
+}
+
+func (p *postRepository) UnSavedPost(userID, postID int) error {
+	err := p.DB.Exec(`DELETE FROM saved_posts WHERE post_id = ? AND user_id = ?`, postID, userID).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *postRepository) GetSavedPost(userID int) ([]models.SavedResponse, error) {
+	var response []models.SavedResponse
+	var id []models.PostID
+	err := p.DB.Raw(`SELECT post_id FROM saved_posts WHERE user_id = ?`, userID).Scan(&id).Error
+	if err != nil {
+		return nil, err
+	}
+	for _, i := range id {
+		var post models.SavedResponse
+		err = p.DB.Raw(`SELECT id,user_id,url,caption,likes_count, comments_count,created_at FROM posts WHERE  is_archive = 'false' AND id = ?`, i.PostID).Scan(&post).Error
+		if err != nil {
+			return nil, err
+		}
+		response = append(response, post)
 	}
 	return response, nil
 }

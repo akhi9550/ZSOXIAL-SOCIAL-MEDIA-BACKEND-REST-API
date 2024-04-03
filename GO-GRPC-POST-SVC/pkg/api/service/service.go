@@ -251,3 +251,51 @@ func (p *PostServer) PostComment(ctx context.Context, req *pb.PostCommentRequest
 		CreatedAt:     timestamppb.New(data.CreatedAt),
 	}, nil
 }
+
+func (p *PostServer) SavedPost(ctx context.Context, req *pb.SavedPostRequest) (*pb.SavedPostResponse, error) {
+	userID, postID := req.Userid, req.Postid
+	err := p.postUseCase.SavedPost(int(userID), int(postID))
+	if err != nil {
+		return &pb.SavedPostResponse{}, err
+	}
+	return &pb.SavedPostResponse{}, nil
+}
+
+func (p *PostServer) UnSavedPost(ctx context.Context, req *pb.UnSavedPostRequest) (*pb.UnSavedPostResponse, error) {
+	userID, postID := req.Userid, req.Postid
+	err := p.postUseCase.UnSavedPost(int(userID), int(postID))
+	if err != nil {
+		return &pb.UnSavedPostResponse{}, err
+	}
+	return &pb.UnSavedPostResponse{}, nil
+}
+
+func (p *PostServer) GetSavedPost(ctx context.Context, req *pb.GetSavedPostRequest) (*pb.GetSavedPostResponse, error) {
+	userID := req.Userid
+	posts, err := p.postUseCase.GetSavedPost(int(userID))
+	if err != nil {
+		return nil, err
+	}
+
+	var allPostResponses []*pb.CreatePostResponse
+	for _, post := range posts {
+		userData := &pb.UserData{
+			Userid:   int64(post.Author.UserId),
+			Username: post.Author.Username,
+			Imageurl: post.Author.Profile,
+		}
+		details := &pb.CreatePostResponse{
+			Id:        int64(post.ID),
+			User:      userData,
+			Caption:   post.Caption,
+			Url:       post.Url,
+			Like:      int64(post.Likes),
+			Comment:   int64(post.Comments),
+			CreatedAt: timestamppb.New(post.CreatedAt),
+		}
+		allPostResponses = append(allPostResponses, details)
+	}
+	return &pb.GetSavedPostResponse{
+		Allpost: allPostResponses,
+	}, nil
+}

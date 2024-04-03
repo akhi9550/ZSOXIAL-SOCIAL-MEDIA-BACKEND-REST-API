@@ -19,10 +19,13 @@ type PostRepository interface {
 	GetPostAll(userID int) ([]models.Response, error)
 	ArchivePost(userID, postID int) error
 	UnArchivePost(userID, postID int) error
-	GetAllArchivePost(userID int)([]models.ArchivePostResponse,error)
-	CheckAlreadyLiked(userID,PostID int)bool
-	LikePost(userID, postID int)(models.LikesReponse,error)
-	UnLikePost(userID, postID int)error
+	GetAllArchivePost(userID int) ([]models.ArchivePostResponse, error)
+	CheckAlreadyLiked(userID, PostID int) bool
+	LikePost(userID, postID int) (models.LikesReponse, error)
+	UnLikePost(userID, postID int) error
 	PostComment(userID int, data models.PostCommentReq) (models.PostCommentResponses, error)
-
+	SavedPost(userID, postID int) error
+	AllReadyExistPost(userID, postID int) bool
+	UnSavedPost(userID, postID int) error
+	GetSavedPost(userID int) ([]models.SavedResponse, error)
 }

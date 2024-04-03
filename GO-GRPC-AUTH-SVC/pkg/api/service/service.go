@@ -53,7 +53,7 @@ func (au *AuthSever) UserLogin(ctx context.Context, user *pb.UserLoginRequest) (
 	if err != nil {
 		return &pb.UserLoginResponse{}, err
 	}
-	userDetails := &pb.UserInfo{Id: int64(data.Users.Id), Username: data.Users.Username, ProfilePhoto: data.Users.Imageurl,Email: data.Users.Email, Isadmin: data.Users.Isadmin}
+	userDetails := &pb.UserInfo{Id: int64(data.Users.Id), Username: data.Users.Username, ProfilePhoto: data.Users.Imageurl, Email: data.Users.Email, Isadmin: data.Users.Isadmin}
 	UserResponse := &pb.UserResponse{Info: userDetails, Accesstoken: data.AccessToken, Refreshtoken: data.RefreshToken}
 	return &pb.UserLoginResponse{
 		Reposnse: UserResponse,

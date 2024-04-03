@@ -14,6 +14,9 @@ type PostUseCase interface {
 	LikePost(userID int, postID int) (models.LikePostResponse, error)
 	UnLinkPost(userID int, postID int) error
 	PostComment(userID int, data models.PostCommentReq) (models.PostCommentResponse, error)
+	SavedPost(userID, postID int) error
+	UnSavedPost(userID, postID int) error
+	GetSavedPost(userID int) ([]models.PostResponse, error)
 	// GetComment(postID int) (models.GetCommentResponse, error)
 	// ReplyComment(userID int, data models.CommentReply) error
 	// DeleteComment(userID int, commentID int) error
