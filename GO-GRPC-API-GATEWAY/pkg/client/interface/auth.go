@@ -7,7 +7,7 @@ import (
 )
 
 type AuthClient interface {
-	UserSignUp(user models.UserSignUpRequest, file *multipart.FileHeader) (*models.ReponseWithToken, error)
+	UserSignUp(user models.UserSignUpRequest) (*models.ReponseWithToken, error)
 	UserLogin(user models.UserLoginRequest) (*models.ReponseWithToken, error)
 	ForgotPassword(phone string) error
 	ForgotPasswordVerifyAndChange(model models.ForgotVerify) error

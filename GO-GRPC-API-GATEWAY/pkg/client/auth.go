@@ -32,30 +32,15 @@ func NewAuthClient(cfg config.Config) interfaces.AuthClient {
 	}
 }
 
-func (au *AuthClient) UserSignUp(user models.UserSignUpRequest, file *multipart.FileHeader) (*models.ReponseWithToken, error) {
-	f, err := file.Open()
-	if err != nil {
-		return nil, err
-	}
-	defer f.Close()
+func (au *AuthClient) UserSignUp(user models.UserSignUpRequest) (*models.ReponseWithToken, error) {
 
-	// Read the file content
-	fileData, err := io.ReadAll(f)
-	if err != nil {
-		return nil, err
-	}
-	files := &pb.UserProfile{ProfilePhoto: fileData}
 	data, err := au.Client.UserSignUp(context.Background(), &pb.UserSignUpRequest{
-		Firstname:    user.Firstname,
-		Lastname:     user.Lastname,
-		Username:     user.Username,
-		Dob:          user.Dob,
-		Gender:       user.Gender,
-		Phone:        user.Phone,
-		Email:        user.Email,
-		Password:     user.Password,
-		Bio:          user.Bio,
-		ProfilePhoto: files,
+		Firstname: user.Firstname,
+		Lastname:  user.Lastname,
+		Username:  user.Username,
+		Phone:     user.Phone,
+		Email:     user.Email,
+		Password:  user.Password,
 	})
 	if err != nil {
 		return nil, err
@@ -64,7 +49,7 @@ func (au *AuthClient) UserSignUp(user models.UserSignUpRequest, file *multipart.
 	userData := models.UserResponse{
 		Id:       uint(data.Reposnse.Info.Id),
 		Username: data.Reposnse.Info.Username,
-		Imageurl: data.Reposnse.Info.ProfilePhoto,
+		Email:    data.Reposnse.Info.Email,
 		Isadmin:  data.Reposnse.Info.Isadmin,
 	}
 	return &models.ReponseWithToken{
@@ -85,6 +70,7 @@ func (au *AuthClient) UserLogin(user models.UserLoginRequest) (*models.ReponseWi
 	userData := models.UserResponse{
 		Id:       uint(data.Reposnse.Info.Id),
 		Username: data.Reposnse.Info.Username,
+		Email:    data.Reposnse.Info.Email,
 		Imageurl: data.Reposnse.Info.ProfilePhoto,
 		Isadmin:  data.Reposnse.Info.Isadmin,
 	}

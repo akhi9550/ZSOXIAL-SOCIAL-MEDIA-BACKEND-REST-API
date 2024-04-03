@@ -19,10 +19,20 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	PostService_CreatePost_FullMethodName = "/post.PostService/CreatePost"
-	PostService_GetPost_FullMethodName    = "/post.PostService/GetPost"
-	PostService_UpdatePost_FullMethodName = "/post.PostService/UpdatePost"
-	PostService_DeletePost_FullMethodName = "/post.PostService/DeletePost"
+	PostService_CreatePost_FullMethodName        = "/post.PostService/CreatePost"
+	PostService_GetPost_FullMethodName           = "/post.PostService/GetPost"
+	PostService_UpdatePost_FullMethodName        = "/post.PostService/UpdatePost"
+	PostService_DeletePost_FullMethodName        = "/post.PostService/DeletePost"
+	PostService_GetAllPost_FullMethodName        = "/post.PostService/GetAllPost"
+	PostService_ArchivePost_FullMethodName       = "/post.PostService/ArchivePost"
+	PostService_UnArchivePost_FullMethodName     = "/post.PostService/UnArchivePost"
+	PostService_GetAllArchivePost_FullMethodName = "/post.PostService/GetAllArchivePost"
+	PostService_LikePost_FullMethodName          = "/post.PostService/LikePost"
+	PostService_UnLinkPost_FullMethodName        = "/post.PostService/UnLinkPost"
+	PostService_PostComment_FullMethodName       = "/post.PostService/PostComment"
+	PostService_SavedPost_FullMethodName         = "/post.PostService/SavedPost"
+	PostService_UnSavedPost_FullMethodName       = "/post.PostService/UnSavedPost"
+	PostService_GetSavedPost_FullMethodName      = "/post.PostService/GetSavedPost"
 )
 
 // PostServiceClient is the client API for PostService service.
@@ -33,6 +43,16 @@ type PostServiceClient interface {
 	GetPost(ctx context.Context, in *GetPostRequest, opts ...grpc.CallOption) (*GetPostResponse, error)
 	UpdatePost(ctx context.Context, in *UpdatePostRequest, opts ...grpc.CallOption) (*UpdatePostResponse, error)
 	DeletePost(ctx context.Context, in *DeletePostRequest, opts ...grpc.CallOption) (*DeletePostResponse, error)
+	GetAllPost(ctx context.Context, in *GetAllPostRequest, opts ...grpc.CallOption) (*GetAllPostResponse, error)
+	ArchivePost(ctx context.Context, in *ArchivePostRequest, opts ...grpc.CallOption) (*ArchivePostResponse, error)
+	UnArchivePost(ctx context.Context, in *UnArchivePostrequest, opts ...grpc.CallOption) (*UnArchivePostResponse, error)
+	GetAllArchivePost(ctx context.Context, in *GetAllArchivePostRequest, opts ...grpc.CallOption) (*GetAllArchivePostResponse, error)
+	LikePost(ctx context.Context, in *LikePostRequest, opts ...grpc.CallOption) (*LikePostResponse, error)
+	UnLinkPost(ctx context.Context, in *UnLikePostRequest, opts ...grpc.CallOption) (*UnLikePostResponse, error)
+	PostComment(ctx context.Context, in *PostCommentRequest, opts ...grpc.CallOption) (*PostCommentResponse, error)
+	SavedPost(ctx context.Context, in *SavedPostRequest, opts ...grpc.CallOption) (*SavedPostResponse, error)
+	UnSavedPost(ctx context.Context, in *UnSavedPostRequest, opts ...grpc.CallOption) (*UnSavedPostResponse, error)
+	GetSavedPost(ctx context.Context, in *GetSavedPostRequest, opts ...grpc.CallOption) (*GetSavedPostResponse, error)
 }
 
 type postServiceClient struct {
@@ -79,6 +99,96 @@ func (c *postServiceClient) DeletePost(ctx context.Context, in *DeletePostReques
 	return out, nil
 }
 
+func (c *postServiceClient) GetAllPost(ctx context.Context, in *GetAllPostRequest, opts ...grpc.CallOption) (*GetAllPostResponse, error) {
+	out := new(GetAllPostResponse)
+	err := c.cc.Invoke(ctx, PostService_GetAllPost_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *postServiceClient) ArchivePost(ctx context.Context, in *ArchivePostRequest, opts ...grpc.CallOption) (*ArchivePostResponse, error) {
+	out := new(ArchivePostResponse)
+	err := c.cc.Invoke(ctx, PostService_ArchivePost_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *postServiceClient) UnArchivePost(ctx context.Context, in *UnArchivePostrequest, opts ...grpc.CallOption) (*UnArchivePostResponse, error) {
+	out := new(UnArchivePostResponse)
+	err := c.cc.Invoke(ctx, PostService_UnArchivePost_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *postServiceClient) GetAllArchivePost(ctx context.Context, in *GetAllArchivePostRequest, opts ...grpc.CallOption) (*GetAllArchivePostResponse, error) {
+	out := new(GetAllArchivePostResponse)
+	err := c.cc.Invoke(ctx, PostService_GetAllArchivePost_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *postServiceClient) LikePost(ctx context.Context, in *LikePostRequest, opts ...grpc.CallOption) (*LikePostResponse, error) {
+	out := new(LikePostResponse)
+	err := c.cc.Invoke(ctx, PostService_LikePost_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *postServiceClient) UnLinkPost(ctx context.Context, in *UnLikePostRequest, opts ...grpc.CallOption) (*UnLikePostResponse, error) {
+	out := new(UnLikePostResponse)
+	err := c.cc.Invoke(ctx, PostService_UnLinkPost_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *postServiceClient) PostComment(ctx context.Context, in *PostCommentRequest, opts ...grpc.CallOption) (*PostCommentResponse, error) {
+	out := new(PostCommentResponse)
+	err := c.cc.Invoke(ctx, PostService_PostComment_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *postServiceClient) SavedPost(ctx context.Context, in *SavedPostRequest, opts ...grpc.CallOption) (*SavedPostResponse, error) {
+	out := new(SavedPostResponse)
+	err := c.cc.Invoke(ctx, PostService_SavedPost_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *postServiceClient) UnSavedPost(ctx context.Context, in *UnSavedPostRequest, opts ...grpc.CallOption) (*UnSavedPostResponse, error) {
+	out := new(UnSavedPostResponse)
+	err := c.cc.Invoke(ctx, PostService_UnSavedPost_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *postServiceClient) GetSavedPost(ctx context.Context, in *GetSavedPostRequest, opts ...grpc.CallOption) (*GetSavedPostResponse, error) {
+	out := new(GetSavedPostResponse)
+	err := c.cc.Invoke(ctx, PostService_GetSavedPost_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PostServiceServer is the server API for PostService service.
 // All implementations must embed UnimplementedPostServiceServer
 // for forward compatibility
@@ -87,6 +197,16 @@ type PostServiceServer interface {
 	GetPost(context.Context, *GetPostRequest) (*GetPostResponse, error)
 	UpdatePost(context.Context, *UpdatePostRequest) (*UpdatePostResponse, error)
 	DeletePost(context.Context, *DeletePostRequest) (*DeletePostResponse, error)
+	GetAllPost(context.Context, *GetAllPostRequest) (*GetAllPostResponse, error)
+	ArchivePost(context.Context, *ArchivePostRequest) (*ArchivePostResponse, error)
+	UnArchivePost(context.Context, *UnArchivePostrequest) (*UnArchivePostResponse, error)
+	GetAllArchivePost(context.Context, *GetAllArchivePostRequest) (*GetAllArchivePostResponse, error)
+	LikePost(context.Context, *LikePostRequest) (*LikePostResponse, error)
+	UnLinkPost(context.Context, *UnLikePostRequest) (*UnLikePostResponse, error)
+	PostComment(context.Context, *PostCommentRequest) (*PostCommentResponse, error)
+	SavedPost(context.Context, *SavedPostRequest) (*SavedPostResponse, error)
+	UnSavedPost(context.Context, *UnSavedPostRequest) (*UnSavedPostResponse, error)
+	GetSavedPost(context.Context, *GetSavedPostRequest) (*GetSavedPostResponse, error)
 	mustEmbedUnimplementedPostServiceServer()
 }
 
@@ -105,6 +225,36 @@ func (UnimplementedPostServiceServer) UpdatePost(context.Context, *UpdatePostReq
 }
 func (UnimplementedPostServiceServer) DeletePost(context.Context, *DeletePostRequest) (*DeletePostResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeletePost not implemented")
+}
+func (UnimplementedPostServiceServer) GetAllPost(context.Context, *GetAllPostRequest) (*GetAllPostResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllPost not implemented")
+}
+func (UnimplementedPostServiceServer) ArchivePost(context.Context, *ArchivePostRequest) (*ArchivePostResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ArchivePost not implemented")
+}
+func (UnimplementedPostServiceServer) UnArchivePost(context.Context, *UnArchivePostrequest) (*UnArchivePostResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UnArchivePost not implemented")
+}
+func (UnimplementedPostServiceServer) GetAllArchivePost(context.Context, *GetAllArchivePostRequest) (*GetAllArchivePostResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllArchivePost not implemented")
+}
+func (UnimplementedPostServiceServer) LikePost(context.Context, *LikePostRequest) (*LikePostResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LikePost not implemented")
+}
+func (UnimplementedPostServiceServer) UnLinkPost(context.Context, *UnLikePostRequest) (*UnLikePostResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UnLinkPost not implemented")
+}
+func (UnimplementedPostServiceServer) PostComment(context.Context, *PostCommentRequest) (*PostCommentResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PostComment not implemented")
+}
+func (UnimplementedPostServiceServer) SavedPost(context.Context, *SavedPostRequest) (*SavedPostResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SavedPost not implemented")
+}
+func (UnimplementedPostServiceServer) UnSavedPost(context.Context, *UnSavedPostRequest) (*UnSavedPostResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UnSavedPost not implemented")
+}
+func (UnimplementedPostServiceServer) GetSavedPost(context.Context, *GetSavedPostRequest) (*GetSavedPostResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetSavedPost not implemented")
 }
 func (UnimplementedPostServiceServer) mustEmbedUnimplementedPostServiceServer() {}
 
@@ -191,6 +341,186 @@ func _PostService_DeletePost_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _PostService_GetAllPost_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAllPostRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PostServiceServer).GetAllPost(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PostService_GetAllPost_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PostServiceServer).GetAllPost(ctx, req.(*GetAllPostRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PostService_ArchivePost_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ArchivePostRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PostServiceServer).ArchivePost(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PostService_ArchivePost_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PostServiceServer).ArchivePost(ctx, req.(*ArchivePostRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PostService_UnArchivePost_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UnArchivePostrequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PostServiceServer).UnArchivePost(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PostService_UnArchivePost_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PostServiceServer).UnArchivePost(ctx, req.(*UnArchivePostrequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PostService_GetAllArchivePost_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAllArchivePostRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PostServiceServer).GetAllArchivePost(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PostService_GetAllArchivePost_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PostServiceServer).GetAllArchivePost(ctx, req.(*GetAllArchivePostRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PostService_LikePost_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LikePostRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PostServiceServer).LikePost(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PostService_LikePost_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PostServiceServer).LikePost(ctx, req.(*LikePostRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PostService_UnLinkPost_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UnLikePostRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PostServiceServer).UnLinkPost(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PostService_UnLinkPost_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PostServiceServer).UnLinkPost(ctx, req.(*UnLikePostRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PostService_PostComment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PostCommentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PostServiceServer).PostComment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PostService_PostComment_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PostServiceServer).PostComment(ctx, req.(*PostCommentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PostService_SavedPost_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SavedPostRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PostServiceServer).SavedPost(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PostService_SavedPost_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PostServiceServer).SavedPost(ctx, req.(*SavedPostRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PostService_UnSavedPost_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UnSavedPostRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PostServiceServer).UnSavedPost(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PostService_UnSavedPost_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PostServiceServer).UnSavedPost(ctx, req.(*UnSavedPostRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PostService_GetSavedPost_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetSavedPostRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PostServiceServer).GetSavedPost(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PostService_GetSavedPost_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PostServiceServer).GetSavedPost(ctx, req.(*GetSavedPostRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // PostService_ServiceDesc is the grpc.ServiceDesc for PostService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -213,6 +543,46 @@ var PostService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeletePost",
 			Handler:    _PostService_DeletePost_Handler,
+		},
+		{
+			MethodName: "GetAllPost",
+			Handler:    _PostService_GetAllPost_Handler,
+		},
+		{
+			MethodName: "ArchivePost",
+			Handler:    _PostService_ArchivePost_Handler,
+		},
+		{
+			MethodName: "UnArchivePost",
+			Handler:    _PostService_UnArchivePost_Handler,
+		},
+		{
+			MethodName: "GetAllArchivePost",
+			Handler:    _PostService_GetAllArchivePost_Handler,
+		},
+		{
+			MethodName: "LikePost",
+			Handler:    _PostService_LikePost_Handler,
+		},
+		{
+			MethodName: "UnLinkPost",
+			Handler:    _PostService_UnLinkPost_Handler,
+		},
+		{
+			MethodName: "PostComment",
+			Handler:    _PostService_PostComment_Handler,
+		},
+		{
+			MethodName: "SavedPost",
+			Handler:    _PostService_SavedPost_Handler,
+		},
+		{
+			MethodName: "UnSavedPost",
+			Handler:    _PostService_UnSavedPost_Handler,
+		},
+		{
+			MethodName: "GetSavedPost",
+			Handler:    _PostService_GetSavedPost_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

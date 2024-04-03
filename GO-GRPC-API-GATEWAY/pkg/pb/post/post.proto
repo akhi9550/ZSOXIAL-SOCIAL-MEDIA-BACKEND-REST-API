@@ -11,9 +11,16 @@ service PostService {
     rpc GetPost (GetPostRequest) returns (GetPostResponse){}
     rpc UpdatePost (UpdatePostRequest) returns (UpdatePostResponse){}
     rpc DeletePost (DeletePostRequest) returns (DeletePostResponse){}
-    // rpc GetAllPost (GetAllPostRequest) returns (GetAllPostResponse){}
-    // rpc LikePost (LikePostRequest) returns (LikePostResponse){}
-    // rpc PostComment (PostCommentRequest) returns (PostCommentResponse){}
+    rpc GetAllPost (GetAllPostRequest) returns (GetAllPostResponse){}
+    rpc ArchivePost (ArchivePostRequest) returns (ArchivePostResponse){}
+    rpc UnArchivePost (UnArchivePostrequest) returns (UnArchivePostResponse){}
+    rpc GetAllArchivePost (GetAllArchivePostRequest) returns (GetAllArchivePostResponse){}
+    rpc LikePost (LikePostRequest) returns (LikePostResponse){}
+    rpc UnLinkPost (UnLikePostRequest) returns (UnLikePostResponse){}
+    rpc PostComment (PostCommentRequest) returns (PostCommentResponse){}
+    rpc SavedPost (SavedPostRequest) returns (SavedPostResponse){}
+    rpc UnSavedPost (UnSavedPostRequest) returns (UnSavedPostResponse){}
+    rpc GetSavedPost (GetSavedPostRequest) returns (GetSavedPostResponse){}
     // rpc GetComment (GetCommentRequest) returns (GetCommentResponse){}
     // rpc ReplyComment (ReplyCommentRequest) returns (ReplyCommentResponse){}
     // rpc DeleteComment (DeleteCommentRequest) returns (DeleteCommentResponse){}
@@ -25,13 +32,13 @@ service PostService {
 message CreatePostRequest {
     int64 userid = 1;
     string caption = 2;
-    PostImage post = 3;
+    PostPhoto post = 3;
     int64 typeid = 4; 
-    tags tag = 5;
+    Tag tag = 5;
 }
 
-message PostImage {
-    bytes postimages = 1;
+message PostPhoto {
+    bytes url = 1; 
 }
 
 message UserData {
@@ -40,24 +47,12 @@ message UserData {
     string imageurl = 3;
 }
 
-message tags {
-    int64 user1 = 1;
-    int64 user2 = 2;
-    int64 user3 = 3;
-    int64 user4 = 4;
-    int64 user5 = 5;
-}
-
-message Urls {
-    string imageurl  = 1;
-}
-
 message CreatePostResponse {
     int64 id = 1;
     UserData user =2;
     string caption = 3;
-    tags tag = 4; 
-    repeated Urls url = 5;
+    repeated string tag = 4; 
+    string url = 5;
     int64 like =6 ;
     int64 comment = 7;
     google.protobuf.Timestamp created_at = 8; 
@@ -77,16 +72,58 @@ message UpdatePostRequest {
     int64 postid = 2;
     string caption = 3;
     int64 typeid = 5; 
-    tags tag = 6;
+    Tag tag = 6;
+}
+
+message Tag {
+    repeated string user = 1;
 }
 
 message UpdatePostResponse{
-    CreatePostResponse updatepost = 1;
+    int64 id = 1;
+    UserData user =2;
+    string caption = 3;
+    repeated string tag = 4; 
+    string url = 5;
+    int64 like =6 ;
+    int64 comment = 7;
+    google.protobuf.Timestamp created_at = 8; 
 }
 
 message DeletePostRequest{
     int64 userid = 1;
     int64 postid = 2;
+}
+
+message ArchivePostRequest{
+    int64 userid = 1;
+    int64 postid = 2;
+}
+
+message ArchivePostResponse{}
+
+message UnArchivePostrequest {
+    int64 userid = 1;
+    int64 postid = 2;
+}
+
+message UnArchivePostResponse {}
+
+message GetAllArchivePostRequest {
+    int64 userid = 1;
+}
+
+message ArchivePostResponses {
+    int64 id = 1;
+    string caption = 2;
+    string url = 3;
+    int64 like = 4;
+    int64 comment = 5;
+    google.protobuf.Timestamp created_at = 6; 
+}
+
+message GetAllArchivePostResponse{
+    repeated ArchivePostResponses allpost = 1;
 }
 
 message DeletePostResponse {}
@@ -105,12 +142,18 @@ message LikePostRequest {
 }
 
 message LikePostResponse{
-    int64 id =1;
-    int64 userid = 2;
-    int64 username = 3;
-    string url = 4;
-    google.protobuf.Timestamp created_at = 5; 
+    int64 userid = 1;
+    string likedUser = 2;
+    string posturl = 3;
+    google.protobuf.Timestamp created_at = 4; 
 }
+
+message UnLikePostRequest{
+    int64 userid = 1;
+    int64 postid = 2;   
+}
+
+message UnLikePostResponse{}
 
 message PostCommentRequest{
     int64 userid = 1;
@@ -119,13 +162,37 @@ message PostCommentRequest{
 }
 
 message PostCommentResponse {
-    int64 id = 1;
-    int64 userid = 2;
-    int64 username = 3;
-    string url = 4;
-    string comment = 5;
-    google.protobuf.Timestamp created_at = 6; 
+    int64 userid = 1;
+    string CommentedUser = 2;
+    string posturl = 3;
+    string comment = 4;
+    google.protobuf.Timestamp created_at = 5; 
 }
+
+message SavedPostRequest {
+    int64 userid = 1;
+    int64 postid = 2;
+}
+
+message SavedPostResponse {}
+
+message UnSavedPostRequest {
+    int64 userid = 1;
+    int64 postid = 2;
+}
+
+message UnSavedPostResponse{}
+
+message GetSavedPostRequest{
+    int64 userid = 1;
+}
+
+message GetSavedPostResponse{
+    repeated CreatePostResponse allpost = 1;
+}
+
+
+
 
 message GetCommentRequest{
     int64 postid=1;

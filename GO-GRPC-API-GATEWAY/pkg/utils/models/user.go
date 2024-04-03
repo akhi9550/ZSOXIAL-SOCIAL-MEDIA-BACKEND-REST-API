@@ -4,12 +4,9 @@ type UserSignUpRequest struct {
 	Firstname string `json:"firstname" validate:"gte=3"`
 	Lastname  string `json:"lastname" validate:"gte=1"`
 	Username  string `json:"username" validate:"gte=3"`
-	Dob       string `json:"dob" gorm:"validate:required"`
-	Gender    string `json:"gender" gorm:"validate:required"`
 	Phone     string `json:"phone" gorm:"validate:required"`
 	Email     string `json:"email" validate:"email"`
 	Password  string `json:"password" validate:"min=6,max=20"`
-	Bio       string `json:"bio"`
 }
 
 type UserLoginRequest struct {
@@ -20,6 +17,7 @@ type UserLoginRequest struct {
 type UserResponse struct {
 	Id       uint   `json:"id"`
 	Username string `json:"username"`
+	Email    string `json:"email"`
 	Imageurl string `json:"imageurl"`
 	Isadmin  bool   `json:"is_admin"`
 }

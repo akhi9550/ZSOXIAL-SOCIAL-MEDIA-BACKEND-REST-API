@@ -44,6 +44,16 @@ func NewServerHTTP(authHandler *handler.AuthHandler, postHandler *handler.PostHa
 		r.GET("/getpost", postHandler.GetPost)
 		r.PUT("/updatepost", postHandler.UpdatePost)
 		r.DELETE("/deletepost", postHandler.DeletePost)
+		r.GET("/getallpost", postHandler.GetAllPost)
+		r.POST("/archivePost", postHandler.ArchivePost)
+		r.POST("/unarchivePost", postHandler.UnArchivePost)
+		r.GET("/getarchivePost", postHandler.GetAllArchivePost)
+		r.PUT("/like", postHandler.LikePost)
+		r.PUT("/unlike", postHandler.UnLinkPost)
+		r.PUT("/comment", postHandler.PostComment)
+		r.POST("/saved", postHandler.SavedPost)
+		r.POST("/unsaved", postHandler.UnSavedPost)
+		r.GET("/c", postHandler.GetSavedPost)
 	}
 	return &ServerHTTP{engine: r}
 }

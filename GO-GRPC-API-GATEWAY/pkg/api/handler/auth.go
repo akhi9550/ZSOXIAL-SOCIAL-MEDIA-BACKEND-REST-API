@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -23,54 +24,31 @@ func NewAuthHandler(authClient interfaces.AuthClient) *AuthHandler {
 }
 
 func (au *AuthHandler) UserSignup(c *gin.Context) {
-	firstname := c.PostForm("firstname")
-	lastname := c.PostForm("lastname")
-	username := c.PostForm("username")
-	dob := c.PostForm("dob")
-	gender := c.PostForm("gender")
-	phone := c.PostForm("phone")
-	email := c.PostForm("email")
-	password := c.PostForm("password")
-	bio := c.PostForm("bio")
+	var UserSignupDetail models.UserSignUpRequest
 
+	if err := c.ShouldBindJSON(&UserSignupDetail); err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+	}
 	pattern := `^\d{10}$`
 	regex := regexp.MustCompile(pattern)
-	value := regex.MatchString(phone)
+	value := regex.MatchString(UserSignupDetail.Phone)
 	if !value {
 		return
 	}
-
-	SignupDetail := models.UserSignUpRequest{
-		Firstname: firstname,
-		Lastname:  lastname,
-		Username:  username,
-		Dob:       dob,
-		Gender:    gender,
-		Phone:     phone,
-		Email:     email,
-		Password:  password,
-		Bio:       bio,
-	}
-
-	err := validator.New().Struct(SignupDetail)
+	err := validator.New().Struct(UserSignupDetail)
 	if err != nil {
 		errs := response.ClientResponse(http.StatusBadRequest, "Constraints not statisfied", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
 		return
 	}
-
-	file, err := c.FormFile("photo")
-	if err != nil {
-		errorRes := response.ClientResponse(http.StatusBadRequest, "No file provided", nil, err.Error())
-		c.JSON(http.StatusBadRequest, errorRes)
-		return
-	}
-	user, err := au.GRPC_Client.UserSignUp(SignupDetail, file)
+	user, err := au.GRPC_Client.UserSignUp(UserSignupDetail)
 	if err != nil {
 		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
 		return
 	}
+	fmt.Println("", user)
 	success := response.ClientResponse(http.StatusCreated, "User successfully signed up", user, nil)
 	c.JSON(http.StatusCreated, success)
 }

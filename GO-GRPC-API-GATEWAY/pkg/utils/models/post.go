@@ -17,8 +17,17 @@ type UserData struct {
 type PostResponse struct {
 	ID        uint      `json:"id"`
 	Author    UserData  `json:"author"`
-	Tag       Tags      `json:"tag"`
-	ImageUrls []Url     `json:"image_urls"`
+	Tag       []Tag     `json:"tag"`
+	Url       string    `json:"url"`
+	Caption   string    `json:"caption"`
+	Likes     uint      `json:"likes"`
+	Comments  uint      `json:"comments"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
+type ArchivePostResponse struct {
+	ID        uint      `json:"id"`
+	Url       string    `json:"url"`
 	Caption   string    `json:"caption"`
 	Likes     uint      `json:"likes"`
 	Comments  uint      `json:"comments"`
@@ -32,7 +41,19 @@ type Tags struct {
 	User4 uint `json:"user4"`
 	User5 uint `json:"user5"`
 }
-
+type UpdateResponse struct {
+	ID        uint      `json:"id"`
+	Author    UserData  `json:"author"`
+	Tag       []Tag     `json:"tag"`
+	Url       string    `json:"url"`
+	Caption   string    `json:"caption"`
+	Likes     uint      `json:"likes"`
+	Comments  uint      `json:"comments"`
+	CreatedAt time.Time `json:"created_at"`
+}
+type Tag struct {
+	User string `json:"user"`
+}
 type Url struct {
 	ImageUrls string `json:"image_urls"`
 }
@@ -47,9 +68,8 @@ type GetAllPosts struct {
 }
 
 type LikePostResponse struct {
-	Id        uint      `json:"id"`
 	UserID    uint      `json:"user_id"`
-	Username  string    `json:"username"`
+	LikedUser string    `json:"like_user"`
 	Profile   string    `json:"profile"`
 	CreatedAt time.Time `json:"created_at"`
 }
@@ -60,12 +80,11 @@ type PostCommentReq struct {
 }
 
 type PostCommentResponse struct {
-	ID        uint      `json:"id"`
-	UserID    uint      `json:"user_id"`
-	Username  string    `json:"username"`
-	Profile   string    `json:"profile"`
-	Comment   string    `json:"comment"`
-	CreatedAt time.Time `json:"created_at"`
+	UserID      uint      `json:"user_id"`
+	CommentUser string    `json:"comment_user"`
+	Profile     string    `json:"profile"`
+	Comment     string    `json:"comment"`
+	CreatedAt   time.Time `json:"created_at"`
 }
 
 type Comments struct {
@@ -87,5 +106,4 @@ type UpdatePostReq struct {
 	PostID  uint   `json:"post_id"`
 	Caption string `json:"caption"`
 	TypeID  uint   `json:"type_id"`
-	Tags    Tags   `json:"tags"`
 }
