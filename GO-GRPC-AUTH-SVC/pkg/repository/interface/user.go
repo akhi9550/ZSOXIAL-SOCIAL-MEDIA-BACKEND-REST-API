@@ -9,7 +9,7 @@ type UserRepository interface {
 	CheckUserExistsByUsername(username string) (*domain.User, error)
 	CheckUserExistsByEmail(email string) (*domain.User, error)
 	CheckUserExistsByPhone(phone string) (*domain.User, error)
-	UserSignUp(user models.UserSignUpRequest,url string) (models.UserResponse, error)
+	UserSignUp(user models.UserSignUpRequest) (models.UserResponse, error)
 	FindUserByEmail(user models.UserLoginRequest) (models.UserResponsewithPassword, error)
 	FindUserBlockorNot(email string)(bool,error)
 	FindUserByMobileNumber(phone string) bool
@@ -33,4 +33,6 @@ type UserRepository interface {
 	ExistPhone(phone string) bool
 	ExistEmail(email string) bool
 	Changepassword(phone int, password string) error
+	CheckUserAvalilabilityWithTagUserID(users []models.Tag) (bool,error)
+	GetUserNameWithTagUserID(users []models.Tag) ([]models.UserTag,error)
 }

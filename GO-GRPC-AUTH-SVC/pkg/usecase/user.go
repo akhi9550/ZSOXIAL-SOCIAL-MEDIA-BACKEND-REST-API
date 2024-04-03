@@ -22,7 +22,7 @@ func NewUserUseCase(repository interfaces.UserRepository) services.UserUseCase {
 		userRepository: repository,
 	}
 }
-func (ur *userUseCase) UserSignUp(user models.UserSignUpRequest, file []byte) (*models.ReponseWithToken, error) {
+func (ur *userUseCase) UserSignUp(user models.UserSignUpRequest) (*models.ReponseWithToken, error) {
 	username, err := ur.userRepository.CheckUserExistsByUsername(user.Username)
 	if err != nil {
 		return &models.ReponseWithToken{}, errors.New("error with server")
@@ -51,12 +51,7 @@ func (ur *userUseCase) UserSignUp(user models.UserSignUpRequest, file []byte) (*
 		return &models.ReponseWithToken{}, errors.New("error in hashing password")
 	}
 	user.Password = hashPassword
-	filename := user.Firstname
-	url, err := helper.AddImageToAwsS3(file, filename)
-	if err != nil {
-		return &models.ReponseWithToken{}, err
-	}
-	userData, err := ur.userRepository.UserSignUp(user, url)
+	userData, err := ur.userRepository.UserSignUp(user)
 	if err != nil {
 		return &models.ReponseWithToken{}, errors.New("could not add the user")
 	}
@@ -165,42 +160,51 @@ func (ur *userUseCase) UpdateUserDetails(userDetails models.UsersProfileDetail, 
 	if !userExist {
 		return models.UsersProfileDetails{}, errors.New("user doesn't exist")
 	}
-	if userDetails.Firstname != "" {
-		ur.userRepository.UpdateFirstName(userDetails.Firstname, userID)
+	err := ur.userRepository.UpdateFirstName(userDetails.Firstname, userID)
+	if err != nil {
+		return models.UsersProfileDetails{}, err
 	}
-	if userDetails.Lastname != "" {
-		ur.userRepository.UpdateLastName(userDetails.Lastname, userID)
+	err = ur.userRepository.UpdateLastName(userDetails.Lastname, userID)
+	if err != nil {
+		return models.UsersProfileDetails{}, err
 	}
-	if userDetails.Lastname != "" {
-		ok := ur.userRepository.ExistUsername(userDetails.Username)
-		if ok {
-			return models.UsersProfileDetails{}, errors.New("username already exist")
-		}
-		ur.userRepository.UpdateUserName(userDetails.Username, userID)
+	ok := ur.userRepository.ExistUsername(userDetails.Username)
+	if ok {
+		return models.UsersProfileDetails{}, errors.New("username already exist")
 	}
-	if userDetails.Lastname != "" {
-		ur.userRepository.UpdateDOB(userDetails.Dob, userID)
+	err = ur.userRepository.UpdateUserName(userDetails.Username, userID)
+	if err != nil {
+		return models.UsersProfileDetails{}, err
 	}
-	if userDetails.Lastname != "" {
-		ur.userRepository.UpdateGender(userDetails.Gender, userID)
+	err = ur.userRepository.UpdateDOB(userDetails.Dob, userID)
+	if err != nil {
+		return models.UsersProfileDetails{}, err
 	}
-	if userDetails.Phone != "" {
-		ok := ur.userRepository.ExistPhone(userDetails.Phone)
-		if ok {
-			return models.UsersProfileDetails{}, errors.New("phone already exist")
-		}
-		ur.userRepository.UpdateUserPhone(userDetails.Phone, userID)
+	err = ur.userRepository.UpdateGender(userDetails.Gender, userID)
+	if err != nil {
+		return models.UsersProfileDetails{}, err
 	}
-	if userDetails.Email != "" {
-		ok := ur.userRepository.ExistEmail(userDetails.Email)
-		if ok {
-			return models.UsersProfileDetails{}, errors.New("email already exist")
-		}
-		ur.userRepository.UpdateUserEmail(userDetails.Email, userID)
+	ok = ur.userRepository.ExistPhone(userDetails.Phone)
+	if ok {
+		return models.UsersProfileDetails{}, errors.New("phone already exist")
 	}
-	if userDetails.Phone != "" {
-		ur.userRepository.UpdateBIO(userDetails.Bio, userID)
+	err = ur.userRepository.UpdateUserPhone(userDetails.Phone, userID)
+	if err != nil {
+		return models.UsersProfileDetails{}, err
 	}
+	ok = ur.userRepository.ExistEmail(userDetails.Email)
+	if ok {
+		return models.UsersProfileDetails{}, errors.New("email already exist")
+	}
+	err = ur.userRepository.UpdateUserEmail(userDetails.Email, userID)
+	if err != nil {
+		return models.UsersProfileDetails{}, err
+	}
+	err = ur.userRepository.UpdateBIO(userDetails.Bio, userID)
+	if err != nil {
+		return models.UsersProfileDetails{}, err
+	}
+
 	filename := userDetails.Firstname
 	url, err := helper.AddImageToAwsS3(file, filename)
 	if err != nil {
@@ -240,6 +244,19 @@ func (ur *userUseCase) UserData(userID int) (models.UserData, error) {
 	data, err := ur.userRepository.UserData(userID)
 	if err != nil {
 		return models.UserData{}, err
+	}
+	return data, nil
+}
+
+func (ur *userUseCase) CheckUserAvalilabilityWithTagUserID(users []models.Tag) (bool, error) {
+	ok, _ := ur.userRepository.CheckUserAvalilabilityWithTagUserID(users)
+	return ok, nil
+}
+
+func (ur *userUseCase) GetUserNameWithTagUserID(users []models.Tag) ([]models.UserTag, error) {
+	data, err := ur.userRepository.GetUserNameWithTagUserID(users)
+	if err != nil {
+		return []models.UserTag{}, err
 	}
 	return data, nil
 }

@@ -22,20 +22,19 @@ service AuthService {
     rpc AdminUnblockUser(AdminUnblockUserRequest) returns (AdminUnblockUserResponse) {}
     rpc CheckUserAvalilabilityWithUserID (CheckUserAvalilabilityWithUserIDRequest) returns (CheckUserAvalilabilityWithUserIDResponse){}
     rpc UserData (UserDataRequest) returns (UserDataResponse){}
+    rpc CheckUserAvalilabilityWithTagUserID (CheckUserAvalilabilityWithTagUserIDRequest) returns (CheckUserAvalilabilityWithTagUserIDResponse){}
+    rpc GetUserNameWithTagUserID (GetUserNameWithTagUserIDRequest) returns (GetUserNameWithTagUserIDResponse){}
 }
 
 message UserSignUpRequest {
     string firstname = 1;
     string lastname = 2;
     string username = 3; 
-    string dob = 4;
-    string gender = 5;
-    string phone = 6; 
-    string email = 7;
-    string password = 8;  
-    string bio = 9;  
-    UserProfile profile_photo = 10;
+    string phone = 4; 
+    string email = 5;
+    string password = 6;  
 }
+
 message UserProfile {
     bytes profile_photo = 1; 
 }
@@ -43,8 +42,9 @@ message UserProfile {
 message UserInfo {
     int64 id = 1;
     string username = 2;
-    string profile_photo = 3;
-    bool isadmin = 4;
+    string email = 3;
+    string profile_photo = 4;
+    bool isadmin = 5;
 }
 
 message UserResponse {
@@ -253,4 +253,29 @@ message UserDataResponse {
     int64 id = 1;
     string username = 2;
     string profile_photo = 3;
+}
+
+
+message  CheckUserAvalilabilityWithTagUserIDRequest {
+    Tag tag = 1;
+}
+  
+message Tag {
+    repeated string user = 1;
+}
+
+message  CheckUserAvalilabilityWithTagUserIDResponse {
+      bool valid = 1;
+}
+
+message GetUserNameWithTagUserIDRequest{
+    Tag tag = 1;
+}
+
+message TagUsernames{
+    string username =1;
+}
+
+message GetUserNameWithTagUserIDResponse{
+    repeated TagUsernames name = 1;
 }

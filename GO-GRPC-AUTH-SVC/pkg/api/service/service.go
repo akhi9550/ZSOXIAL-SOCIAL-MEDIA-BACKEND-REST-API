@@ -29,22 +29,15 @@ func (au *AuthSever) UserSignUp(ctx context.Context, user *pb.UserSignUpRequest)
 		Firstname: user.Firstname,
 		Lastname:  user.Lastname,
 		Username:  user.Username,
-		Dob:       user.Dob,
-		Gender:    user.Gender,
 		Phone:     user.Phone,
 		Email:     user.Email,
 		Password:  user.Password,
-		Bio:       user.Bio,
 	}
-	file := models.UserProfilePhoto{
-		Imageurl: user.ProfilePhoto.ProfilePhoto,
-	}
-	File := file.Imageurl
-	data, err := au.userUseCase.UserSignUp(signup, File)
+	data, err := au.userUseCase.UserSignUp(signup)
 	if err != nil {
 		return &pb.UserSignUpResponse{}, err
 	}
-	userDetails := &pb.UserInfo{Id: int64(data.Users.Id), Username: data.Users.Username, ProfilePhoto: data.Users.Imageurl, Isadmin: data.Users.Isadmin}
+	userDetails := &pb.UserInfo{Id: int64(data.Users.Id), Username: data.Users.Username, Email: data.Users.Email, Isadmin: data.Users.Isadmin}
 	UserResponse := &pb.UserResponse{Info: userDetails, Accesstoken: data.AccessToken, Refreshtoken: data.RefreshToken}
 	return &pb.UserSignUpResponse{
 		Reposnse: UserResponse,
@@ -60,7 +53,7 @@ func (au *AuthSever) UserLogin(ctx context.Context, user *pb.UserLoginRequest) (
 	if err != nil {
 		return &pb.UserLoginResponse{}, err
 	}
-	userDetails := &pb.UserInfo{Id: int64(data.Users.Id), Username: data.Users.Username, ProfilePhoto: data.Users.Imageurl, Isadmin: data.Users.Isadmin}
+	userDetails := &pb.UserInfo{Id: int64(data.Users.Id), Username: data.Users.Username, ProfilePhoto: data.Users.Imageurl,Email: data.Users.Email, Isadmin: data.Users.Isadmin}
 	UserResponse := &pb.UserResponse{Info: userDetails, Accesstoken: data.AccessToken, Refreshtoken: data.RefreshToken}
 	return &pb.UserLoginResponse{
 		Reposnse: UserResponse,
@@ -258,4 +251,45 @@ func (au *AuthSever) UserData(ctx context.Context, req *pb.UserDataRequest) (*pb
 		Username:     data.Username,
 		ProfilePhoto: data.Profile,
 	}, err
+}
+
+func (au *AuthSever) CheckUserAvalilabilityWithTagUserID(ctx context.Context, req *pb.CheckUserAvalilabilityWithTagUserIDRequest) (*pb.CheckUserAvalilabilityWithTagUserIDResponse, error) {
+	var users []models.Tag
+	for _, user := range req.Tag.User {
+		tag := models.Tag{User: user}
+		users = append(users, tag)
+	}
+
+	ok, err := au.userUseCase.CheckUserAvalilabilityWithTagUserID(users)
+	if !ok {
+		return &pb.CheckUserAvalilabilityWithTagUserIDResponse{}, err
+	}
+	if err != nil {
+		return &pb.CheckUserAvalilabilityWithTagUserIDResponse{}, err
+	}
+	return &pb.CheckUserAvalilabilityWithTagUserIDResponse{
+		Valid: ok,
+	}, nil
+}
+
+func (au *AuthSever) GetUserNameWithTagUserID(ctx context.Context, req *pb.GetUserNameWithTagUserIDRequest) (*pb.GetUserNameWithTagUserIDResponse, error) {
+	var users []models.Tag
+	for _, user := range req.Tag.User {
+		tag := models.Tag{User: user}
+		users = append(users, tag)
+	}
+	data, err := au.userUseCase.GetUserNameWithTagUserID(users)
+	if err != nil {
+		return nil, err
+	}
+
+	var tagUsers []*pb.TagUsernames
+	for _, user := range data {
+		tagUsers = append(tagUsers, &pb.TagUsernames{
+			Username: user.Username,
+		})
+	}
+	return &pb.GetUserNameWithTagUserIDResponse{
+		Name: tagUsers,
+	}, nil
 }

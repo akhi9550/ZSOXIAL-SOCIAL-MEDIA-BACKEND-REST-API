@@ -55,9 +55,9 @@ func (ur *userRepository) CheckUserExistsByPhone(phone string) (*domain.User, er
 	return &user, nil
 }
 
-func (ur *userRepository) UserSignUp(user models.UserSignUpRequest, url string) (models.UserResponse, error) {
+func (ur *userRepository) UserSignUp(user models.UserSignUpRequest) (models.UserResponse, error) {
 	var signupDetails models.UserResponse
-	err := ur.DB.Raw(`INSERT INTO users (firstname,lastname,username,dob,gender,phone,email,password,bio,imageurl,created_at) VALUES(?,?,?,?,?,?,?,?,?,?,NOW()) RETURNING id,username,imageurl`, user.Firstname, user.Lastname, user.Username, user.Dob, user.Gender, user.Phone, user.Email, user.Password, user.Bio, url).Scan(&signupDetails).Error
+	err := ur.DB.Raw(`INSERT INTO users (firstname,lastname,username,phone,email,password,created_at) VALUES(?,?,?,?,?,?,NOW()) RETURNING id,username,email`, user.Firstname, user.Lastname, user.Username, user.Phone, user.Email, user.Password).Scan(&signupDetails).Error
 	if err != nil {
 		return models.UserResponse{}, err
 	}
@@ -251,4 +251,26 @@ func (ur *userRepository) Changepassword(id int, password string) error {
 		return err
 	}
 	return nil
+}
+
+func (ur *userRepository) CheckUserAvalilabilityWithTagUserID(users []models.Tag) (bool, error) {
+	var count int
+	for _, i := range users {
+		if err := ur.DB.Raw("SELECT COUNT(*) FROM users WHERE id = ?", i.User).Scan(&count).Error; err != nil {
+			return false, err
+		}
+	}
+	return count > 0, nil
+}
+
+func (ur *userRepository) GetUserNameWithTagUserID(users []models.Tag) ([]models.UserTag, error) {
+	var data []models.UserTag
+	for _, user := range users {
+		var userDetails models.UserTag
+		if err := ur.DB.Raw("SELECT username FROM users WHERE id = ?", user.User).Scan(&userDetails).Error; err != nil {
+			return nil, err
+		}
+		data = append(data, userDetails)
+	}
+	return data, nil
 }
