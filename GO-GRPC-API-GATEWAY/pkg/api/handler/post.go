@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -243,6 +244,60 @@ func (p *PostHandler) PostComment(c *gin.Context) {
 	c.JSON(http.StatusOK, success)
 }
 
+func (p *PostHandler) GetAllPostComments(c *gin.Context) {
+	postID := c.Query("post_id")
+	PostID, err := strconv.Atoi(postID)
+	if err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "Post_id not in right format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+		return
+	}
+	data, err := p.GRPC_Client.GetAllPostComments(PostID)
+	if err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+		return
+	}
+	success := response.ClientResponse(http.StatusOK, "Successfully Received All Comments in the Post", data, nil)
+	c.JSON(http.StatusOK, success)
+}
+
+func (p *PostHandler) DeleteComment(c *gin.Context) {
+	userID, _ := c.Get("user_id")
+	comment := c.Query("comment_id")
+	commentID, err := strconv.Atoi(comment)
+	if err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "CommentID not in right format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+		return
+	}
+	err = p.GRPC_Client.DeleteComment(userID.(int), commentID)
+	if err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+		return
+	}
+	success := response.ClientResponse(http.StatusOK, "Successfully Deleted Comment in the Post", nil, nil)
+	c.JSON(http.StatusOK, success)
+}
+
+func (p *PostHandler) ReplyComment(c *gin.Context) {
+	userID, _ := c.Get("user_id")
+	var req models.ReplyCommentReq
+	if err := c.ShouldBindJSON(&req); err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+	}
+	data, err := p.GRPC_Client.ReplyComment(userID.(int), req)
+	if err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+		return
+	}
+	success := response.ClientResponse(http.StatusOK, "Successfully Received Comment in the Post", data, nil)
+	c.JSON(http.StatusOK, success)
+}
+
 func (p *PostHandler) SavedPost(c *gin.Context) {
 	userID, _ := c.Get("user_id")
 	PostID := c.Query("post_id")
@@ -283,12 +338,13 @@ func (p *PostHandler) UnSavedPost(c *gin.Context) {
 
 func (p *PostHandler) GetSavedPost(c *gin.Context) {
 	userID, _ := c.Get("user_id")
-	data,err := p.GRPC_Client.GetSavedPost(userID.(int))
+	data, err := p.GRPC_Client.GetSavedPost(userID.(int))
 	if err != nil {
 		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
 		return
 	}
+	fmt.Println("darta", data)
 	success := response.ClientResponse(http.StatusOK, "Successfully Received Saved Post", data, nil)
 	c.JSON(http.StatusOK, success)
 

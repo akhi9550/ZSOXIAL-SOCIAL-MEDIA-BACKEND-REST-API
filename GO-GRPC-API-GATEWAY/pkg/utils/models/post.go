@@ -79,12 +79,40 @@ type PostCommentReq struct {
 	Comment string `json:"comment"`
 }
 
+type ReplyCommentReq struct {
+	CommentID uint   `json:"comment_id"`
+	Reply     string `json:"reply"`
+}
+
 type PostCommentResponse struct {
 	UserID      uint      `json:"user_id"`
 	CommentUser string    `json:"comment_user"`
 	Profile     string    `json:"profile"`
+	CommentID   uint      `json:"comment_id"`
 	Comment     string    `json:"comment"`
 	CreatedAt   time.Time `json:"created_at"`
+}
+
+
+type PostComment struct {
+	UserID        uint      `json:"user_id"`
+	CommentUser string    `json:"commented_user"`
+	Profile       string    `json:"profile"`
+	Comment       string    `json:"comment"`
+	CreatedAt     time.Time `json:"created_at"`
+}
+
+type ReplyPostCommentResponse struct {
+	UserID    uint      `json:"user_id"`
+	ReplyUser string    `json:"reply_user"`
+	Profile   string    `json:"profile"`
+	Reply     string    `json:"reply"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
+type ReplyReposne struct {
+	Comment PostComment
+	Reply   ReplyPostCommentResponse
 }
 
 type Comments struct {

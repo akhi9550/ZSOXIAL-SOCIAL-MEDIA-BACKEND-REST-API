@@ -260,16 +260,16 @@ func (p *PostClient) UnLinkPost(userID int, postID int) error {
 	return nil
 }
 
-func (p *PostClient) PostComment(userID int, postData models.PostCommentReq) (models.PostCommentResponse, error) {
+func (p *PostClient) PostComment(userID int, postData models.PostCommentReq) (models.PostComment, error) {
 	data, err := p.Client.PostComment(context.Background(), &pb.PostCommentRequest{
 		Userid:  int64(userID),
 		Postid:  int64(postData.PostID),
 		Comment: postData.Comment,
 	})
 	if err != nil {
-		return models.PostCommentResponse{}, err
+		return models.PostComment{}, err
 	}
-	return models.PostCommentResponse{
+	return models.PostComment{
 		UserID:      uint(data.Userid),
 		CommentUser: data.CommentedUser,
 		Profile:     data.Posturl,
@@ -277,6 +277,69 @@ func (p *PostClient) PostComment(userID int, postData models.PostCommentReq) (mo
 		CreatedAt:   data.GetCreatedAt().AsTime(),
 	}, nil
 
+}
+
+func (p *PostClient) GetAllPostComments(postID int) ([]models.PostCommentResponse, error) {
+	data, err := p.Client.GetAllPostComments(context.Background(), &pb.GetAllCommentsRequest{
+		Postid: int64(postID),
+	})
+	if err != nil {
+		return []models.PostCommentResponse{}, err
+	}
+	var PostComments []models.PostCommentResponse
+	for _, post := range data.Allcomments {
+		PostComment := models.PostCommentResponse{
+			UserID:      uint(post.Userid),
+			CommentUser: post.CommentedUser,
+			Profile:     post.Posturl,
+			CommentID:   uint(post.Commentid),
+			Comment:     post.Comment,
+			CreatedAt:   post.GetCreatedAt().AsTime(),
+		}
+		PostComments = append(PostComments, PostComment)
+	}
+	return PostComments, nil
+}
+
+func (p *PostClient) DeleteComment(userID, commentID int) error {
+	_, err := p.Client.DeleteComment(context.Background(), &pb.DeleteCommentRequest{
+		Userid:    int64(userID),
+		Commentid: int64(commentID),
+	})
+	if err != nil {
+		return err
+	}
+	return nil
+
+}
+
+func (p *PostClient) ReplyComment(userID int, req models.ReplyCommentReq) (models.ReplyReposne, error) {
+	data, err := p.Client.ReplyComment(context.Background(), &pb.ReplyCommentRequest{
+		Replyuserid: int64(userID),
+		Commentid:   int64(req.CommentID),
+		Replies:     req.Reply,
+	})
+	if err != nil {
+		return models.ReplyReposne{}, err
+	}
+	comment := models.PostComment{
+		UserID:      uint(data.Comment.Userid),
+		CommentUser: data.Comment.CommentedUser,
+		Profile:     data.Comment.Posturl,
+		Comment:     data.Comment.Comment,
+		CreatedAt:   data.Comment.CreatedAt.AsTime(),
+	}
+	reply := models.ReplyPostCommentResponse{
+		UserID:    uint(data.Reply.Replyuserid),
+		ReplyUser: data.Reply.Replieduser,
+		Profile:   data.Reply.Posturl,
+		Reply:     data.Reply.Replies,
+		CreatedAt: data.Reply.CreatedAt.AsTime(),
+	}
+	return models.ReplyReposne{
+		Comment: comment,
+		Reply:   reply,
+	}, nil
 }
 
 func (p *PostClient) SavedPost(userID, postID int) error {
@@ -311,7 +374,7 @@ func (p *PostClient) GetSavedPost(userID int) ([]models.PostResponse, error) {
 	var postResponses []models.PostResponse
 	for _, post := range data.Allpost {
 		user := models.UserData{
-			UserId:   uint(userID),
+			UserId:   uint(post.User.Userid),
 			Username: post.User.Username,
 			Profile:  post.User.Imageurl,
 		}
