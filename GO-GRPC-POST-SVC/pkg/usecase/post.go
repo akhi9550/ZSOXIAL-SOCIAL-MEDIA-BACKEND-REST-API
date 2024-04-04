@@ -327,29 +327,118 @@ func (p *postUseCase) UnLinkPost(userID int, postID int) error {
 	return nil
 }
 
-func (p *postUseCase) PostComment(userID int, data models.PostCommentReq) (models.PostCommentResponse, error) {
+func (p *postUseCase) PostComment(userID int, data models.PostCommentReq) (models.PostComment, error) {
 	userExist := p.authClient.CheckUserAvalilabilityWithUserID(userID)
 	if !userExist {
-		return models.PostCommentResponse{}, errors.New("user doesn't exist")
+		return models.PostComment{}, errors.New("user doesn't exist")
 	}
 	ok := p.postRepository.CheckPostAvalilabilityWithID(int(data.PostID))
 	if !ok {
-		return models.PostCommentResponse{}, errors.New("post doesn't exist")
+		return models.PostComment{}, errors.New("post doesn't exist")
 	}
 	result, err := p.postRepository.PostComment(userID, data)
 	if err != nil {
-		return models.PostCommentResponse{}, err
+		return models.PostComment{}, err
 	}
 	userData, err := p.authClient.UserData(userID)
 	if err != nil {
-		return models.PostCommentResponse{}, err
+		return models.PostComment{}, err
 	}
-	return models.PostCommentResponse{
+	return models.PostComment{
 		UserID:        result.UserID,
 		CommentedUser: userData.Username,
 		Profile:       userData.Profile,
 		Comment:       result.Comment,
 		CreatedAt:     result.CreatedAt,
+	}, nil
+}
+
+func (p *postUseCase) DeleteComment(userID, CommentID int) error {
+	userExist := p.postRepository.CheckUserWithUserID(userID)
+	if !userExist {
+		return errors.New("user couldn't delete this")
+	}
+	ok := p.postRepository.CheckCommentWithID(CommentID)
+	if !ok {
+		return errors.New("comment doesn't exist")
+	}
+	err := p.postRepository.DeleteComment(userID, CommentID)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+func (p *postUseCase) GetAllPostComments(PostID int) ([]models.PostCommentResponse, error) {
+	postExist := p.postRepository.CheckPostAvalilabilityWithID(PostID)
+	if !postExist {
+		return []models.PostCommentResponse{}, errors.New("post doesn't exist")
+	}
+	data, err := p.postRepository.GetAllPostComments(PostID)
+	if err != nil {
+		return []models.PostCommentResponse{}, err
+	}
+	var comments []models.PostCommentResponse
+	for _, post := range data {
+		userData, err := p.authClient.UserData(int(post.UserID))
+		if err != nil {
+			return nil, err
+		}
+		comment := models.PostCommentResponse{
+			UserID:        userData.UserId,
+			CommentedUser: userData.Username,
+			Profile:       userData.Profile,
+			CommentID:     post.CommentID,
+			Comment:       post.Comment,
+			CreatedAt:     post.CreatedAt,
+		}
+		comments = append(comments, comment)
+	}
+	return comments, nil
+}
+
+func (p *postUseCase) ReplyComment(userID int, req models.ReplyCommentReq) (models.ReplyReposne, error) {
+	userExist := p.authClient.CheckUserAvalilabilityWithUserID(userID)
+	if !userExist {
+		return models.ReplyReposne{}, errors.New("user doesn't exist")
+	}
+	ok := p.postRepository.CheckCommentWithID(int(req.CommentID))
+	if !ok {
+		return models.ReplyReposne{}, errors.New("comment doesn't exist")
+	}
+	alreadyReplied := p.postRepository.AllReadyExistReply(userID, int(req.CommentID))
+	if !alreadyReplied {
+		return models.ReplyReposne{}, errors.New("already replied the comment")
+	}
+	com, rep, err := p.postRepository.ReplyComment(userID, req)
+	if err != nil {
+		return models.ReplyReposne{}, err
+	}
+	commetUserData, err := p.authClient.UserData(int(com.UserID))
+	if err != nil {
+		return models.ReplyReposne{}, err
+	}
+	replyUserData, err := p.authClient.UserData(int(rep.UserID))
+	if err != nil {
+		return models.ReplyReposne{}, err
+	}
+	comment := models.PostComment{
+		UserID:        com.UserID,
+		CommentedUser: commetUserData.Username,
+		Profile:       commetUserData.Profile,
+		Comment:       com.Comment,
+		CreatedAt:     com.CreatedAt,
+	}
+	reply := models.ReplyPostCommentResponse{
+		UserID:    rep.UserID,
+		ReplyUser: replyUserData.Username,
+		Profile:   replyUserData.Profile,
+		Reply:     rep.Reply,
+		CreatedAt: rep.CreatedAt,
+	}
+
+	return models.ReplyReposne{
+		Comment: comment,
+		Reply:   reply,
 	}, nil
 }
 

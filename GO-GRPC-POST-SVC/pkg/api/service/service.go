@@ -252,6 +252,68 @@ func (p *PostServer) PostComment(ctx context.Context, req *pb.PostCommentRequest
 	}, nil
 }
 
+func (p *PostServer) DeleteComment(ctx context.Context, req *pb.DeleteCommentRequest) (*pb.DeleteCommentResponse, error) {
+	userID, commentID := req.Userid, req.Commentid
+	err := p.postUseCase.DeleteComment(int(userID), int(commentID))
+	if err != nil {
+		return &pb.DeleteCommentResponse{}, err
+	}
+	return &pb.DeleteCommentResponse{}, nil
+}
+
+func (p *PostServer) GetAllPostComments(ctx context.Context, req *pb.GetAllCommentsRequest) (*pb.GetAllCommentsResponse, error) {
+	postID := req.Postid
+	data, err := p.postUseCase.GetAllPostComments(int(postID))
+	if err != nil {
+		return nil, err
+	}
+	var allCommentResponses []*pb.PostCommentResponses
+	for _, post := range data {
+		details := &pb.PostCommentResponses{
+			Userid:        int64(post.UserID),
+			CommentedUser: post.CommentedUser,
+			Posturl:       post.Profile,
+			Commentid:     int64(post.CommentID),
+			Comment:       post.Comment,
+			CreatedAt:     timestamppb.New(post.CreatedAt),
+		}
+		allCommentResponses = append(allCommentResponses, details)
+	}
+	return &pb.GetAllCommentsResponse{
+		Allcomments: allCommentResponses,
+	}, nil
+}
+
+func (p *PostServer) ReplyComment(ctx context.Context, req *pb.ReplyCommentRequest) (*pb.ReplyCommentResponse, error) {
+	userID := req.Replyuserid
+	reqdata := models.ReplyCommentReq{
+		CommentID: uint(req.Commentid),
+		Reply:     req.Replies,
+	}
+	data, err := p.postUseCase.ReplyComment(int(userID), reqdata)
+	if err != nil {
+		return &pb.ReplyCommentResponse{}, err
+	}
+	comment := &pb.PostCommentResponse{
+		Userid:        int64(data.Comment.UserID),
+		CommentedUser: data.Comment.CommentedUser,
+		Posturl:       data.Comment.Profile,
+		Comment:       data.Comment.Comment,
+		CreatedAt:     timestamppb.New(data.Comment.CreatedAt),
+	}
+	reply := &pb.Reply{
+		Replyuserid: int64(data.Reply.UserID),
+		Replieduser: data.Reply.ReplyUser,
+		Posturl:     data.Reply.Profile,
+		Replies:     data.Reply.Reply,
+		CreatedAt:   timestamppb.New(data.Reply.CreatedAt),
+	}
+	return &pb.ReplyCommentResponse{
+		Comment: comment,
+		Reply:   reply,
+	}, nil
+}
+
 func (p *PostServer) SavedPost(ctx context.Context, req *pb.SavedPostRequest) (*pb.SavedPostResponse, error) {
 	userID, postID := req.Userid, req.Postid
 	err := p.postUseCase.SavedPost(int(userID), int(postID))

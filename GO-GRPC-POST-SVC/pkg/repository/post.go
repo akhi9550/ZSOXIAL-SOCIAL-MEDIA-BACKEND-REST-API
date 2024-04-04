@@ -219,17 +219,86 @@ func (p *postRepository) UnLikePost(userID, postID int) error {
 	return nil
 }
 
-func (p *postRepository) PostComment(userID int, data models.PostCommentReq) (models.PostCommentResponses, error) {
-	var response models.PostCommentResponses
+func (p *postRepository) PostComment(userID int, data models.PostCommentReq) (models.PostComments, error) {
+	var response models.PostComments
 	err := p.DB.Raw(`INSERT INTO comments (post_id,commented_user,comment_data,created_at) VALUES (?,?,?,NOW()) RETURNING commented_user,comment_data,created_at`, data.PostID, userID, data.Comment).Scan(&response).Error
 	if err != nil {
-		return models.PostCommentResponses{}, err
+		return models.PostComments{}, err
 	}
 	err = p.DB.Exec(`UPDATE posts SET comments_count = comments_count + 1 WHERE id = ?`, data.PostID).Error
 	if err != nil {
-		return models.PostCommentResponses{}, err
+		return models.PostComments{}, err
 	}
 	return response, nil
+}
+
+func (p *postRepository) CheckUserWithUserID(userID int) bool {
+	var count int
+	err := p.DB.Raw(`SELECT COUNT(*) FROM comments WHERE commented_user = ?`, userID).Scan(&count).Error
+	if err != nil {
+		return false
+	}
+	return count > 0
+}
+
+func (p *postRepository) CheckCommentWithID(CommentID int) bool {
+	var count int
+	err := p.DB.Raw(`SELECT COUNT(*) FROM comments WHERE id = ? `, CommentID).Scan(&count).Error
+	if err != nil {
+		return false
+	}
+	return count > 0
+}
+
+func (p *postRepository) DeleteComment(userID, CommentID int) error {
+	err := p.DB.Exec(`DELETE FROM comments WHERE commented_user = ? AND id = ?`, userID, CommentID).Error
+	if err != nil {
+		return err
+	}
+	err = p.DB.Exec(`DELETE FROM comment_repies WHERE comment_id = ?`, CommentID).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *postRepository) GetAllPostComments(PostID int) ([]models.PostCommentResponses, error) {
+	var comments []models.PostCommentResponses
+	err := p.DB.Raw(`SELECT id,commented_user,comment_data,created_at FROM comments WHERE post_id = ?`, PostID).Scan(&comments).Error
+	if err != nil {
+		return []models.PostCommentResponses{}, err
+	}
+	return comments, nil
+}
+
+func (p *postRepository) AllReadyExistReply(userID, CommentID int) bool {
+	var count int
+	err := p.DB.Raw(`SELECT COUNT(*) FROM comment_repies WHERE id = ? AND reply_user = ?`, CommentID, userID).Scan(&count).Error
+	if err != nil {
+		return false
+	}
+	return count > 0
+}
+
+func (p *postRepository) ReplyComment(userID int, req models.ReplyCommentReq) (models.PostComments, models.ReplyResponse, error) {
+	var a models.Resp
+	var comments models.PostComments
+	var reply models.ReplyResponse
+	err := p.DB.Raw(`SELECT commented_user,post_id FROM comments WHERE id = ?`, req.CommentID).Scan(&a).Error
+	if err != nil {
+		return models.PostComments{}, models.ReplyResponse{}, err
+	}
+	err = p.DB.Raw(`INSERT INTO comment_repies (post_id, comment_id,commented_user, reply_user, replies, created_at)
+	VALUES (?, ?, ?, ?, ?, NOW())
+	RETURNING reply_user, replies, created_at`, a.PostID, req.CommentID, a.UserID, userID, req.Reply).Scan(&reply).Error
+	if err != nil {
+		return models.PostComments{}, models.ReplyResponse{}, err
+	}
+	err = p.DB.Raw(`SELECT commented_user,comment_data,created_at FROM comments WHERE id = ?`, req.CommentID).Scan(&comments).Error
+	if err != nil {
+		return models.PostComments{}, models.ReplyResponse{}, err
+	}
+	return comments, reply, nil
 }
 
 func (p *postRepository) SavedPost(userID, postID int) error {

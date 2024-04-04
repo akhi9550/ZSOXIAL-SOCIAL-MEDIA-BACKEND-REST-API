@@ -82,7 +82,21 @@ type PostCommentReq struct {
 	Comment string `json:"comment"`
 }
 
+type ReplyCommentReq struct {
+	CommentID uint   `json:"comment_id"`
+	Reply     string `json:"reply"`
+}
+
 type PostCommentResponse struct {
+	UserID        uint      `json:"user_id"`
+	CommentedUser string    `json:"commented_user"`
+	Profile       string    `json:"profile"`
+	CommentID     uint      `json:"comment_id"`
+	Comment       string    `json:"comment"`
+	CreatedAt     time.Time `json:"created_at"`
+}
+
+type PostComment struct {
 	UserID        uint      `json:"user_id"`
 	CommentedUser string    `json:"commented_user"`
 	Profile       string    `json:"profile"`
@@ -90,10 +104,41 @@ type PostCommentResponse struct {
 	CreatedAt     time.Time `json:"created_at"`
 }
 
-type PostCommentResponses struct {
+type PostComments struct {
 	UserID    uint      `json:"user_id" gorm:"column:commented_user"`
 	Comment   string    `json:"comment" gorm:"column:comment_data"`
 	CreatedAt time.Time `json:"created_at"`
+}
+
+type Resp struct {
+	UserID uint `json:"user_id" gorm:"column:commented_user"`
+	PostID uint `json:"post_id"`
+}
+
+type PostCommentResponses struct {
+	UserID    uint      `json:"user_id" gorm:"column:commented_user"`
+	CommentID uint      `json:"comment_id" gorm:"column:id"`
+	Comment   string    `json:"comment" gorm:"column:comment_data"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
+type ReplyPostCommentResponse struct {
+	UserID    uint      `json:"user_id"`
+	ReplyUser string    `json:"reply_user"`
+	Profile   string    `json:"profile"`
+	Reply     string    `json:"reply"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
+type ReplyResponse struct {
+	UserID    uint      `json:"user_id" gorm:"column:reply_user"`
+	Reply     string    `json:"reply" gorm:"column:replies"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
+type ReplyReposne struct {
+	Comment PostComment
+	Reply   ReplyPostCommentResponse
 }
 
 type Comments struct {

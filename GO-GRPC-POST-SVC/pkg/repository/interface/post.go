@@ -23,7 +23,13 @@ type PostRepository interface {
 	CheckAlreadyLiked(userID, PostID int) bool
 	LikePost(userID, postID int) (models.LikesReponse, error)
 	UnLikePost(userID, postID int) error
-	PostComment(userID int, data models.PostCommentReq) (models.PostCommentResponses, error)
+	PostComment(userID int, data models.PostCommentReq) (models.PostComments, error)
+	CheckUserWithUserID(userID int) bool
+	CheckCommentWithID(CommentID int) bool
+	DeleteComment(userID, CommentID int) error
+	GetAllPostComments(PostID int) ([]models.PostCommentResponses, error)
+	AllReadyExistReply(userID, CommentID int) bool
+	ReplyComment(userID int, req models.ReplyCommentReq) (models.PostComments, models.ReplyResponse, error)
 	SavedPost(userID, postID int) error
 	AllReadyExistPost(userID, postID int) bool
 	UnSavedPost(userID, postID int) error

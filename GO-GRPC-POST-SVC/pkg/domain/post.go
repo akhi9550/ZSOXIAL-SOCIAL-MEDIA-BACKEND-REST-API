@@ -46,17 +46,18 @@ type Comment struct {
 	Post          Post      `json:"post" gorm:"foreignKey:PostID;constraint:OnDelete:CASCADE"`
 	CommentedUser uint      `json:"commented_user"`
 	CommentData   string    `json:"comment_data"`
-	Replies       string    `json:"replies"`
 	CreatedAt     time.Time `json:"created_at"`
 }
 
-// type CommentRepies struct {
-// 	ID          uint   `json:"id" gorm:"uniquekey; not null"`
-// 	CommentID   uint   `json:"comment_id"`
-// 	UserID      uint   `json:"user_id"`
-// 	CommentUser uint   `json:"comment_user"`
-// 	Replies     string `json:"replies"`
-// }
+type CommentReplies struct {
+	ID            uint      `json:"id" gorm:"uniquekey; not null"`
+	Post_id       uint      `json:"post_id"`
+	CommentID     uint      `json:"comment_id"`
+	CommentedUser uint      `json:"commented_user"`
+	ReplyUser     uint      `json:"reply_user"`
+	Replies       string    `json:"replies"`
+	CreatedAt     time.Time `json:"created_at"`
+}
 
 type SavedPost struct {
 	ID     uint `json:"id" gorm:"uniquekey; not null"`

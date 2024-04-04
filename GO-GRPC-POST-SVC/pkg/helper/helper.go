@@ -48,7 +48,7 @@ func AddImageToAwsS3(file []byte, filename string) (string, error) {
 	}
 	// Create an S3 uploader with the session and default options
 	uploader := s3manager.NewUploader(sess)
-	BucketName := "zhooze"
+	BucketName := "zsoxial"
 	//upload data(video or image)
 	_, err = uploader.Upload(&s3manager.UploadInput{
 		Bucket:      aws.String(BucketName),

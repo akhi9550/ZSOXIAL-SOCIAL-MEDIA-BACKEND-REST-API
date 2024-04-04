@@ -19,6 +19,7 @@ func ConnectDatabase(cfg config.Config) (*gorm.DB, error) {
 	db.AutoMigrate(&domain.PostType{})
 	db.AutoMigrate(&domain.Likes{})
 	db.AutoMigrate(&domain.Comment{})
+	db.AutoMigrate(&domain.CommentReplies{})
 	db.AutoMigrate(&domain.ArchivePost{})
 	db.AutoMigrate(&domain.Tags{})
 	db.AutoMigrate(&domain.Story{})
