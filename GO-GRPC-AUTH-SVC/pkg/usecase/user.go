@@ -8,6 +8,7 @@ import (
 	interfaces "github.com/akhi9550/auth-svc/pkg/repository/interface"
 	services "github.com/akhi9550/auth-svc/pkg/usecase/interface"
 	"github.com/akhi9550/auth-svc/pkg/utils/models"
+	"github.com/google/uuid"
 
 	"github.com/jinzhu/copier"
 	"golang.org/x/crypto/bcrypt"
@@ -204,9 +205,10 @@ func (ur *userUseCase) UpdateUserDetails(userDetails models.UsersProfileDetail, 
 	if err != nil {
 		return models.UsersProfileDetails{}, err
 	}
-
-	filename := userDetails.Firstname
-	url, err := helper.AddImageToAwsS3(file, filename)
+	fileUID := uuid.New()
+	fileName := fileUID.String()
+	s3Path := userDetails.Username + fileName
+	url, err := helper.AddImageToAwsS3(file, s3Path)
 	if err != nil {
 		return models.UsersProfileDetails{}, errors.New("passing aws")
 	}
