@@ -82,7 +82,7 @@ func (au *AuthSever) VerifyOtp(ctx context.Context, req *pb.VerifyOtpRequest) (*
 	if err != nil {
 		return &pb.VerifyOtpResponse{}, err
 	}
-	userDetails := &pb.UserInfo{Id: int64(data.Users.Id), Username: data.Users.Username, ProfilePhoto: data.Users.Imageurl, Isadmin: data.Users.Isadmin}
+	userDetails := &pb.UserInfo{Id: int64(data.Users.Id), Username: data.Users.Username, Email: data.Users.Email, ProfilePhoto: data.Users.Imageurl, Isadmin: data.Users.Isadmin}
 	UserResponse := &pb.UserResponse{Info: userDetails, Accesstoken: data.AccessToken, Refreshtoken: data.RefreshToken}
 	return &pb.VerifyOtpResponse{
 		Reposnse: UserResponse,

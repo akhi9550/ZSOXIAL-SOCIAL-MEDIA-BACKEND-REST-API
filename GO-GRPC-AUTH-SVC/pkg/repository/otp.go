@@ -33,10 +33,9 @@ func (op *otpRepository) FindUserByPhoneNumber(phone string) (*domain.User, erro
 }
 func (op *otpRepository) UserDetailsUsingPhone(phone string) (models.UserResponse, error) {
 	var userDeatils models.UserResponse
-	if err := op.DB.Raw("SELECT * FROM users WHERE phone = ?", phone).Scan(&userDeatils).Error; err != nil {
+	if err := op.DB.Raw("SELECT id,username,email,imageurl,isadmin FROM users WHERE phone = ?", phone).Scan(&userDeatils).Error; err != nil {
 		return models.UserResponse{}, err
 	}
-
 	return userDeatils, nil
 }
 func (op *otpRepository) FindUsersByEmail(email string) (bool, error) {

@@ -161,59 +161,53 @@ func (ur *userUseCase) UpdateUserDetails(userDetails models.UsersProfileDetail, 
 	if !userExist {
 		return models.UsersProfileDetails{}, errors.New("user doesn't exist")
 	}
-	err := ur.userRepository.UpdateFirstName(userDetails.Firstname, userID)
-	if err != nil {
-		return models.UsersProfileDetails{}, err
+	if userDetails.Firstname != "" {
+		ur.userRepository.UpdateFirstName(userDetails.Firstname, userID)
 	}
-	err = ur.userRepository.UpdateLastName(userDetails.Lastname, userID)
-	if err != nil {
-		return models.UsersProfileDetails{}, err
+	if userDetails.Lastname != "" {
+		ur.userRepository.UpdateLastName(userDetails.Lastname, userID)
 	}
-	ok := ur.userRepository.ExistUsername(userDetails.Username)
-	if ok {
-		return models.UsersProfileDetails{}, errors.New("username already exist")
+	if userDetails.Username != "" {
+		ok := ur.userRepository.ExistUsername(userDetails.Username)
+		if ok {
+			return models.UsersProfileDetails{}, errors.New("username already exist")
+		}
+		ur.userRepository.UpdateUserName(userDetails.Username, userID)
 	}
-	err = ur.userRepository.UpdateUserName(userDetails.Username, userID)
-	if err != nil {
-		return models.UsersProfileDetails{}, err
+	if userDetails.Dob != "" {
+		ur.userRepository.UpdateDOB(userDetails.Dob, userID)
 	}
-	err = ur.userRepository.UpdateDOB(userDetails.Dob, userID)
-	if err != nil {
-		return models.UsersProfileDetails{}, err
+	if userDetails.Gender != "" {
+		ur.userRepository.UpdateGender(userDetails.Gender, userID)
 	}
-	err = ur.userRepository.UpdateGender(userDetails.Gender, userID)
-	if err != nil {
-		return models.UsersProfileDetails{}, err
+	if userDetails.Phone != "" {
+		ok := ur.userRepository.ExistPhone(userDetails.Phone)
+		if ok {
+			return models.UsersProfileDetails{}, errors.New("phone already exist")
+		}
+		ur.userRepository.UpdateUserPhone(userDetails.Phone, userID)
 	}
-	ok = ur.userRepository.ExistPhone(userDetails.Phone)
-	if ok {
-		return models.UsersProfileDetails{}, errors.New("phone already exist")
+	if userDetails.Email != "" {
+		ok := ur.userRepository.ExistEmail(userDetails.Email)
+		if ok {
+			return models.UsersProfileDetails{}, errors.New("email already exist")
+		}
+		ur.userRepository.UpdateUserEmail(userDetails.Email, userID)
 	}
-	err = ur.userRepository.UpdateUserPhone(userDetails.Phone, userID)
-	if err != nil {
-		return models.UsersProfileDetails{}, err
-	}
-	ok = ur.userRepository.ExistEmail(userDetails.Email)
-	if ok {
-		return models.UsersProfileDetails{}, errors.New("email already exist")
-	}
-	err = ur.userRepository.UpdateUserEmail(userDetails.Email, userID)
-	if err != nil {
-		return models.UsersProfileDetails{}, err
-	}
-	err = ur.userRepository.UpdateBIO(userDetails.Bio, userID)
-	if err != nil {
-		return models.UsersProfileDetails{}, err
+	if userDetails.Bio != "" {
+		ur.userRepository.UpdateBIO(userDetails.Bio, userID)
 	}
 	fileUID := uuid.New()
 	fileName := fileUID.String()
 	s3Path := userDetails.Username + fileName
-	url, err := helper.AddImageToAwsS3(file, s3Path)
-	if err != nil {
-		return models.UsersProfileDetails{}, errors.New("passing aws")
-	}
-	if string(file) != "" {
-		ur.userRepository.UpdatePhoto(url, userID)
+	if file != nil {
+		url, err := helper.AddImageToAwsS3(file, s3Path)
+		if err != nil {
+			return models.UsersProfileDetails{}, errors.New("passing aws")
+		}
+		if string(file) != "" {
+			ur.userRepository.UpdatePhoto(url, userID)
+		}
 	}
 	return ur.userRepository.UserDetails(userID)
 }

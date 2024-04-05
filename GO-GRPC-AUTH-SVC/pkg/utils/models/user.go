@@ -23,7 +23,7 @@ type UserResponse struct {
 	Username string `json:"username"`
 	Email    string `json:"email"`
 	Imageurl string `json:"imageurl"`
-	Isadmin  bool   `json:"is_admin"`
+	Isadmin  bool   `json:"isadmin"`
 }
 
 type UserResponsewithPassword struct {
@@ -78,15 +78,15 @@ type UsersProfileDetail struct {
 }
 
 type UsersProfileDetails struct {
-	Firstname string `json:"firstname" validate:"gte=3"`
-	Lastname  string `json:"lastname" validate:"gte=1"`
-	Username  string `json:"username" validate:"gte=3"`
-	Dob       string `json:"dob" gorm:"validate:required"`
-	Gender    string `json:"gender" gorm:"validate:required"`
+	Firstname string `json:"firstname"`
+	Lastname  string `json:"lastname"`
+	Username  string `json:"username"`
+	Dob       string `json:"dob"`
+	Gender    string `json:"gender"`
 	Phone     string `json:"phone" `
-	Email     string `json:"email" validate:"email"`
+	Email     string `json:"email"`
 	Bio       string `json:"bio"`
-	Imageurl  string `json:"imageurl" gorm:"validate:required"`
+	Imageurl  string `json:"imageurl"`
 }
 
 type ChangePassword struct {
