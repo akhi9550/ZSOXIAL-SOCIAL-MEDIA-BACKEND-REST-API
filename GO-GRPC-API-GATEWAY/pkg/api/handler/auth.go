@@ -30,12 +30,15 @@ func (au *AuthHandler) UserSignup(c *gin.Context) {
 		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
 	}
+
 	pattern := `^\d{10}$`
 	regex := regexp.MustCompile(pattern)
 	value := regex.MatchString(UserSignupDetail.Phone)
 	if !value {
+		fmt.Printf("%s phone number is not valid", UserSignupDetail.Phone)
 		return
 	}
+
 	err := validator.New().Struct(UserSignupDetail)
 	if err != nil {
 		errs := response.ClientResponse(http.StatusBadRequest, "Constraints not statisfied", nil, err.Error())
@@ -168,7 +171,24 @@ func (au *AuthHandler) UpdateUserDetails(c *gin.Context) {
 	phone := c.PostForm("phone")
 	email := c.PostForm("email")
 	bio := c.PostForm("bio")
-
+	if phone != "" {
+		pattern := `^\d{10}$`
+		regex := regexp.MustCompile(pattern)
+		value := regex.MatchString(phone)
+		if !value {
+			fmt.Printf("%s This phone number is not valid", phone)
+			return
+		}
+	}
+	if email != "" {
+		pattern := `^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`
+		regexpPattern := regexp.MustCompile(pattern)
+		value := regexpPattern.MatchString(email)
+		if !value {
+			fmt.Printf("%s This email is not valid", phone)
+			return
+		}
+	}
 	user := models.UsersProfileDetail{
 		Firstname: firstname,
 		Lastname:  lastname,
@@ -179,7 +199,6 @@ func (au *AuthHandler) UpdateUserDetails(c *gin.Context) {
 		Email:     email,
 		Bio:       bio,
 	}
-
 	err := validator.New().Struct(user)
 	if err != nil {
 		errs := response.ClientResponse(http.StatusBadRequest, "Constraints not statisfied", nil, err.Error())
@@ -194,9 +213,9 @@ func (au *AuthHandler) UpdateUserDetails(c *gin.Context) {
 		return
 	}
 
-	user_id, _ := c.Get("user_id")
+	userID, _ := c.Get("user_id")
 
-	updateDetails, err := au.GRPC_Client.UpdateUserDetails(user, file, user_id.(int))
+	updateDetails, err := au.GRPC_Client.UpdateUserDetails(user, file, userID.(int))
 	if err != nil {
 		errs := response.ClientResponse(http.StatusInternalServerError, "failed update user", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errs)

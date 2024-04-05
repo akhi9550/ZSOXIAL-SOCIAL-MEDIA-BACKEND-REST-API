@@ -62,7 +62,7 @@ func (p *PostHandler) GetPost(c *gin.Context) {
 	postID := c.Query("post_id")
 	PostID, err := strconv.Atoi(postID)
 	if err != nil {
-		errs := response.ClientResponse(http.StatusBadRequest, "Post_id not in right format", nil, err.Error())
+		errs := response.ClientResponse(http.StatusBadRequest, "PostID not in right format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
 		return
 	}
@@ -347,5 +347,97 @@ func (p *PostHandler) GetSavedPost(c *gin.Context) {
 	fmt.Println("darta", data)
 	success := response.ClientResponse(http.StatusOK, "Successfully Received Saved Post", data, nil)
 	c.JSON(http.StatusOK, success)
+}
 
+func (p *PostHandler) CreateStory(c *gin.Context) {
+	userID, _ := c.Get("user_id")
+	file, err := c.FormFile("photo")
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "No file provided", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+	data, err := p.GRPC_Client.CreateStory(userID.(int), file)
+	if err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+		return
+	}
+	success := response.ClientResponse(http.StatusCreated, "User successfully Posted Stroy", data, nil)
+	c.JSON(http.StatusCreated, success)
+}
+
+func (p *PostHandler) GetStory(c *gin.Context) {
+	UserID := c.Query("user_id")
+	userID, err := strconv.Atoi(UserID)
+	if err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "Post_id not in right format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+		return
+	}
+	data, err := p.GRPC_Client.GetStory(userID)
+	if err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+		return
+	}
+	success := response.ClientResponse(http.StatusOK, "User successfully Recived All Stroy", data, nil)
+	c.JSON(http.StatusOK, success)
+}
+
+func (p *PostHandler) DeleteStory(c *gin.Context) {
+	userID, _ := c.Get("user_id")
+	StoryID := c.Query("story_id")
+	storyID, err := strconv.Atoi(StoryID)
+	if err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "StoryID not in right format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+		return
+	}
+	err = p.GRPC_Client.DeleteStory(userID.(int), storyID)
+	if err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+		return
+	}
+	success := response.ClientResponse(http.StatusOK, "User successfully Deleted Stroy", nil, nil)
+	c.JSON(http.StatusOK, success)
+}
+
+func (p *PostHandler) LikeStory(c *gin.Context) {
+	userID, _ := c.Get("user_id")
+	StoryID := c.Query("story_id")
+	storyID, err := strconv.Atoi(StoryID)
+	if err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "StoryID not in right format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+		return
+	}
+	err = p.GRPC_Client.LikeStory(userID.(int), storyID)
+	if err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+		return
+	}
+	success := response.ClientResponse(http.StatusOK, "User successfully Liked Stroy", nil, nil)
+	c.JSON(http.StatusOK, success)
+}
+
+func (p *PostHandler) UnLikeStory(c *gin.Context) {
+	userID, _ := c.Get("user_id")
+	StoryID := c.Query("story_id")
+	storyID, err := strconv.Atoi(StoryID)
+	if err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "StoryID not in right format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+		return
+	}
+	err = p.GRPC_Client.UnLikeStory(userID.(int), storyID)
+	if err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+		return
+	}
+	success := response.ClientResponse(http.StatusOK, "Successfully UnLiked Stroy", nil, nil)
+	c.JSON(http.StatusOK, success)
 }

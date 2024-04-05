@@ -128,8 +128,6 @@ func (au *AuthClient) UpdateUserDetails(userDetails models.UsersProfileDetail, f
 		return models.UsersProfileDetails{}, err
 	}
 	defer f.Close()
-
-	// Read the file content
 	fileData, err := io.ReadAll(f)
 	if err != nil {
 		return models.UsersProfileDetails{}, err
@@ -209,6 +207,7 @@ func (au *AuthClient) VerifyOTP(code models.VerifyData) (models.ReponseWithToken
 	userData := models.UserResponse{
 		Id:       uint(data.Reposnse.Info.Id),
 		Username: data.Reposnse.Info.Username,
+		Email:    data.Reposnse.Info.Email,
 		Imageurl: string(data.Reposnse.Info.ProfilePhoto),
 		Isadmin:  data.Reposnse.Info.Isadmin,
 	}

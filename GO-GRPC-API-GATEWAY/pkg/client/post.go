@@ -387,9 +387,96 @@ func (p *PostClient) GetSavedPost(userID int) ([]models.PostResponse, error) {
 			Comments:  uint(post.Comment),
 			CreatedAt: post.CreatedAt.AsTime(),
 		}
-
 		postResponses = append(postResponses, postResponse)
 	}
-
 	return postResponses, nil
+}
+
+func (p *PostClient) CreateStory(userID int, file *multipart.FileHeader) (models.CreateStoryResponse, error) {
+	f, err := file.Open()
+	if err != nil {
+		return models.CreateStoryResponse{}, err
+	}
+	defer f.Close()
+
+	fileData, err := io.ReadAll(f)
+	if err != nil {
+		return models.CreateStoryResponse{}, err
+	}
+	files := &pb.StoryUrl{Postimages: fileData}
+	data, err := p.Client.CreateStory(context.Background(), &pb.CreateStoryRequest{
+		Userid: int64(userID),
+		Story:  files,
+	})
+	if err != nil {
+		return models.CreateStoryResponse{}, err
+	}
+	users := models.UserData{
+		UserId:   uint(userID),
+		Username: data.User.Username,
+		Profile:  data.User.Imageurl,
+	}
+	return models.CreateStoryResponse{
+		Author:    users,
+		Story:     data.Story,
+		CreatedAt: data.CreatedAt.AsTime(),
+	}, nil
+}
+
+func (p *PostClient) GetStory(userID int) ([]models.CreateStoryResponses, error) {
+	data, err := p.Client.GetStory(context.Background(), &pb.GetStoryRequest{
+		Userid: int64(userID),
+	})
+	if err != nil {
+		return []models.CreateStoryResponses{}, err
+	}
+	var storyResponses []models.CreateStoryResponses
+	for _, post := range data.Stories {
+		user := models.UserData{
+			UserId:   uint(post.User.Userid),
+			Username: post.User.Username,
+			Profile:  post.User.Imageurl,
+		}
+		storyResponse := models.CreateStoryResponses{
+			Author:    user,
+			StoryID:   uint(post.StoryID),
+			Story:     post.Story,
+			CreatedAt: post.CreatedAt.AsTime(),
+		}
+		storyResponses = append(storyResponses, storyResponse)
+	}
+	return storyResponses, nil
+}
+
+func (p *PostClient) DeleteStory(userID, storyID int) error {
+	_, err := p.Client.DeleteStory(context.Background(), &pb.DeleteStoryRequest{
+		UserID:  int64(userID),
+		Storyid: int64(storyID),
+	})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *PostClient) LikeStory(userID, storyID int) error {
+	_, err := p.Client.LikeStory(context.Background(), &pb.LikeStoryRequest{
+		Userid:  int64(userID),
+		Storyid: int64(storyID),
+	})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *PostClient) UnLikeStory(userID, storyID int) error {
+	_, err := p.Client.UnLikeStory(context.Background(), &pb.LikeStoryRequest{
+		Userid:  int64(userID),
+		Storyid: int64(storyID),
+	})
+	if err != nil {
+		return err
+	}
+	return nil
 }

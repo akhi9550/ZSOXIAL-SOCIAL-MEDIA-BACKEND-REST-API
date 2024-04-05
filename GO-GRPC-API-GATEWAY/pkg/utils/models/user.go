@@ -4,7 +4,7 @@ type UserSignUpRequest struct {
 	Firstname string `json:"firstname" validate:"gte=3"`
 	Lastname  string `json:"lastname" validate:"gte=1"`
 	Username  string `json:"username" validate:"gte=3"`
-	Phone     string `json:"phone" gorm:"validate:required"`
+	Phone     string `json:"phone" validate:"min=10,max=10"`
 	Email     string `json:"email" validate:"email"`
 	Password  string `json:"password" validate:"min=6,max=20"`
 }
@@ -67,8 +67,8 @@ type UsersProfileDetail struct {
 	Username  string `json:"username"`
 	Dob       string `json:"dob"`
 	Gender    string `json:"gender"`
-	Phone     string `json:"phone" gorm:"validate:required"`
-	Email     string `json:"email" validate:"email"`
+	Phone     string `json:"phone"`
+	Email     string `json:"email"`
 	Bio       string `json:"bio"`
 }
 
@@ -78,7 +78,7 @@ type UsersProfileDetails struct {
 	Username  string `json:"username" validate:"gte=3"`
 	Dob       string `json:"dob" gorm:"validate:required"`
 	Gender    string `json:"gender" gorm:"validate:required"`
-	Phone     string `json:"phone" gorm:"validate:required"`
+	Phone     string `json:"phone" validate:"min=10,max=10"`
 	Email     string `json:"email" validate:"email"`
 	Bio       string `json:"bio"`
 	Imageurl  string `json:"imageurl" gorm:"validate:required"`

@@ -93,13 +93,12 @@ type PostCommentResponse struct {
 	CreatedAt   time.Time `json:"created_at"`
 }
 
-
 type PostComment struct {
-	UserID        uint      `json:"user_id"`
+	UserID      uint      `json:"user_id"`
 	CommentUser string    `json:"commented_user"`
-	Profile       string    `json:"profile"`
-	Comment       string    `json:"comment"`
-	CreatedAt     time.Time `json:"created_at"`
+	Profile     string    `json:"profile"`
+	Comment     string    `json:"comment"`
+	CreatedAt   time.Time `json:"created_at"`
 }
 
 type ReplyPostCommentResponse struct {
@@ -134,4 +133,17 @@ type UpdatePostReq struct {
 	PostID  uint   `json:"post_id"`
 	Caption string `json:"caption"`
 	TypeID  uint   `json:"type_id"`
+}
+
+type CreateStoryResponse struct {
+	Author    UserData  `json:"author"`
+	Story     string    `json:"story"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
+type CreateStoryResponses struct {
+	Author    UserData  `json:"author"`
+	StoryID   uint      `json:"story_id"`
+	Story     string    `json:"story"`
+	CreatedAt time.Time `json:"created_at"`
 }

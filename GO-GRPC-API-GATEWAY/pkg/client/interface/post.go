@@ -18,15 +18,15 @@ type PostClient interface {
 	LikePost(userID int, postID int) (models.LikePostResponse, error)
 	UnLinkPost(userID int, postID int) error
 	PostComment(userID int, data models.PostCommentReq) (models.PostComment, error)
-	DeleteComment(userID,CommentID int ) error
+	DeleteComment(userID, CommentID int) error
 	GetAllPostComments(PostID int) ([]models.PostCommentResponse, error)
 	ReplyComment(userID int, req models.ReplyCommentReq) (models.ReplyReposne, error)
 	SavedPost(userID, postID int) error
 	UnSavedPost(userID, postID int) error
 	GetSavedPost(userID int) ([]models.PostResponse, error)
-	// GetComment(postID int) (models.GetCommentResponse, error)
-	// ReplyComment(userID int, data models.CommentReply) error
-	// DeleteComment(userID int, commentID int) error
+	CreateStory(userID int, file *multipart.FileHeader) (models.CreateStoryResponse, error)
+	GetStory(userID int) ([]models.CreateStoryResponses, error)
+	DeleteStory(userID, storyID int) error
+	LikeStory(userID, storyID int) error
+	UnLikeStory(userID, storyID int) error
 }
-
-
