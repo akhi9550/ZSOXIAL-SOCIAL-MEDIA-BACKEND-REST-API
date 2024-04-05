@@ -10,13 +10,15 @@ import (
 )
 
 type PostServer struct {
-	postUseCase interfaces.PostUseCase
+	postUseCase  interfaces.PostUseCase
+	storyUseCase interfaces.StoryUseCase
 	pb.UnimplementedPostServiceServer
 }
 
-func NewPostServer(UseCasePost interfaces.PostUseCase) pb.PostServiceServer {
+func NewPostServer(UseCasePost interfaces.PostUseCase, UseCaseStory interfaces.StoryUseCase) pb.PostServiceServer {
 	return &PostServer{
-		postUseCase: UseCasePost,
+		postUseCase:  UseCasePost,
+		storyUseCase: UseCaseStory,
 	}
 }
 func (p *PostServer) CreatePost(ctx context.Context, req *pb.CreatePostRequest) (*pb.CreatePostResponse, error) {
@@ -360,4 +362,80 @@ func (p *PostServer) GetSavedPost(ctx context.Context, req *pb.GetSavedPostReque
 	return &pb.GetSavedPostResponse{
 		Allpost: allPostResponses,
 	}, nil
+}
+
+func (p *PostServer) CreateStory(ctx context.Context, req *pb.CreateStoryRequest) (*pb.CreateStoryResponse, error) {
+	userID := req.Userid
+	file := req.Story.Postimages
+	data, err := p.storyUseCase.CreateStory(int(userID), file)
+	if err != nil {
+		return nil, err
+	}
+	user := &pb.UserData{
+		Userid:   int64(data.Author.UserId),
+		Username: data.Author.Username,
+		Imageurl: data.Author.Profile,
+	}
+	return &pb.CreateStoryResponse{
+		User:      user,
+		Story:     data.Story,
+		CreatedAt: timestamppb.New(data.CreatedAt),
+	}, nil
+}
+
+func (p *PostServer) GetStory(ctx context.Context, req *pb.GetStoryRequest) (*pb.GetStoryResponse, error) {
+	userID := req.Userid
+	data, err := p.storyUseCase.GetStory(int(userID))
+	if err != nil {
+		return nil, err
+	}
+
+	var allStoryResponses []*pb.CreateStoryResponses
+	for _, story := range data {
+		userData := &pb.UserData{
+			Userid:   int64(story.Author.UserId),
+			Username: story.Author.Username,
+			Imageurl: story.Author.Profile,
+		}
+		details := &pb.CreateStoryResponses{
+			User:      userData,
+			StoryID:   int64(story.StoryID),
+			Story:     story.Story,
+			CreatedAt: timestamppb.New(story.CreatedAt),
+		}
+		allStoryResponses = append(allStoryResponses, details)
+	}
+	return &pb.GetStoryResponse{
+		Stories: allStoryResponses,
+	}, nil
+}
+
+func (p *PostServer) DeleteStory(ctx context.Context, req *pb.DeleteStoryRequest) (*pb.DeleteStoryResponse, error) {
+	userID := req.UserID
+	storyID := req.Storyid
+	err := p.storyUseCase.DeleteStory(int(userID), int(storyID))
+	if err != nil {
+		return &pb.DeleteStoryResponse{}, err
+	}
+	return &pb.DeleteStoryResponse{}, nil
+}
+
+func (p *PostServer) LikeStory(ctx context.Context, req *pb.LikeStoryRequest) (*pb.LikeStoryResponse, error) {
+	userID := req.Userid
+	storyID := req.Storyid
+	err := p.storyUseCase.LikeStory(int(userID), int(storyID))
+	if err != nil {
+		return &pb.LikeStoryResponse{}, err
+	}
+	return &pb.LikeStoryResponse{}, nil
+}
+
+func (p *PostServer) UnLikeStory(ctx context.Context, req *pb.LikeStoryRequest) (*pb.LikeStoryResponse, error) {
+	userID := req.Userid
+	storyID := req.Storyid
+	err := p.storyUseCase.UnLikeStory(int(userID), int(storyID))
+	if err != nil {
+		return &pb.LikeStoryResponse{}, err
+	}
+	return &pb.LikeStoryResponse{}, nil
 }

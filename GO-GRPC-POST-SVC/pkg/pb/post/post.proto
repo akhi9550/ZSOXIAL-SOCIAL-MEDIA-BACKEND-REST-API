@@ -24,9 +24,11 @@ service PostService {
     rpc SavedPost (SavedPostRequest) returns (SavedPostResponse){}
     rpc UnSavedPost (UnSavedPostRequest) returns (UnSavedPostResponse){}
     rpc GetSavedPost (GetSavedPostRequest) returns (GetSavedPostResponse){}
-    // rpc CreateStory (CreateStoryRequest) returns (CreateStoryResponse){}
-    // rpc DeleteStory (DeleteStoryRequest) returns (DeleteStoryResponse){}
-    // rpc LikeStory (LikeStoryRequest) returns (LikeStoryResponse){}
+    rpc CreateStory (CreateStoryRequest) returns (CreateStoryResponse){}
+    rpc GetStory (GetStoryRequest) returns (GetStoryResponse){}
+    rpc DeleteStory (DeleteStoryRequest) returns (DeleteStoryResponse){}
+    rpc LikeStory (LikeStoryRequest) returns (LikeStoryResponse){}
+    rpc UnLikeStory (LikeStoryRequest) returns (LikeStoryResponse){}
 }
 
 message CreatePostRequest {
@@ -234,37 +236,46 @@ message GetSavedPostResponse{
     repeated CreatePostResponse allpost = 1;
 }
 
+message StoryUrl {
+    bytes postimages = 1;
+}
 
-// message story {
-//     bytes photo = 1; 
-// }
+message CreateStoryRequest{
+    int64 userid = 1;
+    StoryUrl story = 2;
+}
 
+message CreateStoryResponse {
+    UserData user =1;
+    string story = 2;
+    google.protobuf.Timestamp created_at = 3; 
+}
 
-// message StoryUrl {
-//     bytes postimages = 1;
-// }
+message GetStoryRequest {
+    int64 userid = 1;
+}
 
-// message CreateStoryRequest{
-//     int64 serid = 1;
-//     StoryUrl story = 2;
-// }
+message CreateStoryResponses {
+    UserData user = 1;
+    int64 storyID = 2;
+    string story = 3;
+    google.protobuf.Timestamp created_at = 4; 
+}
 
-// message CreateStoryResponse {
-//     UserData user =1;
-//     string story = 2;
-//     google.protobuf.Timestamp created_at = 3; 
-// }
+message GetStoryResponse {
+    repeated CreateStoryResponses stories = 1;
+}
 
-// message DeleteStoryRequest {
-//     int64 userID = 1;
-//     int64 storyid = 2;
-// }
+message DeleteStoryRequest {
+    int64 userID = 1;
+    int64 storyid = 2;
+}
 
-// message DeleteStoryResponse{}
+message DeleteStoryResponse{}
 
-// message LikeStoryRequest {
-//     int64 userid = 1;
-//     int64 storyid = 2;
-// }
+message LikeStoryRequest {
+    int64 userid = 1;
+    int64 storyid = 2;
+}
 
-// message LikeStoryResponse {}
+message LikeStoryResponse {}

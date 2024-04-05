@@ -273,7 +273,7 @@ func (p *postRepository) GetAllPostComments(PostID int) ([]models.PostCommentRes
 
 func (p *postRepository) AllReadyExistReply(userID, CommentID int) bool {
 	var count int
-	err := p.DB.Raw(`SELECT COUNT(*) FROM comment_repies WHERE id = ? AND reply_user = ?`, CommentID, userID).Scan(&count).Error
+	err := p.DB.Raw(`SELECT COUNT(*) FROM comment_replies WHERE id = ? AND reply_user = ?`, CommentID, userID).Scan(&count).Error
 	if err != nil {
 		return false
 	}
@@ -288,7 +288,7 @@ func (p *postRepository) ReplyComment(userID int, req models.ReplyCommentReq) (m
 	if err != nil {
 		return models.PostComments{}, models.ReplyResponse{}, err
 	}
-	err = p.DB.Raw(`INSERT INTO comment_repies (post_id, comment_id,commented_user, reply_user, replies, created_at)
+	err = p.DB.Raw(`INSERT INTO comment_replies (post_id, comment_id,commented_user, reply_user, replies, created_at)
 	VALUES (?, ?, ?, ?, ?, NOW())
 	RETURNING reply_user, replies, created_at`, a.PostID, req.CommentID, a.UserID, userID, req.Reply).Scan(&reply).Error
 	if err != nil {

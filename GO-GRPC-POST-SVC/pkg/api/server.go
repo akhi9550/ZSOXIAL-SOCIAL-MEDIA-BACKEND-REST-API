@@ -14,12 +14,15 @@ type Server struct {
 	listener net.Listener
 }
 
-func NewGRPCServer(cfg config.Config, server pb.PostServiceServer) (*Server, error) {
+func NewGRPCServer(cfg config.Config, server pb.PostServiceServer, maxMessageSize int) (*Server, error) {
 	lis, err := net.Listen("tcp", cfg.Port)
 	if err != nil {
 		return nil, err
 	}
-	newServer := grpc.NewServer()
+	newServer := grpc.NewServer(
+		grpc.MaxRecvMsgSize(maxMessageSize),
+		grpc.MaxSendMsgSize(maxMessageSize),
+	)
 	pb.RegisterPostServiceServer(newServer, server)
 
 	return &Server{

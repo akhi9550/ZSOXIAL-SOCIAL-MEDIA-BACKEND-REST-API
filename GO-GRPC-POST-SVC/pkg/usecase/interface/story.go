@@ -3,7 +3,9 @@ package interfaces
 import "github.com/akhi9550/post-svc/pkg/utils/models"
 
 type StoryUseCase interface {
-	CreateStory(userID uint, data models.StoryUrl) (models.StoryResponse, error)
-	DeleteStory(userID uint, storyID uint) error
-	Likestory(userID uint, storyID uint) error
+	CreateStory(userID int, file []byte) (models.CreateStoryResponse, error)
+	GetStory(userID int) ([]models.CreateStoryResponses, error)
+	DeleteStory(userID, storyID int) error
+	LikeStory(userID, storyID int) error
+	UnLikeStory(userID, storyID int) error
 }

@@ -17,13 +17,13 @@ func InitializeAPI(cfg config.Config) (*server.Server, error) {
 	}
 	postRepository := repository.NewPostRepository(gormDB)
 	authClient := client.NewAuthClient(&cfg)
-	// storyRepository := repository.NewStoryRepository(gormDB)
+	storyRepository := repository.NewStoryRepository(gormDB)
 
 	postUseCase := usecase.NewPostUseCase(postRepository, authClient)
-	// storyUseCase := usecase.NewStoryUseCase(storyRepository)
+	storyUseCase := usecase.NewStoryUseCase(storyRepository, authClient)
 
-	ServiceServer := service.NewPostServer(postUseCase)
-	grpcServer, err := server.NewGRPCServer(cfg, ServiceServer)
+	ServiceServer := service.NewPostServer(postUseCase, storyUseCase)
+	grpcServer, err := server.NewGRPCServer(cfg, ServiceServer, 10*1024*1024)
 	if err != nil {
 		return &server.Server{}, err
 	}

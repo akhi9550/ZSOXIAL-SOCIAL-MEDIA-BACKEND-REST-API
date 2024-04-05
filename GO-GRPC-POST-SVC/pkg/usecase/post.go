@@ -35,7 +35,7 @@ func (p *postUseCase) CreatePost(userID int, data models.PostRequest, file []byt
 	}
 	fileUID := uuid.New()
 	fileName := fileUID.String()
-	s3Path := "posted/" + fileName
+	s3Path := helper.Formated(int(data.TypeId), fileName)
 	url, err := helper.AddImageToAwsS3(file, s3Path)
 	if err != nil {
 		return models.PostResponse{}, err
@@ -406,7 +406,7 @@ func (p *postUseCase) ReplyComment(userID int, req models.ReplyCommentReq) (mode
 		return models.ReplyReposne{}, errors.New("comment doesn't exist")
 	}
 	alreadyReplied := p.postRepository.AllReadyExistReply(userID, int(req.CommentID))
-	if !alreadyReplied {
+	if alreadyReplied {
 		return models.ReplyReposne{}, errors.New("already replied the comment")
 	}
 	com, rep, err := p.postRepository.ReplyComment(userID, req)
