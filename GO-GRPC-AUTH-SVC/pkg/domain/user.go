@@ -25,3 +25,21 @@ type UserReports struct {
 	UserID       uint   `json:"user_id"`
 	Report       string `json:"reports"`
 }
+
+type FollowingRequests struct {
+	UserID        uint      `json:"user_id"`
+	FollowingUser uint      `json:"following_user"`
+	CreatedAt     time.Time `json:"created_at"`
+}
+
+type Followings struct {
+	UserID        uint      `json:"user_id"`
+	FollowingUser uint      `json:"following_user"`
+	CreatedAt     time.Time `json:"created_at"`
+}
+
+type Followers struct {
+	UserID        uint      `json:"user_id"`
+	FollowingUser uint      `json:"following_user"`
+	CreatedAt     time.Time `json:"created_at"`
+}

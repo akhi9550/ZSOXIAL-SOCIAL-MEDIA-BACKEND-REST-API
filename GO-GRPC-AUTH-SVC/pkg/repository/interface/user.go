@@ -11,14 +11,14 @@ type UserRepository interface {
 	CheckUserExistsByPhone(phone string) (*domain.User, error)
 	UserSignUp(user models.UserSignUpRequest) (models.UserResponse, error)
 	FindUserByEmail(user models.UserLoginRequest) (models.UserResponsewithPassword, error)
-	FindUserBlockorNot(email string)(bool,error)
+	FindUserBlockorNot(email string) (bool, error)
 	FindUserByMobileNumber(phone string) bool
 	FindIdFromPhone(phone string) (string, error)
 	ChangePassword(phone string, password string) error
 	UserDetails(userID int) (models.UsersProfileDetails, error)
 	CheckUserAvailabilityWithUserID(userID int) bool
-	UserData(userID int)(models.UserData,error)
-	CheckUserAvalilabilityWithUserID(userID int) (bool,error)
+	UserData(userID int) (models.UserData, error)
+	CheckUserAvalilabilityWithUserID(userID int) (bool, error)
 	UpdateFirstName(firstname string, userID int) error
 	UpdateLastName(lastname string, userID int) error
 	UpdateUserName(username string, userID int) error
@@ -33,8 +33,13 @@ type UserRepository interface {
 	ExistPhone(phone string) bool
 	ExistEmail(email string) bool
 	Changepassword(phone int, password string) error
-	CheckUserAvalilabilityWithTagUserID(users []models.Tag) (bool,error)
-	GetUserNameWithTagUserID(users []models.Tag) ([]models.UserTag,error)
-	AlreadyReported(RuserID,userID int) bool
+	CheckUserAvalilabilityWithTagUserID(users []models.Tag) (bool, error)
+	GetUserNameWithTagUserID(users []models.Tag) ([]models.UserTag, error)
+	AlreadyReported(RuserID, userID int) bool
 	ReportUser(userID int, req models.ReportRequest) error
+	FollowREQ(userID, FollowingUserID int) error
+	ShowFollowREQ(userID int) ([]models.FollowReqs, error)
+	AcceptFollowREQ(userID, FollowingUserID int) error
+	Following(userID int) ([]models.FollowResp, error)
+	Follower(userID int) ([]models.FollowResp, error)
 }

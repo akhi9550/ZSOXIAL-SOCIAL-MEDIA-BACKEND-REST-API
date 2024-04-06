@@ -1,5 +1,7 @@
 package models
 
+import "time"
+
 type UserSignUpRequest struct {
 	Firstname string `json:"firstname" validate:"gte=3"`
 	Lastname  string `json:"lastname" validate:"gte=1"`
@@ -116,6 +118,27 @@ type TagUsers struct {
 }
 
 type ReportRequest struct {
-    UserID uint   `json:"user_id"`
-    Report string `json:"report"`
+	UserID uint   `json:"user_id"`
+	Report string `json:"report"`
+}
+
+type FollowReqs struct {
+	FollowingUserID uint      `json:"following_user_id"  gorm:"column:following_user"`
+	CreatedAt       time.Time `json:"created_at"`
+}
+
+type FollowingRequests struct {
+	FollowingUserID uint      `json:"following_user_id"  gorm:"column:following_user"`
+	FollowingUser   string    `json:"following_user"`
+	Profile         string    `json:"profile"`
+	CreatedAt       time.Time `json:"created_at"`
+}
+
+type FollowingResponse struct {
+	FollowingUser string `json:"following_user"`
+	Profile       string `json:"profile"`
+}
+
+type FollowResp struct {
+	FollowingUserID uint `json:"following_user_id"  gorm:"column:following_user"`
 }

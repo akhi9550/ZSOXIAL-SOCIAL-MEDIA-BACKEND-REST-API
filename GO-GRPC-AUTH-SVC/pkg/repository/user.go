@@ -291,3 +291,58 @@ func (ur *userRepository) ReportUser(userID int, req models.ReportRequest) error
 	}
 	return nil
 }
+
+func (ur *userRepository) FollowREQ(userID, FollowingUserID int) error {
+	err := ur.DB.Exec(`INSERT INTO following_requests (user_id,following_user,created_at) VALUES(?,?,NOW())`, userID, FollowingUserID).Error
+	if err != nil {
+		return err
+	}
+	err = ur.DB.Exec(`INSERT INTO followings (user_id,following_user,created_at) VALUES(?,?,NOW())`, userID, FollowingUserID).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (ur *userRepository) ShowFollowREQ(userID int) ([]models.FollowReqs, error) {
+	var response []models.FollowReqs
+	err := ur.DB.Raw(`SELECT following_user,created_at FROM following_requests WHERE user_id = ?`, userID).Scan(&response).Error
+	if err != nil {
+		return []models.FollowReqs{}, err
+	}
+	return response, nil
+}
+
+func (ur *userRepository) AcceptFollowREQ(userID, FollowingUserID int) error {
+	err := ur.DB.Exec(`INSERT INTO followers (user_id,following_user,created_at) VALUES(?,?,NOW())`, userID, FollowingUserID).Error
+	if err != nil {
+		return err
+	}
+	err = ur.DB.Exec(`DELETE FROM following_requests WHERE user_id = ? AND following_user = ?`, userID, FollowingUserID).Error
+	if err != nil {
+		return err
+	}
+	// err = ur.DB.Exec(`INSERT INTO followings (user_id,following_user,created_at) VALUES(?,?,NOW())`, userID, FollowingUserID).Error
+	// if err != nil {
+	// 	return err
+	// }
+	return nil
+}
+
+func (ur *userRepository) Following(userID int) ([]models.FollowResp, error) {
+	var response []models.FollowResp
+	err := ur.DB.Raw(`SELECT following_user FROM followings WHERE user_id = ?`, userID).Scan(&response).Error
+	if err != nil {
+		return []models.FollowResp{}, err
+	}
+	return response, nil
+}
+
+func (ur *userRepository) Follower(userID int) ([]models.FollowResp, error) {
+	var response []models.FollowResp
+	err := ur.DB.Raw(`SELECT following_user FROM followers WHERE user_id = ?`, userID).Scan(&response).Error
+	if err != nil {
+		return []models.FollowResp{}, err
+	}
+	return response, nil
+}

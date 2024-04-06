@@ -275,3 +275,108 @@ func (ur *userUseCase) ReportUser(userID int, req models.ReportRequest) error {
 	}
 	return nil
 }
+
+func (ur *userUseCase) FollowREQ(userID, FollowingUserID int) error {
+	userExist := ur.userRepository.CheckUserAvailabilityWithUserID(userID)
+	if !userExist {
+		return errors.New("user doesn't exist")
+	}
+	FollowuserExist := ur.userRepository.CheckUserAvailabilityWithUserID(FollowingUserID)
+	if !FollowuserExist {
+		return errors.New("user doesn't exist")
+	}
+	err := ur.userRepository.FollowREQ(userID, FollowingUserID)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (ur *userUseCase) ShowFollowREQ(userID int) ([]models.FollowingRequests, error) {
+	userExist := ur.userRepository.CheckUserAvailabilityWithUserID(userID)
+	if !userExist {
+		return nil, errors.New("user doesn't exist")
+	}
+	data, err := ur.userRepository.ShowFollowREQ(userID)
+	if err != nil {
+		return nil, err
+	}
+	var response []models.FollowingRequests
+	for _, follower := range data {
+		userData, err := ur.userRepository.UserData(int(follower.FollowingUserID))
+		if err != nil {
+			return nil, err
+		}
+		details := models.FollowingRequests{
+			FollowingUserID: follower.FollowingUserID,
+			FollowingUser:   userData.Username,
+			Profile:         userData.Profile,
+			CreatedAt:       follower.CreatedAt,
+		}
+		response = append(response, details)
+	}
+	return response, nil
+}
+
+func (ur *userUseCase) AcceptFollowREQ(userID, FollowingUserID int) error {
+	userExist := ur.userRepository.CheckUserAvailabilityWithUserID(userID)
+	if !userExist {
+		return errors.New("user doesn't exist")
+	}
+	FollowuserExist := ur.userRepository.CheckUserAvailabilityWithUserID(FollowingUserID)
+	if !FollowuserExist {
+		return errors.New("user doesn't exist")
+	}
+	err := ur.userRepository.AcceptFollowREQ(userID, FollowingUserID)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (ur *userUseCase) Following(userID int) ([]models.FollowingResponse, error) {
+	userExist := ur.userRepository.CheckUserAvailabilityWithUserID(userID)
+	if !userExist {
+		return []models.FollowingResponse{}, errors.New("user doesn't exist")
+	}
+	data, err := ur.userRepository.Following(userID)
+	if err != nil {
+		return []models.FollowingResponse{}, err
+	}
+	var response []models.FollowingResponse
+	for _, follow := range data {
+		userData, err := ur.userRepository.UserData(int(follow.FollowingUserID))
+		if err != nil {
+			return nil, err
+		}
+		details := models.FollowingResponse{
+			FollowingUser: userData.Username,
+			Profile:       userData.Profile,
+		}
+		response = append(response, details)
+	}
+	return response, nil
+}
+func (ur *userUseCase) Follower(userID int) ([]models.FollowingResponse, error) {
+	userExist := ur.userRepository.CheckUserAvailabilityWithUserID(userID)
+	if !userExist {
+		return []models.FollowingResponse{}, errors.New("user doesn't exist")
+	}
+	data, err := ur.userRepository.Follower(userID)
+	if err != nil {
+		return []models.FollowingResponse{}, err
+	}
+	var response []models.FollowingResponse
+	for _, follow := range data {
+		userData, err := ur.userRepository.UserData(int(follow.FollowingUserID))
+		if err != nil {
+			return nil, err
+		}
+		details := models.FollowingResponse{
+			FollowingUser: userData.Username,
+			Profile:       userData.Profile,
+		}
+		response = append(response, details)
+	}
+	return response, nil
+}

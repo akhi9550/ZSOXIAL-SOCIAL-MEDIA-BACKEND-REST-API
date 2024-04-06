@@ -306,3 +306,80 @@ func (au *AuthSever) ReportUser(ctx context.Context, req *pb.ReportUserRequest) 
 	}
 	return &pb.ReportUserResponse{}, nil
 }
+
+func (au *AuthSever) FollowREQ(ctx context.Context, req *pb.FollowREQRequest) (*pb.FollowREQResponse, error) {
+	userID, FollowingUserID := req.Userid, req.FollowingUser
+	err := au.userUseCase.FollowREQ(int(userID), int(FollowingUserID))
+	if err != nil {
+		return &pb.FollowREQResponse{}, err
+	}
+	return &pb.FollowREQResponse{}, nil
+}
+
+func (au *AuthSever) ShowFollowREQ(ctx context.Context, req *pb.ShowREQRequest) (*pb.ShowREQResponse, error) {
+	userID := req.Userid
+	data, err := au.userUseCase.ShowFollowREQ(int(userID))
+	if err != nil {
+		return &pb.ShowREQResponse{}, err
+	}
+	var response []*pb.REQResponse
+	for _, req := range data {
+		requests := &pb.REQResponse{
+			FollowingUserID: int64(req.FollowingUserID),
+			FollowingUser:   req.FollowingUser,
+			ProfilePhoto:    req.Profile,
+			CreatedAt:       timestamppb.New(req.CreatedAt),
+		}
+		response = append(response, requests)
+	}
+	return &pb.ShowREQResponse{
+		Response: response,
+	}, nil
+}
+
+func (au *AuthSever) AcceptFollowREQ(ctx context.Context, req *pb.AcceptFollowREQRequest) (*pb.AcceptFollowREQResponse, error) {
+	userID, FollowingUserID := req.Userid, req.FollowingUser
+	err := au.userUseCase.AcceptFollowREQ(int(userID), int(FollowingUserID))
+	if err != nil {
+		return &pb.AcceptFollowREQResponse{}, err
+	}
+	return &pb.AcceptFollowREQResponse{}, nil
+}
+
+func (au *AuthSever) Following(ctx context.Context, req *pb.FollowingRequest) (*pb.FollowingResponse, error) {
+	userID:=req.Userid
+	data,err:=au.userUseCase.Following(int(userID))
+	if err!=nil{
+		return &pb.FollowingResponse{},err
+	}
+	var response []*pb.FollowResponse
+	for _, req := range data {
+		requests := &pb.FollowResponse{
+			Username: req.FollowingUser,
+			UserProfile: req.Profile,
+		}
+		response = append(response, requests)
+	}
+	return &pb.FollowingResponse{
+		Users: response,
+	}, nil
+}
+
+func (au *AuthSever) Follower(ctx context.Context, req *pb.FollowerRequest) (*pb.FollowerResponse, error){
+	userID:=req.Userid
+	data,err:=au.userUseCase.Follower(int(userID))
+	if err!=nil{
+		return &pb.FollowerResponse{},err
+	}
+	var response []*pb.FollowResponse
+	for _, req := range data {
+		requests := &pb.FollowResponse{
+			Username: req.FollowingUser,
+			UserProfile: req.Profile,
+		}
+		response = append(response, requests)
+	}
+	return &pb.FollowerResponse{
+		Users: response,
+	}, nil
+}
