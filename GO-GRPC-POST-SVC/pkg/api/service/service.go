@@ -147,10 +147,6 @@ func (p *PostServer) GetAllPost(ctx context.Context, req *pb.GetAllPostRequest) 
 			Username: post.Author.Username,
 			Imageurl: post.Author.Profile,
 		}
-		// var tags []string
-		// for _, tag := range post.Tag {
-		// 	tags = append(tags, tag.User)
-		// }
 
 		details := &pb.CreatePostResponse{
 			Id:        int64(post.ID),
@@ -314,6 +310,53 @@ func (p *PostServer) ReplyComment(ctx context.Context, req *pb.ReplyCommentReque
 		Comment: comment,
 		Reply:   reply,
 	}, nil
+}
+
+func (p *PostServer) ShowAllPostComments(ctx context.Context, req *pb.ShowAllPostCommentsRequest) (*pb.ShowAllPostCommentsResponse, error) {
+	postID := req.Postid
+	data, err := p.postUseCase.ShowAllPostComments(int(postID))
+	if err != nil {
+		return nil, err
+	}
+
+	var allCommentsAndReplies []*pb.AllPostCommentsResponse
+	for _, commentData := range data {
+		comment := &pb.AllPostCommentsResponse{
+			CommentedUser: commentData.CommentUser,
+			Posturl:       commentData.Profile,
+			Comment:       commentData.Comment,
+			CreatedAt:     timestamppb.New(commentData.CreatedAt),
+			Reply:         make([]*pb.Replies, len(commentData.Reply)),
+		}
+
+		for i, replyData := range commentData.Reply {
+			comment.Reply[i] = &pb.Replies{
+				Replieduser: replyData.ReplyUser,
+				Posturl:     replyData.Profile,
+				Replies:     replyData.Reply,
+				CreatedAt:   timestamppb.New(replyData.CreatedAt),
+			}
+		}
+
+		allCommentsAndReplies = append(allCommentsAndReplies, comment)
+	}
+
+	return &pb.ShowAllPostCommentsResponse{
+		Comments: allCommentsAndReplies,
+	}, nil
+}
+
+func (p *PostServer) ReportPost(ctx context.Context, req *pb.ReportPostRequest) (*pb.ReportPostResponse, error) {
+	ReportUser := req.RepostedUserid
+	reportReq := models.ReportRequest{
+		PostID: uint(req.Postid),
+		Report: req.Report,
+	}
+	err := p.postUseCase.ReportPost(int(ReportUser), reportReq)
+	if err != nil {
+		return &pb.ReportPostResponse{}, err
+	}
+	return &pb.ReportPostResponse{}, nil
 }
 
 func (p *PostServer) SavedPost(ctx context.Context, req *pb.SavedPostRequest) (*pb.SavedPostResponse, error) {

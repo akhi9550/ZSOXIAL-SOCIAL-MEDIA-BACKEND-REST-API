@@ -442,6 +442,74 @@ func (p *postUseCase) ReplyComment(userID int, req models.ReplyCommentReq) (mode
 	}, nil
 }
 
+func (p *postUseCase) ShowAllPostComments(PostID int) ([]models.AllCommentsAndReplies, error) {
+	postExist := p.postRepository.CheckPostAvalilabilityWithID(PostID)
+	if !postExist {
+		return []models.AllCommentsAndReplies{}, errors.New("post doesn't exist")
+	}
+	comments, err := p.postRepository.GetCommentsByPostID(PostID)
+	if err != nil {
+		return []models.AllCommentsAndReplies{}, err
+	}
+	var Allcomments []models.AllCommentsAndReplies
+	for _, comment := range comments {
+		userData, err := p.authClient.UserData(int(comment.UserID))
+		if err != nil {
+			return nil, err
+		}
+		Reply, err := p.postRepository.GetRepliesByID(PostID, int(comment.CommentID))
+		if err != nil {
+			return nil, err
+		}
+
+		var replies []models.AllReplies
+		for _, reply := range Reply {
+			ReplyuserData, err := p.authClient.UserData(int(reply.UserID))
+			if err != nil {
+				return nil, err
+			}
+
+			repliess := models.AllReplies{
+				UserID:    ReplyuserData.UserId,
+				ReplyUser: ReplyuserData.Username,
+				Profile:   ReplyuserData.Profile,
+				Reply:     reply.Reply,
+				CreatedAt: reply.CreatedAt,
+			}
+			replies = append(replies, repliess)
+		}
+		commentWithReplies := models.AllCommentsAndReplies{
+			CommentUser: userData.Username,
+			Profile:     userData.Profile,
+			Comment:     comment.Comment,
+			CreatedAt:   comment.CreatedAt,
+			Reply:       replies,
+		}
+		Allcomments = append(Allcomments, commentWithReplies)
+	}
+	return Allcomments, nil
+}
+
+func (p *postUseCase) ReportPost(userID int, req models.ReportRequest) error {
+	ReportuserExist := p.authClient.CheckUserAvalilabilityWithUserID(userID)
+	if !ReportuserExist {
+		return errors.New("user doesn't exist")
+	}
+	postExist := p.postRepository.CheckPostAvalilabilityWithID(int(req.PostID))
+	if !postExist {
+		return errors.New("post doesn't exist")
+	}
+	Isreport := p.postRepository.AlreadyReported(userID, int(req.PostID))
+	if Isreport {
+		return errors.New("already reported")
+	}
+	err := p.postRepository.ReportPost(userID, req)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (p *postUseCase) SavedPost(userID, postID int) error {
 	userExist := p.authClient.CheckUserAvalilabilityWithUserID(userID)
 	if !userExist {

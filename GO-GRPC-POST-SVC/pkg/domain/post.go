@@ -70,3 +70,10 @@ type ArchivePost struct {
 	UserID uint `json:"user_id"`
 	PostID uint `json:"post_id"`
 }
+
+type PostReports struct {
+	ID           uint   `json:"id" gorm:"uniquekey; not null"`
+	ReportUserID uint   `json:"report_user_id"`
+	PostID       uint   `json:"post_id"`
+	Report       string `json:"reports"`
+}

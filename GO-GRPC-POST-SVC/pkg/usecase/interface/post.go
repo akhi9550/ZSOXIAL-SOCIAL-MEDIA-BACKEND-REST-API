@@ -19,6 +19,8 @@ type PostUseCase interface {
 	DeleteComment(userID, CommentID int) error
 	GetAllPostComments(PostID int) ([]models.PostCommentResponse, error)
 	ReplyComment(userID int, req models.ReplyCommentReq) (models.ReplyReposne, error)
+    ShowAllPostComments(PostID int) ([]models.AllCommentsAndReplies, error)
+	ReportPost(userID int, req models.ReportRequest) error
 	SavedPost(userID, postID int) error
 	UnSavedPost(userID, postID int) error
 	GetSavedPost(userID int) ([]models.PostResponse, error)

@@ -140,6 +140,39 @@ type ReplyReposne struct {
 	Comment PostComment
 	Reply   ReplyPostCommentResponse
 }
+type AllComments struct {
+	UserID    uint      `json:"user_id" gorm:"column:commented_user"`
+	CommentID uint      `json:"commented_id" gorm:"column:id"`
+	Comment   string    `json:"comment" gorm:"column:comment_data"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
+type Replies struct {
+	UserID    uint      `json:"user_id" gorm:"column:reply_user"`
+	Reply     string    `json:"reply" gorm:"column:replies"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
+type AllReplies struct {
+	UserID    uint      `json:"user_id" gorm:"column:commented_user"`
+	ReplyUser string    `json:"reply_user"`
+	Profile   string    `json:"profile"`
+	Reply     string    `json:"reply" gorm:"column:replies"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
+type AllCommentsAndReplies struct {
+	CommentUser string    `json:"commented_user"`
+	Profile     string    `json:"profile"`
+	Comment     string    `json:"comment"`
+	CreatedAt   time.Time `json:"created_at"`
+	Reply       []AllReplies
+}
+
+type ReportRequest struct {
+	PostID uint   `json:"post_id"`
+	Report string `json:"report"`
+}
 
 type Comments struct {
 	Comment   string    `json:"comment"`

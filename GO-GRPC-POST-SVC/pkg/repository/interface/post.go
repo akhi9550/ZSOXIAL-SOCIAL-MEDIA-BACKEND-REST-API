@@ -28,6 +28,10 @@ type PostRepository interface {
 	CheckCommentWithID(CommentID int) bool
 	DeleteComment(userID, CommentID int) error
 	GetAllPostComments(PostID int) ([]models.PostCommentResponses, error)
+	GetCommentsByPostID(postID int) ([]models.AllComments, error)
+	GetRepliesByID(PostID, CommentID int) ([]models.Replies, error)
+	AlreadyReported(userID,postID int) bool
+	ReportPost(userID int, req models.ReportRequest) error
 	AllReadyExistReply(userID, CommentID int) bool
 	ReplyComment(userID int, req models.ReplyCommentReq) (models.PostComments, models.ReplyResponse, error)
 	SavedPost(userID, postID int) error

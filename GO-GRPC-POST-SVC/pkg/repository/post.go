@@ -301,6 +301,23 @@ func (p *postRepository) ReplyComment(userID int, req models.ReplyCommentReq) (m
 	return comments, reply, nil
 }
 
+func (p *postRepository) AlreadyReported(userID, postID int) bool {
+	var count int
+	err := p.DB.Raw(`SELECT COUNT(*) FROM post_reports WHERE report_user_id = ? AND post_id = ?`, userID, postID).Scan(&count).Error
+	if err != nil {
+		return false
+	}
+	return count > 0
+}
+
+func (ur *postRepository) ReportPost(userID int, req models.ReportRequest) error {
+	err := ur.DB.Exec(`INSERT INTO post_reports (report_user_id,post_id,report) VALUES (?,?,?)`, userID, req.PostID, req.Report).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (p *postRepository) SavedPost(userID, postID int) error {
 	err := p.DB.Exec(`INSERT INTO saved_posts (post_id,user_id) VALUES (?,?)`, postID, userID).Error
 	if err != nil {
@@ -340,6 +357,23 @@ func (p *postRepository) GetSavedPost(userID int) ([]models.SavedResponse, error
 			return nil, err
 		}
 		response = append(response, post)
+	}
+	return response, nil
+}
+
+func (p *postRepository) GetCommentsByPostID(postID int) ([]models.AllComments, error) {
+	var response []models.AllComments
+	err := p.DB.Raw(`SELECT id,commented_user,comment_data,created_at FROM comments WHERE post_id = ?`, postID).Scan(&response).Error
+	if err != nil {
+		return []models.AllComments{}, err
+	}
+	return response, nil
+}
+func (p *postRepository) GetRepliesByID(PostID, CommentID int) ([]models.Replies, error) {
+	var response []models.Replies
+	err := p.DB.Raw(`SELECT reply_user,replies,created_at FROM comment_replies WHERE post_id = ? AND comment_id = ?`, PostID, CommentID).Scan(&response).Error
+	if err != nil {
+		return []models.Replies{}, err
 	}
 	return response, nil
 }
