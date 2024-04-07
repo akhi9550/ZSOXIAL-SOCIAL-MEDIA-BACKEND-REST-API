@@ -441,3 +441,38 @@ func (p *PostHandler) UnLikeStory(c *gin.Context) {
 	success := response.ClientResponse(http.StatusOK, "Successfully UnLiked Stroy", nil, nil)
 	c.JSON(http.StatusOK, success)
 }
+
+func (p *PostHandler) ShowAllPostComments(c *gin.Context) {
+	PostID := c.Query("post_id")
+	postID, err := strconv.Atoi(PostID)
+	if err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "PostID not in right format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+		return
+	}
+	data, err := p.GRPC_Client.ShowAllPostComments(postID)
+	if err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+		return
+	}
+	success := response.ClientResponse(http.StatusOK, "User successfully Recived All Comments", data, nil)
+	c.JSON(http.StatusOK, success)
+}
+
+func (p *PostHandler) ReportPost(c *gin.Context) {
+	ReportedID, _ := c.Get("user_id")
+	var req models.ReportPostRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+	}
+	err := p.GRPC_Client.ReportPost(ReportedID.(int), req)
+	if err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+		return
+	}
+	success := response.ClientResponse(http.StatusOK, "Successfully Reported", nil, nil)
+	c.JSON(http.StatusOK, success)
+}

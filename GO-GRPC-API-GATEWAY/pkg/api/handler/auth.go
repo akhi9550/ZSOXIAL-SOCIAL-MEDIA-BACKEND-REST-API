@@ -314,3 +314,20 @@ func (au *AuthHandler) UnBlockUser(c *gin.Context) {
 	sucess := response.ClientResponse(http.StatusOK, "Successfully unblocked the user", nil, nil)
 	c.JSON(http.StatusOK, sucess)
 }
+
+func (au *AuthHandler) ReportUser(c *gin.Context) {
+	ReportedID, _ := c.Get("user_id")
+	var req models.ReportRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+	}
+	err := au.GRPC_Client.ReportUser(ReportedID.(int), req)
+	if err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+		return
+	}
+	success := response.ClientResponse(http.StatusOK, "Successfully Reported", nil, nil)
+	c.JSON(http.StatusOK, success)
+}

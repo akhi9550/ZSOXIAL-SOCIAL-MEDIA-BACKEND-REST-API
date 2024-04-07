@@ -19,19 +19,24 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	AuthService_UserSignUp_FullMethodName                    = "/user.AuthService/UserSignUp"
-	AuthService_UserLogin_FullMethodName                     = "/user.AuthService/UserLogin"
-	AuthService_SendOtp_FullMethodName                       = "/user.AuthService/SendOtp"
-	AuthService_VerifyOtp_FullMethodName                     = "/user.AuthService/VerifyOtp"
-	AuthService_ForgotPassword_FullMethodName                = "/user.AuthService/ForgotPassword"
-	AuthService_ForgotPasswordVerifyAndChange_FullMethodName = "/user.AuthService/ForgotPasswordVerifyAndChange"
-	AuthService_UserDetails_FullMethodName                   = "/user.AuthService/UserDetails"
-	AuthService_UpdateUserDetails_FullMethodName             = "/user.AuthService/UpdateUserDetails"
-	AuthService_ChangePassword_FullMethodName                = "/user.AuthService/ChangePassword"
-	AuthService_AdminLogin_FullMethodName                    = "/user.AuthService/AdminLogin"
-	AuthService_ShowAllUsers_FullMethodName                  = "/user.AuthService/ShowAllUsers"
-	AuthService_AdminBlockUser_FullMethodName                = "/user.AuthService/AdminBlockUser"
-	AuthService_AdminUnblockUser_FullMethodName              = "/user.AuthService/AdminUnblockUser"
+	AuthService_UserSignUp_FullMethodName                          = "/user.AuthService/UserSignUp"
+	AuthService_UserLogin_FullMethodName                           = "/user.AuthService/UserLogin"
+	AuthService_SendOtp_FullMethodName                             = "/user.AuthService/SendOtp"
+	AuthService_VerifyOtp_FullMethodName                           = "/user.AuthService/VerifyOtp"
+	AuthService_ForgotPassword_FullMethodName                      = "/user.AuthService/ForgotPassword"
+	AuthService_ForgotPasswordVerifyAndChange_FullMethodName       = "/user.AuthService/ForgotPasswordVerifyAndChange"
+	AuthService_UserDetails_FullMethodName                         = "/user.AuthService/UserDetails"
+	AuthService_UpdateUserDetails_FullMethodName                   = "/user.AuthService/UpdateUserDetails"
+	AuthService_ChangePassword_FullMethodName                      = "/user.AuthService/ChangePassword"
+	AuthService_AdminLogin_FullMethodName                          = "/user.AuthService/AdminLogin"
+	AuthService_ShowAllUsers_FullMethodName                        = "/user.AuthService/ShowAllUsers"
+	AuthService_AdminBlockUser_FullMethodName                      = "/user.AuthService/AdminBlockUser"
+	AuthService_AdminUnblockUser_FullMethodName                    = "/user.AuthService/AdminUnblockUser"
+	AuthService_CheckUserAvalilabilityWithUserID_FullMethodName    = "/user.AuthService/CheckUserAvalilabilityWithUserID"
+	AuthService_UserData_FullMethodName                            = "/user.AuthService/UserData"
+	AuthService_CheckUserAvalilabilityWithTagUserID_FullMethodName = "/user.AuthService/CheckUserAvalilabilityWithTagUserID"
+	AuthService_GetUserNameWithTagUserID_FullMethodName            = "/user.AuthService/GetUserNameWithTagUserID"
+	AuthService_ReportUser_FullMethodName                          = "/user.AuthService/ReportUser"
 )
 
 // AuthServiceClient is the client API for AuthService service.
@@ -51,6 +56,11 @@ type AuthServiceClient interface {
 	ShowAllUsers(ctx context.Context, in *ShowAllUsersRequest, opts ...grpc.CallOption) (*ShowAllUsersResponse, error)
 	AdminBlockUser(ctx context.Context, in *AdminBlockUserRequest, opts ...grpc.CallOption) (*AdminBlockUserResponse, error)
 	AdminUnblockUser(ctx context.Context, in *AdminUnblockUserRequest, opts ...grpc.CallOption) (*AdminUnblockUserResponse, error)
+	CheckUserAvalilabilityWithUserID(ctx context.Context, in *CheckUserAvalilabilityWithUserIDRequest, opts ...grpc.CallOption) (*CheckUserAvalilabilityWithUserIDResponse, error)
+	UserData(ctx context.Context, in *UserDataRequest, opts ...grpc.CallOption) (*UserDataResponse, error)
+	CheckUserAvalilabilityWithTagUserID(ctx context.Context, in *CheckUserAvalilabilityWithTagUserIDRequest, opts ...grpc.CallOption) (*CheckUserAvalilabilityWithTagUserIDResponse, error)
+	GetUserNameWithTagUserID(ctx context.Context, in *GetUserNameWithTagUserIDRequest, opts ...grpc.CallOption) (*GetUserNameWithTagUserIDResponse, error)
+	ReportUser(ctx context.Context, in *ReportUserRequest, opts ...grpc.CallOption) (*ReportUserResponse, error)
 }
 
 type authServiceClient struct {
@@ -178,6 +188,51 @@ func (c *authServiceClient) AdminUnblockUser(ctx context.Context, in *AdminUnblo
 	return out, nil
 }
 
+func (c *authServiceClient) CheckUserAvalilabilityWithUserID(ctx context.Context, in *CheckUserAvalilabilityWithUserIDRequest, opts ...grpc.CallOption) (*CheckUserAvalilabilityWithUserIDResponse, error) {
+	out := new(CheckUserAvalilabilityWithUserIDResponse)
+	err := c.cc.Invoke(ctx, AuthService_CheckUserAvalilabilityWithUserID_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) UserData(ctx context.Context, in *UserDataRequest, opts ...grpc.CallOption) (*UserDataResponse, error) {
+	out := new(UserDataResponse)
+	err := c.cc.Invoke(ctx, AuthService_UserData_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) CheckUserAvalilabilityWithTagUserID(ctx context.Context, in *CheckUserAvalilabilityWithTagUserIDRequest, opts ...grpc.CallOption) (*CheckUserAvalilabilityWithTagUserIDResponse, error) {
+	out := new(CheckUserAvalilabilityWithTagUserIDResponse)
+	err := c.cc.Invoke(ctx, AuthService_CheckUserAvalilabilityWithTagUserID_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) GetUserNameWithTagUserID(ctx context.Context, in *GetUserNameWithTagUserIDRequest, opts ...grpc.CallOption) (*GetUserNameWithTagUserIDResponse, error) {
+	out := new(GetUserNameWithTagUserIDResponse)
+	err := c.cc.Invoke(ctx, AuthService_GetUserNameWithTagUserID_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) ReportUser(ctx context.Context, in *ReportUserRequest, opts ...grpc.CallOption) (*ReportUserResponse, error) {
+	out := new(ReportUserResponse)
+	err := c.cc.Invoke(ctx, AuthService_ReportUser_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthServiceServer is the server API for AuthService service.
 // All implementations must embed UnimplementedAuthServiceServer
 // for forward compatibility
@@ -195,6 +250,11 @@ type AuthServiceServer interface {
 	ShowAllUsers(context.Context, *ShowAllUsersRequest) (*ShowAllUsersResponse, error)
 	AdminBlockUser(context.Context, *AdminBlockUserRequest) (*AdminBlockUserResponse, error)
 	AdminUnblockUser(context.Context, *AdminUnblockUserRequest) (*AdminUnblockUserResponse, error)
+	CheckUserAvalilabilityWithUserID(context.Context, *CheckUserAvalilabilityWithUserIDRequest) (*CheckUserAvalilabilityWithUserIDResponse, error)
+	UserData(context.Context, *UserDataRequest) (*UserDataResponse, error)
+	CheckUserAvalilabilityWithTagUserID(context.Context, *CheckUserAvalilabilityWithTagUserIDRequest) (*CheckUserAvalilabilityWithTagUserIDResponse, error)
+	GetUserNameWithTagUserID(context.Context, *GetUserNameWithTagUserIDRequest) (*GetUserNameWithTagUserIDResponse, error)
+	ReportUser(context.Context, *ReportUserRequest) (*ReportUserResponse, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
 
@@ -240,6 +300,21 @@ func (UnimplementedAuthServiceServer) AdminBlockUser(context.Context, *AdminBloc
 }
 func (UnimplementedAuthServiceServer) AdminUnblockUser(context.Context, *AdminUnblockUserRequest) (*AdminUnblockUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AdminUnblockUser not implemented")
+}
+func (UnimplementedAuthServiceServer) CheckUserAvalilabilityWithUserID(context.Context, *CheckUserAvalilabilityWithUserIDRequest) (*CheckUserAvalilabilityWithUserIDResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CheckUserAvalilabilityWithUserID not implemented")
+}
+func (UnimplementedAuthServiceServer) UserData(context.Context, *UserDataRequest) (*UserDataResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserData not implemented")
+}
+func (UnimplementedAuthServiceServer) CheckUserAvalilabilityWithTagUserID(context.Context, *CheckUserAvalilabilityWithTagUserIDRequest) (*CheckUserAvalilabilityWithTagUserIDResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CheckUserAvalilabilityWithTagUserID not implemented")
+}
+func (UnimplementedAuthServiceServer) GetUserNameWithTagUserID(context.Context, *GetUserNameWithTagUserIDRequest) (*GetUserNameWithTagUserIDResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserNameWithTagUserID not implemented")
+}
+func (UnimplementedAuthServiceServer) ReportUser(context.Context, *ReportUserRequest) (*ReportUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReportUser not implemented")
 }
 func (UnimplementedAuthServiceServer) mustEmbedUnimplementedAuthServiceServer() {}
 
@@ -488,6 +563,96 @@ func _AuthService_AdminUnblockUser_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthService_CheckUserAvalilabilityWithUserID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CheckUserAvalilabilityWithUserIDRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).CheckUserAvalilabilityWithUserID(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_CheckUserAvalilabilityWithUserID_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).CheckUserAvalilabilityWithUserID(ctx, req.(*CheckUserAvalilabilityWithUserIDRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_UserData_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserDataRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).UserData(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_UserData_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).UserData(ctx, req.(*UserDataRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_CheckUserAvalilabilityWithTagUserID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CheckUserAvalilabilityWithTagUserIDRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).CheckUserAvalilabilityWithTagUserID(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_CheckUserAvalilabilityWithTagUserID_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).CheckUserAvalilabilityWithTagUserID(ctx, req.(*CheckUserAvalilabilityWithTagUserIDRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_GetUserNameWithTagUserID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserNameWithTagUserIDRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).GetUserNameWithTagUserID(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_GetUserNameWithTagUserID_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).GetUserNameWithTagUserID(ctx, req.(*GetUserNameWithTagUserIDRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_ReportUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReportUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).ReportUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_ReportUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).ReportUser(ctx, req.(*ReportUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AuthService_ServiceDesc is the grpc.ServiceDesc for AuthService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -546,6 +711,26 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AdminUnblockUser",
 			Handler:    _AuthService_AdminUnblockUser_Handler,
+		},
+		{
+			MethodName: "CheckUserAvalilabilityWithUserID",
+			Handler:    _AuthService_CheckUserAvalilabilityWithUserID_Handler,
+		},
+		{
+			MethodName: "UserData",
+			Handler:    _AuthService_UserData_Handler,
+		},
+		{
+			MethodName: "CheckUserAvalilabilityWithTagUserID",
+			Handler:    _AuthService_CheckUserAvalilabilityWithTagUserID_Handler,
+		},
+		{
+			MethodName: "GetUserNameWithTagUserID",
+			Handler:    _AuthService_GetUserNameWithTagUserID_Handler,
+		},
+		{
+			MethodName: "ReportUser",
+			Handler:    _AuthService_ReportUser_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

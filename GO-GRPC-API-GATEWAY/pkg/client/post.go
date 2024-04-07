@@ -480,3 +480,49 @@ func (p *PostClient) UnLikeStory(userID, storyID int) error {
 	}
 	return nil
 }
+func (p *PostClient) ShowAllPostComments(PostID int) ([]models.AllCommentsAndReplies, error) {
+    data, err := p.Client.ShowAllPostComments(context.Background(), &pb.ShowAllPostCommentsRequest{
+        Postid: int64(PostID),
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    var allCommentsAndReplies []models.AllCommentsAndReplies
+    for _, commentData := range data.Comments {
+        comment := models.AllCommentsAndReplies{
+            CommentUser: commentData.CommentedUser,
+            Profile:     commentData.Posturl,
+            Comment:     commentData.Comment,
+            CreatedAt:   commentData.CreatedAt.AsTime(),
+            Reply:       make([]models.AllReplies, 0),
+        }
+
+        for _, replyData := range commentData.Reply {
+            reply := models.AllReplies{
+                ReplyUser: replyData.Replieduser,
+                Profile:   replyData.Posturl,
+                Reply:     replyData.Replies,
+                CreatedAt: replyData.CreatedAt.AsTime(),
+            }
+            comment.Reply = append(comment.Reply, reply)
+        }
+
+        allCommentsAndReplies = append(allCommentsAndReplies, comment)
+    }
+
+    return allCommentsAndReplies, nil
+}
+
+
+func (p *PostClient) ReportPost(userID int, req models.ReportPostRequest) error {
+	_, err := p.Client.ReportPost(context.Background(), &pb.ReportPostRequest{
+		RepostedUserid: int64(userID),
+		Postid:         int64(req.PostID),
+		Report:         req.Report,
+	})
+	if err != nil {
+		return err
+	}
+	return nil
+}

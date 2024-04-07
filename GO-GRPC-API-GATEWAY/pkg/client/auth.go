@@ -288,3 +288,15 @@ func (au *AuthClient) AdminUnblockUser(userID int) error {
 	}
 	return nil
 }
+
+func (au *AuthClient) ReportUser(userID int, req models.ReportRequest) error {
+	_, err := au.Client.ReportUser(context.Background(), &pb.ReportUserRequest{
+		RepostedUserid: int64(userID),
+		Userid:         int64(req.UserID),
+		Report:         req.Report,
+	})
+	if err != nil {
+		return err
+	}
+	return nil
+}

@@ -20,6 +20,8 @@ type PostClient interface {
 	PostComment(userID int, data models.PostCommentReq) (models.PostComment, error)
 	DeleteComment(userID, CommentID int) error
 	GetAllPostComments(PostID int) ([]models.PostCommentResponse, error)
+	ShowAllPostComments(PostID int) ([]models.AllCommentsAndReplies, error)
+	ReportPost(userID int, req models.ReportPostRequest) error
 	ReplyComment(userID int, req models.ReplyCommentReq) (models.ReplyReposne, error)
 	SavedPost(userID, postID int) error
 	UnSavedPost(userID, postID int) error

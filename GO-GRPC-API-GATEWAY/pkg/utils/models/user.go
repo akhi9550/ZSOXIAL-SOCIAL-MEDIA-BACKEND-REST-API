@@ -89,3 +89,8 @@ type ChangePassword struct {
 	Password    string `json:"password"`
 	Repassword  string `json:"re_password"`
 }
+
+type ReportRequest struct {
+	UserID uint   `json:"user_id"`
+	Report string `json:"report"`
+}

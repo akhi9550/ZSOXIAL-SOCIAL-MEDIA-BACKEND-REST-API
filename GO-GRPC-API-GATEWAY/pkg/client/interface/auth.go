@@ -20,4 +20,5 @@ type AuthClient interface {
 	ShowAllUsers(page, count int) ([]models.UserDetailsAtAdmin, error)
 	AdminBlockUser(userID int) error
 	AdminUnblockUser(userID int) error
+	ReportUser(userID int, req models.ReportRequest) error
 }

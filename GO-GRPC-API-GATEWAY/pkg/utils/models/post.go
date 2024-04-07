@@ -114,6 +114,28 @@ type ReplyReposne struct {
 	Reply   ReplyPostCommentResponse
 }
 
+type AllComments struct {
+	CommentUser string    `json:"commented_user"`
+	Profile     string    `json:"profile"`
+	Comment     string    `json:"comment"`
+	CreatedAt   time.Time `json:"created_at"`
+}
+
+type AllReplies struct {
+	ReplyUser string    `json:"reply_user"`
+	Profile   string    `json:"profile"`
+	Reply     string    `json:"reply"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
+type AllCommentsAndReplies struct {
+	CommentUser string    `json:"commented_user"`
+	Profile     string    `json:"profile"`
+	Comment     string    `json:"comment"`
+	CreatedAt   time.Time `json:"created_at"`
+	Reply       []AllReplies
+}
+
 type Comments struct {
 	Comment   string    `json:"comment"`
 	CreatedAt time.Time `json:"created_at"`
@@ -146,4 +168,9 @@ type CreateStoryResponses struct {
 	StoryID   uint      `json:"story_id"`
 	Story     string    `json:"story"`
 	CreatedAt time.Time `json:"created_at"`
+}
+
+type ReportPostRequest struct {
+	PostID uint   `json:"post_id"`
+	Report string `json:"report"`
 }
