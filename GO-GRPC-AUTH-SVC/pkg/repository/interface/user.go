@@ -35,4 +35,6 @@ type UserRepository interface {
 	Changepassword(phone int, password string) error
 	CheckUserAvalilabilityWithTagUserID(users []models.Tag) (bool,error)
 	GetUserNameWithTagUserID(users []models.Tag) ([]models.UserTag,error)
+	AlreadyReported(RuserID,userID int) bool
+	ReportUser(userID int, req models.ReportRequest) error
 }

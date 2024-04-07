@@ -36,6 +36,7 @@ const (
 	AuthService_UserData_FullMethodName                            = "/user.AuthService/UserData"
 	AuthService_CheckUserAvalilabilityWithTagUserID_FullMethodName = "/user.AuthService/CheckUserAvalilabilityWithTagUserID"
 	AuthService_GetUserNameWithTagUserID_FullMethodName            = "/user.AuthService/GetUserNameWithTagUserID"
+	AuthService_ReportUser_FullMethodName                          = "/user.AuthService/ReportUser"
 )
 
 // AuthServiceClient is the client API for AuthService service.
@@ -59,6 +60,7 @@ type AuthServiceClient interface {
 	UserData(ctx context.Context, in *UserDataRequest, opts ...grpc.CallOption) (*UserDataResponse, error)
 	CheckUserAvalilabilityWithTagUserID(ctx context.Context, in *CheckUserAvalilabilityWithTagUserIDRequest, opts ...grpc.CallOption) (*CheckUserAvalilabilityWithTagUserIDResponse, error)
 	GetUserNameWithTagUserID(ctx context.Context, in *GetUserNameWithTagUserIDRequest, opts ...grpc.CallOption) (*GetUserNameWithTagUserIDResponse, error)
+	ReportUser(ctx context.Context, in *ReportUserRequest, opts ...grpc.CallOption) (*ReportUserResponse, error)
 }
 
 type authServiceClient struct {
@@ -222,6 +224,15 @@ func (c *authServiceClient) GetUserNameWithTagUserID(ctx context.Context, in *Ge
 	return out, nil
 }
 
+func (c *authServiceClient) ReportUser(ctx context.Context, in *ReportUserRequest, opts ...grpc.CallOption) (*ReportUserResponse, error) {
+	out := new(ReportUserResponse)
+	err := c.cc.Invoke(ctx, AuthService_ReportUser_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthServiceServer is the server API for AuthService service.
 // All implementations must embed UnimplementedAuthServiceServer
 // for forward compatibility
@@ -243,6 +254,7 @@ type AuthServiceServer interface {
 	UserData(context.Context, *UserDataRequest) (*UserDataResponse, error)
 	CheckUserAvalilabilityWithTagUserID(context.Context, *CheckUserAvalilabilityWithTagUserIDRequest) (*CheckUserAvalilabilityWithTagUserIDResponse, error)
 	GetUserNameWithTagUserID(context.Context, *GetUserNameWithTagUserIDRequest) (*GetUserNameWithTagUserIDResponse, error)
+	ReportUser(context.Context, *ReportUserRequest) (*ReportUserResponse, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
 
@@ -300,6 +312,9 @@ func (UnimplementedAuthServiceServer) CheckUserAvalilabilityWithTagUserID(contex
 }
 func (UnimplementedAuthServiceServer) GetUserNameWithTagUserID(context.Context, *GetUserNameWithTagUserIDRequest) (*GetUserNameWithTagUserIDResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserNameWithTagUserID not implemented")
+}
+func (UnimplementedAuthServiceServer) ReportUser(context.Context, *ReportUserRequest) (*ReportUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReportUser not implemented")
 }
 func (UnimplementedAuthServiceServer) mustEmbedUnimplementedAuthServiceServer() {}
 
@@ -620,6 +635,24 @@ func _AuthService_GetUserNameWithTagUserID_Handler(srv interface{}, ctx context.
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthService_ReportUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReportUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).ReportUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_ReportUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).ReportUser(ctx, req.(*ReportUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AuthService_ServiceDesc is the grpc.ServiceDesc for AuthService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -694,6 +727,10 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetUserNameWithTagUserID",
 			Handler:    _AuthService_GetUserNameWithTagUserID_Handler,
+		},
+		{
+			MethodName: "ReportUser",
+			Handler:    _AuthService_ReportUser_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

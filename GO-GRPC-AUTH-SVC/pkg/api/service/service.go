@@ -293,3 +293,16 @@ func (au *AuthSever) GetUserNameWithTagUserID(ctx context.Context, req *pb.GetUs
 		Name: tagUsers,
 	}, nil
 }
+
+func (au *AuthSever) ReportUser(ctx context.Context, req *pb.ReportUserRequest) (*pb.ReportUserResponse, error) {
+	ReportUser := req.RepostedUserid
+	reportReq := models.ReportRequest{
+		UserID: uint(req.Userid),
+		Report: req.Report,
+	}
+	err := au.userUseCase.ReportUser(int(ReportUser), reportReq)
+	if err != nil {
+		return &pb.ReportUserResponse{}, err
+	}
+	return &pb.ReportUserResponse{}, nil
+}

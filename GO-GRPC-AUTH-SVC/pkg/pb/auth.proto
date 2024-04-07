@@ -24,6 +24,7 @@ service AuthService {
     rpc UserData (UserDataRequest) returns (UserDataResponse){}
     rpc CheckUserAvalilabilityWithTagUserID (CheckUserAvalilabilityWithTagUserIDRequest) returns (CheckUserAvalilabilityWithTagUserIDResponse){}
     rpc GetUserNameWithTagUserID (GetUserNameWithTagUserIDRequest) returns (GetUserNameWithTagUserIDResponse){}
+    rpc ReportUser (ReportUserRequest) returns (ReportUserResponse){}
 }
 
 message UserSignUpRequest {
@@ -279,3 +280,11 @@ message TagUsernames{
 message GetUserNameWithTagUserIDResponse{
     repeated TagUsernames name = 1;
 }
+
+message ReportUserRequest {
+    int64 RepostedUserid = 1;
+    int64  userid = 2;
+    string Report = 3;
+}
+
+message  ReportUserResponse {}

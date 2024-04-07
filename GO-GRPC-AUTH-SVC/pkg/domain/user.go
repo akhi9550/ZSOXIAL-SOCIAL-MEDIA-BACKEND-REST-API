@@ -18,3 +18,10 @@ type User struct {
 	Blocked   bool      `json:"blocked" gorm:"default:false"`
 	Isadmin   bool      `json:"is_admin" gorm:"default:false"`
 }
+
+type UserReports struct {
+	ID           uint   `json:"id" gorm:"uniquekey; not null"`
+	ReportUserID uint   `json:"report_user_id"`
+	UserID       uint   `json:"user_id"`
+	Report       string `json:"reports"`
+}

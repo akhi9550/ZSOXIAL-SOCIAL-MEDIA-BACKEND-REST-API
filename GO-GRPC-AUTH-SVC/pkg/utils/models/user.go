@@ -114,3 +114,8 @@ type TagUsers struct {
 	Username string `json:"username"`
 	Valid    bool   `json:"valid"`
 }
+
+type ReportRequest struct {
+    UserID uint   `json:"user_id"`
+    Report string `json:"report"`
+}

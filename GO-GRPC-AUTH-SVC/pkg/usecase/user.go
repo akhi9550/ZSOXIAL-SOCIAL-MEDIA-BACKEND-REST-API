@@ -256,3 +256,22 @@ func (ur *userUseCase) GetUserNameWithTagUserID(users []models.Tag) ([]models.Us
 	}
 	return data, nil
 }
+func (ur *userUseCase) ReportUser(userID int, req models.ReportRequest) error {
+	ReportuserExist := ur.userRepository.CheckUserAvailabilityWithUserID(userID)
+	if !ReportuserExist {
+		return errors.New("user doesn't exist")
+	}
+	userExist := ur.userRepository.CheckUserAvailabilityWithUserID(int(req.UserID))
+	if !userExist {
+		return errors.New("user doesn't exist")
+	}
+	Isreport := ur.userRepository.AlreadyReported(userID, int(req.UserID))
+	if Isreport {
+		return errors.New("already reported")
+	}
+	err := ur.userRepository.ReportUser(userID, req)
+	if err != nil {
+		return err
+	}
+	return nil
+}

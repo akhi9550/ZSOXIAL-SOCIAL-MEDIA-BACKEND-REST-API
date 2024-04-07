@@ -274,3 +274,20 @@ func (ur *userRepository) GetUserNameWithTagUserID(users []models.Tag) ([]models
 	}
 	return data, nil
 }
+
+func (ur *userRepository) AlreadyReported(RuserID, userID int) bool {
+	var count int
+	err := ur.DB.Raw(`SELECT COUNT(*) FROM user_reports WHERE report_user_id = ? AND user_id = ?`, RuserID, userID).Scan(&count).Error
+	if err != nil {
+		return false
+	}
+	return count > 0
+}
+
+func (ur *userRepository) ReportUser(userID int, req models.ReportRequest) error {
+	err := ur.DB.Exec(`INSERT INTO user_reports (report_user_id,user_id,report) VALUES (?,?,?)`, userID, req.UserID, req.Report).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
