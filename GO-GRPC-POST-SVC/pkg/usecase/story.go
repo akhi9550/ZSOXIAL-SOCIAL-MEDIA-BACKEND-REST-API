@@ -51,12 +51,12 @@ func (s *storyUseCase) CreateStory(userID int, file []byte) (models.CreateStoryR
 	}, nil
 }
 
-func (s *storyUseCase) GetStory(userID int) ([]models.CreateStoryResponses, error) {
+func (s *storyUseCase) GetStory(userID, viewer int) ([]models.CreateStoryResponses, error) {
 	userExist := s.authClient.CheckUserAvalilabilityWithUserID(int(userID))
 	if !userExist {
 		return []models.CreateStoryResponses{}, errors.New("user doesn't exist")
 	}
-	data, err := s.storyRepository.GetStory(userID)
+	data, err := s.storyRepository.GetStory(userID,viewer)
 	if err != nil {
 		return []models.CreateStoryResponses{}, err
 	}

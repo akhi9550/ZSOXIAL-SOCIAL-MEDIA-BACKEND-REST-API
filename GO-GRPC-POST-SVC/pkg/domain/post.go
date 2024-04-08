@@ -77,3 +77,7 @@ type PostReports struct {
 	PostID       uint   `json:"post_id"`
 	Report       string `json:"reports"`
 }
+
+type StoryViewes struct {
+	ViewerID uint `json:"viewer_id"`
+}

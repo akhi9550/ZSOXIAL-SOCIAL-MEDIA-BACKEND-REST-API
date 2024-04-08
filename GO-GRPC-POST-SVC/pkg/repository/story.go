@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"time"
+
 	interfaces "github.com/akhi9550/post-svc/pkg/repository/interface"
 	"github.com/akhi9550/post-svc/pkg/utils/models"
 	"gorm.io/gorm"
@@ -17,8 +19,10 @@ func NewStoryRepository(DB *gorm.DB) interfaces.StoryRepository {
 }
 
 func (s *storyRepository) CreateStory(userID int, file string) (models.CreateStory, error) {
+	startTime := time.Now()
+	endTime := time.Now().Add(time.Hour * 24)
 	var a models.CreateStories
-	err := s.DB.Raw(`INSERT INTO stories (user_id,url,start_time) VALUES (?,?,NOW()) RETURNING id,url,start_time`, userID, file).Scan(&a).Error
+	err := s.DB.Raw(`INSERT INTO stories (user_id,url,start_time,end_time) VALUES (?,?,?,?) RETURNING id,url,start_time`, userID, file, startTime, endTime).Scan(&a).Error
 	if err != nil {
 		return models.CreateStory{}, err
 	}
@@ -33,11 +37,17 @@ func (s *storyRepository) CreateStory(userID int, file string) (models.CreateSto
 
 }
 
-func (s *storyRepository) GetStory(userID int) ([]models.CreateStoriesResponse, error) {
+func (s *storyRepository) GetStory(userID, viewer int) ([]models.CreateStoriesResponse, error) {
 	var response []models.CreateStoriesResponse
 	err := s.DB.Raw(`SELECT id,url,start_time FROM stories WHERE user_id = ? AND is_valid = 'false'`, userID).Scan(&response).Error
 	if err != nil {
 		return []models.CreateStoriesResponse{}, err
+	}
+	for _, i := range response {
+		err = s.DB.Exec(`INSERT INTO story_viewes (storyID,viewer_id) VALUES (?,?)`, i.StoryID, viewer).Error
+		if err != nil {
+			return []models.CreateStoriesResponse{}, err
+		}
 	}
 	return response, nil
 }
