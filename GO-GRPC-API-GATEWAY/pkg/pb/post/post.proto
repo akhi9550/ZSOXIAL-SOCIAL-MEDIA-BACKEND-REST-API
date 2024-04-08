@@ -287,6 +287,7 @@ message CreateStoryResponse {
 
 message GetStoryRequest {
     int64 userid = 1;
+    int64 viewer = 2;
 }
 
 message CreateStoryResponses {

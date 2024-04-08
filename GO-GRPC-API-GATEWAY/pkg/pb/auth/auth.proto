@@ -25,6 +25,11 @@ service AuthService {
     rpc CheckUserAvalilabilityWithTagUserID (CheckUserAvalilabilityWithTagUserIDRequest) returns (CheckUserAvalilabilityWithTagUserIDResponse){}
     rpc GetUserNameWithTagUserID (GetUserNameWithTagUserIDRequest) returns (GetUserNameWithTagUserIDResponse){}
     rpc ReportUser (ReportUserRequest) returns (ReportUserResponse){}
+    rpc FollowREQ (FollowREQRequest) returns (FollowREQResponse){}
+    rpc ShowFollowREQ (ShowREQRequest) returns (ShowREQResponse){}
+    rpc AcceptFollowREQ (AcceptFollowREQRequest) returns (AcceptFollowREQResponse){}
+    rpc Following (FollowingRequest) returns (FollowingResponse){}
+    rpc Follower (FollowerRequest) returns (FollowerResponse){}
 }
 
 message UserSignUpRequest {
@@ -288,3 +293,53 @@ message ReportUserRequest {
 }
 
 message  ReportUserResponse {}
+
+message FollowREQRequest {
+    int64 userid = 1;
+    int64 followingUser = 2;
+}
+
+message FollowREQResponse {}
+
+message ShowREQRequest {
+    int64 userid = 1;
+}
+
+message REQResponse {
+    int64 followingUserID = 1;
+    string followingUser = 2;
+    string profile_photo = 3;
+    google.protobuf.Timestamp createdAt = 4;
+}
+
+message ShowREQResponse {
+    repeated REQResponse response = 1;
+}
+
+message AcceptFollowREQRequest {
+    int64 userid = 1;
+    int64 followingUser = 2;
+}
+
+message AcceptFollowREQResponse{}
+
+message FollowingRequest {
+    int64 userid = 1;  
+}
+
+message FollowResponse {
+    string username = 1;
+    string userProfile = 2;
+}
+
+message FollowingResponse {
+    repeated FollowResponse users = 1;
+}
+
+message FollowerRequest {
+    int64 userid = 1;  
+}
+
+message FollowerResponse {
+    repeated FollowResponse users = 1;
+}

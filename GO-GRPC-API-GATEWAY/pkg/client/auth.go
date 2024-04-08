@@ -33,7 +33,6 @@ func NewAuthClient(cfg config.Config) interfaces.AuthClient {
 }
 
 func (au *AuthClient) UserSignUp(user models.UserSignUpRequest) (*models.ReponseWithToken, error) {
-
 	data, err := au.Client.UserSignUp(context.Background(), &pb.UserSignUpRequest{
 		Firstname: user.Firstname,
 		Lastname:  user.Lastname,
@@ -299,4 +298,81 @@ func (au *AuthClient) ReportUser(userID int, req models.ReportRequest) error {
 		return err
 	}
 	return nil
+}
+
+func (au *AuthClient) FollowREQ(userID, FollowingID int) error {
+	_, err := au.Client.FollowREQ(context.Background(), &pb.FollowREQRequest{
+		Userid:        int64(userID),
+		FollowingUser: int64(FollowingID),
+	})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (au *AuthClient) ShowFollowREQ(userID int) ([]models.FollowingRequests, error) {
+	data, err := au.Client.ShowFollowREQ(context.Background(), &pb.ShowREQRequest{
+		Userid: int64(userID),
+	})
+	if err != nil {
+		return nil, err
+	}
+	var followingRequests []models.FollowingRequests
+	for _, req := range data.Response {
+		followingRequests = append(followingRequests, models.FollowingRequests{
+			FollowingUserID: uint(req.FollowingUserID),
+			FollowingUser:   req.FollowingUser,
+			Profile:         req.ProfilePhoto,
+			CreatedAt:       req.CreatedAt.AsTime(),
+		})
+	}
+	return followingRequests, nil
+}
+
+func (au *AuthClient) AcceptFollowREQ(userID, FollowingID int) error {
+	_, err := au.Client.AcceptFollowREQ(context.Background(), &pb.AcceptFollowREQRequest{
+		Userid:        int64(userID),
+		FollowingUser: int64(FollowingID),
+	})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (au *AuthClient) Following(userID int) ([]models.FollowingResponse, error) {
+	data, err := au.Client.Following(context.Background(), &pb.FollowingRequest{
+		Userid: int64(userID),
+	})
+	if err != nil {
+		return []models.FollowingResponse{}, err
+	}
+	var response []models.FollowingResponse
+	for _, follow := range data.Users {
+		details := models.FollowingResponse{
+			FollowingUser: follow.Username,
+			Profile:       follow.UserProfile,
+		}
+		response = append(response, details)
+	}
+	return response, nil
+}
+
+func (au *AuthClient) Follower(userID int) ([]models.FollowingResponse, error) {
+	data, err := au.Client.Follower(context.Background(), &pb.FollowerRequest{
+		Userid: int64(userID),
+	})
+	if err != nil {
+		return []models.FollowingResponse{}, err
+	}
+	var response []models.FollowingResponse
+	for _, follow := range data.Users {
+		details := models.FollowingResponse{
+			FollowingUser: follow.Username,
+			Profile:       follow.UserProfile,
+		}
+		response = append(response, details)
+	}
+	return response, nil
 }

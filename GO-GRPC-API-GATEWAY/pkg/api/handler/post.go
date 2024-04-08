@@ -368,6 +368,7 @@ func (p *PostHandler) CreateStory(c *gin.Context) {
 }
 
 func (p *PostHandler) GetStory(c *gin.Context) {
+	viewUser, _ := c.Get("user_id")
 	UserID := c.Query("user_id")
 	userID, err := strconv.Atoi(UserID)
 	if err != nil {
@@ -375,7 +376,7 @@ func (p *PostHandler) GetStory(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errs)
 		return
 	}
-	data, err := p.GRPC_Client.GetStory(userID)
+	data, err := p.GRPC_Client.GetStory(userID,viewUser.(int))
 	if err != nil {
 		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)

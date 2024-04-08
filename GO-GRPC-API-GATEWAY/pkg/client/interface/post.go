@@ -27,7 +27,7 @@ type PostClient interface {
 	UnSavedPost(userID, postID int) error
 	GetSavedPost(userID int) ([]models.PostResponse, error)
 	CreateStory(userID int, file *multipart.FileHeader) (models.CreateStoryResponse, error)
-	GetStory(userID int) ([]models.CreateStoryResponses, error)
+	GetStory(userID, viewer int) ([]models.CreateStoryResponses, error)
 	DeleteStory(userID, storyID int) error
 	LikeStory(userID, storyID int) error
 	UnLikeStory(userID, storyID int) error

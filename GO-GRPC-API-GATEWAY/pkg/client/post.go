@@ -423,9 +423,10 @@ func (p *PostClient) CreateStory(userID int, file *multipart.FileHeader) (models
 	}, nil
 }
 
-func (p *PostClient) GetStory(userID int) ([]models.CreateStoryResponses, error) {
+func (p *PostClient) GetStory(userID, viewer int) ([]models.CreateStoryResponses, error) {
 	data, err := p.Client.GetStory(context.Background(), &pb.GetStoryRequest{
 		Userid: int64(userID),
+		Viewer: int64(viewer),
 	})
 	if err != nil {
 		return []models.CreateStoryResponses{}, err
@@ -481,39 +482,38 @@ func (p *PostClient) UnLikeStory(userID, storyID int) error {
 	return nil
 }
 func (p *PostClient) ShowAllPostComments(PostID int) ([]models.AllCommentsAndReplies, error) {
-    data, err := p.Client.ShowAllPostComments(context.Background(), &pb.ShowAllPostCommentsRequest{
-        Postid: int64(PostID),
-    })
-    if err != nil {
-        return nil, err
-    }
+	data, err := p.Client.ShowAllPostComments(context.Background(), &pb.ShowAllPostCommentsRequest{
+		Postid: int64(PostID),
+	})
+	if err != nil {
+		return nil, err
+	}
 
-    var allCommentsAndReplies []models.AllCommentsAndReplies
-    for _, commentData := range data.Comments {
-        comment := models.AllCommentsAndReplies{
-            CommentUser: commentData.CommentedUser,
-            Profile:     commentData.Posturl,
-            Comment:     commentData.Comment,
-            CreatedAt:   commentData.CreatedAt.AsTime(),
-            Reply:       make([]models.AllReplies, 0),
-        }
+	var allCommentsAndReplies []models.AllCommentsAndReplies
+	for _, commentData := range data.Comments {
+		comment := models.AllCommentsAndReplies{
+			CommentUser: commentData.CommentedUser,
+			Profile:     commentData.Posturl,
+			Comment:     commentData.Comment,
+			CreatedAt:   commentData.CreatedAt.AsTime(),
+			Reply:       make([]models.AllReplies, 0),
+		}
 
-        for _, replyData := range commentData.Reply {
-            reply := models.AllReplies{
-                ReplyUser: replyData.Replieduser,
-                Profile:   replyData.Posturl,
-                Reply:     replyData.Replies,
-                CreatedAt: replyData.CreatedAt.AsTime(),
-            }
-            comment.Reply = append(comment.Reply, reply)
-        }
+		for _, replyData := range commentData.Reply {
+			reply := models.AllReplies{
+				ReplyUser: replyData.Replieduser,
+				Profile:   replyData.Posturl,
+				Reply:     replyData.Replies,
+				CreatedAt: replyData.CreatedAt.AsTime(),
+			}
+			comment.Reply = append(comment.Reply, reply)
+		}
 
-        allCommentsAndReplies = append(allCommentsAndReplies, comment)
-    }
+		allCommentsAndReplies = append(allCommentsAndReplies, comment)
+	}
 
-    return allCommentsAndReplies, nil
+	return allCommentsAndReplies, nil
 }
-
 
 func (p *PostClient) ReportPost(userID int, req models.ReportPostRequest) error {
 	_, err := p.Client.ReportPost(context.Background(), &pb.ReportPostRequest{

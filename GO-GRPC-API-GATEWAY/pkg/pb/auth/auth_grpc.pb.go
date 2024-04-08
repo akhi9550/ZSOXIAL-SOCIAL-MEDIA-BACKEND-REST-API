@@ -37,6 +37,11 @@ const (
 	AuthService_CheckUserAvalilabilityWithTagUserID_FullMethodName = "/user.AuthService/CheckUserAvalilabilityWithTagUserID"
 	AuthService_GetUserNameWithTagUserID_FullMethodName            = "/user.AuthService/GetUserNameWithTagUserID"
 	AuthService_ReportUser_FullMethodName                          = "/user.AuthService/ReportUser"
+	AuthService_FollowREQ_FullMethodName                           = "/user.AuthService/FollowREQ"
+	AuthService_ShowFollowREQ_FullMethodName                       = "/user.AuthService/ShowFollowREQ"
+	AuthService_AcceptFollowREQ_FullMethodName                     = "/user.AuthService/AcceptFollowREQ"
+	AuthService_Following_FullMethodName                           = "/user.AuthService/Following"
+	AuthService_Follower_FullMethodName                            = "/user.AuthService/Follower"
 )
 
 // AuthServiceClient is the client API for AuthService service.
@@ -61,6 +66,11 @@ type AuthServiceClient interface {
 	CheckUserAvalilabilityWithTagUserID(ctx context.Context, in *CheckUserAvalilabilityWithTagUserIDRequest, opts ...grpc.CallOption) (*CheckUserAvalilabilityWithTagUserIDResponse, error)
 	GetUserNameWithTagUserID(ctx context.Context, in *GetUserNameWithTagUserIDRequest, opts ...grpc.CallOption) (*GetUserNameWithTagUserIDResponse, error)
 	ReportUser(ctx context.Context, in *ReportUserRequest, opts ...grpc.CallOption) (*ReportUserResponse, error)
+	FollowREQ(ctx context.Context, in *FollowREQRequest, opts ...grpc.CallOption) (*FollowREQResponse, error)
+	ShowFollowREQ(ctx context.Context, in *ShowREQRequest, opts ...grpc.CallOption) (*ShowREQResponse, error)
+	AcceptFollowREQ(ctx context.Context, in *AcceptFollowREQRequest, opts ...grpc.CallOption) (*AcceptFollowREQResponse, error)
+	Following(ctx context.Context, in *FollowingRequest, opts ...grpc.CallOption) (*FollowingResponse, error)
+	Follower(ctx context.Context, in *FollowerRequest, opts ...grpc.CallOption) (*FollowerResponse, error)
 }
 
 type authServiceClient struct {
@@ -233,6 +243,51 @@ func (c *authServiceClient) ReportUser(ctx context.Context, in *ReportUserReques
 	return out, nil
 }
 
+func (c *authServiceClient) FollowREQ(ctx context.Context, in *FollowREQRequest, opts ...grpc.CallOption) (*FollowREQResponse, error) {
+	out := new(FollowREQResponse)
+	err := c.cc.Invoke(ctx, AuthService_FollowREQ_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) ShowFollowREQ(ctx context.Context, in *ShowREQRequest, opts ...grpc.CallOption) (*ShowREQResponse, error) {
+	out := new(ShowREQResponse)
+	err := c.cc.Invoke(ctx, AuthService_ShowFollowREQ_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) AcceptFollowREQ(ctx context.Context, in *AcceptFollowREQRequest, opts ...grpc.CallOption) (*AcceptFollowREQResponse, error) {
+	out := new(AcceptFollowREQResponse)
+	err := c.cc.Invoke(ctx, AuthService_AcceptFollowREQ_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) Following(ctx context.Context, in *FollowingRequest, opts ...grpc.CallOption) (*FollowingResponse, error) {
+	out := new(FollowingResponse)
+	err := c.cc.Invoke(ctx, AuthService_Following_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) Follower(ctx context.Context, in *FollowerRequest, opts ...grpc.CallOption) (*FollowerResponse, error) {
+	out := new(FollowerResponse)
+	err := c.cc.Invoke(ctx, AuthService_Follower_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthServiceServer is the server API for AuthService service.
 // All implementations must embed UnimplementedAuthServiceServer
 // for forward compatibility
@@ -255,6 +310,11 @@ type AuthServiceServer interface {
 	CheckUserAvalilabilityWithTagUserID(context.Context, *CheckUserAvalilabilityWithTagUserIDRequest) (*CheckUserAvalilabilityWithTagUserIDResponse, error)
 	GetUserNameWithTagUserID(context.Context, *GetUserNameWithTagUserIDRequest) (*GetUserNameWithTagUserIDResponse, error)
 	ReportUser(context.Context, *ReportUserRequest) (*ReportUserResponse, error)
+	FollowREQ(context.Context, *FollowREQRequest) (*FollowREQResponse, error)
+	ShowFollowREQ(context.Context, *ShowREQRequest) (*ShowREQResponse, error)
+	AcceptFollowREQ(context.Context, *AcceptFollowREQRequest) (*AcceptFollowREQResponse, error)
+	Following(context.Context, *FollowingRequest) (*FollowingResponse, error)
+	Follower(context.Context, *FollowerRequest) (*FollowerResponse, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
 
@@ -315,6 +375,21 @@ func (UnimplementedAuthServiceServer) GetUserNameWithTagUserID(context.Context, 
 }
 func (UnimplementedAuthServiceServer) ReportUser(context.Context, *ReportUserRequest) (*ReportUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ReportUser not implemented")
+}
+func (UnimplementedAuthServiceServer) FollowREQ(context.Context, *FollowREQRequest) (*FollowREQResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FollowREQ not implemented")
+}
+func (UnimplementedAuthServiceServer) ShowFollowREQ(context.Context, *ShowREQRequest) (*ShowREQResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ShowFollowREQ not implemented")
+}
+func (UnimplementedAuthServiceServer) AcceptFollowREQ(context.Context, *AcceptFollowREQRequest) (*AcceptFollowREQResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AcceptFollowREQ not implemented")
+}
+func (UnimplementedAuthServiceServer) Following(context.Context, *FollowingRequest) (*FollowingResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Following not implemented")
+}
+func (UnimplementedAuthServiceServer) Follower(context.Context, *FollowerRequest) (*FollowerResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Follower not implemented")
 }
 func (UnimplementedAuthServiceServer) mustEmbedUnimplementedAuthServiceServer() {}
 
@@ -653,6 +728,96 @@ func _AuthService_ReportUser_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthService_FollowREQ_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FollowREQRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).FollowREQ(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_FollowREQ_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).FollowREQ(ctx, req.(*FollowREQRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_ShowFollowREQ_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ShowREQRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).ShowFollowREQ(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_ShowFollowREQ_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).ShowFollowREQ(ctx, req.(*ShowREQRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_AcceptFollowREQ_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AcceptFollowREQRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).AcceptFollowREQ(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_AcceptFollowREQ_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).AcceptFollowREQ(ctx, req.(*AcceptFollowREQRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_Following_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FollowingRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).Following(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_Following_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).Following(ctx, req.(*FollowingRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_Follower_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FollowerRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).Follower(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_Follower_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).Follower(ctx, req.(*FollowerRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AuthService_ServiceDesc is the grpc.ServiceDesc for AuthService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -731,6 +896,26 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ReportUser",
 			Handler:    _AuthService_ReportUser_Handler,
+		},
+		{
+			MethodName: "FollowREQ",
+			Handler:    _AuthService_FollowREQ_Handler,
+		},
+		{
+			MethodName: "ShowFollowREQ",
+			Handler:    _AuthService_ShowFollowREQ_Handler,
+		},
+		{
+			MethodName: "AcceptFollowREQ",
+			Handler:    _AuthService_AcceptFollowREQ_Handler,
+		},
+		{
+			MethodName: "Following",
+			Handler:    _AuthService_Following_Handler,
+		},
+		{
+			MethodName: "Follower",
+			Handler:    _AuthService_Follower_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
