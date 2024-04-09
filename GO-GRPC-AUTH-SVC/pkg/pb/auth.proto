@@ -16,10 +16,6 @@ service AuthService {
     rpc UserDetails (UserDetailsRequest) returns (UserDetailsResponse){}
     rpc UpdateUserDetails (UpdateUserDetailsRequest) returns (UpdateUserDetailsResponse){}
     rpc ChangePassword (ChangePasswordRequest) returns (ChangePasswordResponse){}
-    rpc AdminLogin (AdminLoginRequest) returns (AdminLoginResponse){}
-    rpc ShowAllUsers (ShowAllUsersRequest) returns (ShowAllUsersResponse){}
-    rpc AdminBlockUser(AdminBlockUserRequest) returns (AdminBlockUserResponse) {}
-    rpc AdminUnblockUser(AdminUnblockUserRequest) returns (AdminUnblockUserResponse) {}
     rpc CheckUserAvalilabilityWithUserID (CheckUserAvalilabilityWithUserIDRequest) returns (CheckUserAvalilabilityWithUserIDResponse){}
     rpc UserData (UserDataRequest) returns (UserDataResponse){}
     rpc CheckUserAvalilabilityWithTagUserID (CheckUserAvalilabilityWithTagUserIDRequest) returns (CheckUserAvalilabilityWithTagUserIDResponse){}
@@ -30,6 +26,14 @@ service AuthService {
     rpc AcceptFollowREQ (AcceptFollowREQRequest) returns (AcceptFollowREQResponse){}
     rpc Following (FollowingRequest) returns (FollowingResponse){}
     rpc Follower (FollowerRequest) returns (FollowerResponse){}
+    rpc AdminLogin (AdminLoginRequest) returns (AdminLoginResponse){}
+    rpc ShowAllUsers (ShowAllUsersRequest) returns (ShowAllUsersResponse){}
+    rpc AdminBlockUser(AdminBlockUserRequest) returns (AdminBlockUserResponse) {}
+    rpc AdminUnblockUser(AdminUnblockUserRequest) returns (AdminUnblockUserResponse) {}
+    rpc ShowUserReports (ShowUserReportsRequest) returns (ShowUserReportsResponse){}
+    rpc ShowPostReports (ShowPostReportsRequest) returns (ShowPostReportsResponse);
+    rpc GetAllPosts (GetAllPostsRequest) returns (GetAllPostsResponse){}
+    rpc RemovePost (RemovePostRequest) returns (RemovePostResponse);
 }
 
 message UserSignUpRequest {
@@ -242,6 +246,68 @@ message AdminUnblockUserRequest {
 message AdminUnblockUserResponse {
     string error = 1;
 }
+
+message ShowUserReportsRequest {
+    int64 page = 1;
+    int64 count = 2;
+}
+
+message ReportUser{
+    int64 reportedUserID = 1;
+    int64 UserID = 2;
+    string Report = 3;
+}
+
+message ShowUserReportsResponse{
+    repeated ReportUser reports = 1;
+}
+
+message ShowPostReportsRequest{
+    int64 page = 1;
+    int64 count = 2;
+}
+
+message ReprotPost{
+    int64 reportedUserID = 1;
+    int64 postID = 2;
+    string Report = 3;
+}
+
+message ShowPostReportsResponse{
+  repeated ReprotPost reports = 1;
+}
+
+message GetAllPostsRequest {
+    int64 page = 1;
+    int64 count = 2;
+}
+
+message UserDatas {
+    int64 userID = 1;
+    string username = 2; 
+    string profile = 3;
+}
+
+message Posts{
+    int64 id = 1;
+    UserDatas user =2;
+    string caption = 3;
+    repeated string tag = 4; 
+    string url = 5;
+    int64 like =6 ;
+    int64 comment = 7;
+    google.protobuf.Timestamp created_at = 8; 
+}
+
+message GetAllPostsResponse {
+    repeated Posts posts = 1;
+}
+
+message RemovePostRequest {
+    int64 postID = 1;
+}
+
+message RemovePostResponse {}
 
 message CheckUserAvalilabilityWithUserIDRequest {
     int64 id = 1;

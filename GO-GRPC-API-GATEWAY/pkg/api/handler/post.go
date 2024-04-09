@@ -128,8 +128,14 @@ func (p *PostHandler) DeletePost(c *gin.Context) {
 }
 
 func (p *PostHandler) GetAllPost(c *gin.Context) {
-	userID, _ := c.Get("user_id")
-	data, err := p.GRPC_Client.GetAllPost(userID.(int))
+	userID := c.Query("user_id")
+	UserID, err := strconv.Atoi(userID)
+	if err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "UserID not in right format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+		return
+	}
+	data, err := p.GRPC_Client.GetAllPost(UserID)
 	if err != nil {
 		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
@@ -376,7 +382,7 @@ func (p *PostHandler) GetStory(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errs)
 		return
 	}
-	data, err := p.GRPC_Client.GetStory(userID,viewUser.(int))
+	data, err := p.GRPC_Client.GetStory(userID, viewUser.(int))
 	if err != nil {
 		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)

@@ -217,77 +217,6 @@ func (au *AuthClient) VerifyOTP(code models.VerifyData) (models.ReponseWithToken
 	}, nil
 }
 
-func (au *AuthClient) AdminLogin(admin models.AdminLoginRequest) (*models.AdminReponseWithToken, error) {
-	data, err := au.Client.AdminLogin(context.Background(), &pb.AdminLoginRequest{
-		Email:    admin.Email,
-		Password: admin.Password,
-	})
-	if err != nil {
-		return &models.AdminReponseWithToken{}, err
-	}
-	adminData := models.AdminResponse{
-		Id:       uint(data.Reposnse.Info.Id),
-		Email:    data.Reposnse.Info.Email,
-		Imageurl: string(data.Reposnse.Info.ProfilePhoto),
-		Isadmin:  data.Reposnse.Info.Isadmin,
-	}
-	return &models.AdminReponseWithToken{
-		Users:        adminData,
-		AccessToken:  data.Reposnse.Accesstoken,
-		RefreshToken: data.Reposnse.Refreshtoken,
-	}, nil
-}
-
-func (au *AuthClient) ShowAllUsers(page, count int) ([]models.UserDetailsAtAdmin, error) {
-	data, err := au.Client.ShowAllUsers(context.Background(), &pb.ShowAllUsersRequest{
-		Page:  int64(page),
-		Count: int64(count),
-	})
-	if err != nil {
-		return []models.UserDetailsAtAdmin{}, err
-	}
-	var result []models.UserDetailsAtAdmin
-
-	for _, userData := range data.UsersData {
-		userDetails := models.UserDetailsAtAdmin{
-			Id:        uint(userData.Id),
-			Firstname: userData.Firstname,
-			Lastname:  userData.Lastname,
-			Username:  userData.Username,
-			Dob:       userData.Dob,
-			Gender:    userData.Gender,
-			Phone:     userData.Phone,
-			Email:     userData.Email,
-			Imageurl:  string(userData.ProfilePhoto),
-			CreatedAt: time.Unix(userData.CreatedAt.Seconds, 0),
-			Blocked:   userData.Blocked,
-		}
-		result = append(result, userDetails)
-	}
-
-	return result, nil
-}
-
-func (au *AuthClient) AdminBlockUser(userID int) error {
-	_, err := au.Client.AdminBlockUser(context.Background(), &pb.AdminBlockUserRequest{
-		Id: int64(userID),
-	})
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func (au *AuthClient) AdminUnblockUser(userID int) error {
-	_, err := au.Client.AdminUnblockUser(context.Background(), &pb.AdminUnblockUserRequest{
-		Id: int64(userID),
-	})
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
 func (au *AuthClient) ReportUser(userID int, req models.ReportRequest) error {
 	_, err := au.Client.ReportUser(context.Background(), &pb.ReportUserRequest{
 		RepostedUserid: int64(userID),
@@ -375,4 +304,158 @@ func (au *AuthClient) Follower(userID int) ([]models.FollowingResponse, error) {
 		response = append(response, details)
 	}
 	return response, nil
+}
+
+func (au *AuthClient) AdminLogin(admin models.AdminLoginRequest) (*models.AdminReponseWithToken, error) {
+	data, err := au.Client.AdminLogin(context.Background(), &pb.AdminLoginRequest{
+		Email:    admin.Email,
+		Password: admin.Password,
+	})
+	if err != nil {
+		return &models.AdminReponseWithToken{}, err
+	}
+	adminData := models.AdminResponse{
+		Id:       uint(data.Reposnse.Info.Id),
+		Email:    data.Reposnse.Info.Email,
+		Imageurl: string(data.Reposnse.Info.ProfilePhoto),
+		Isadmin:  data.Reposnse.Info.Isadmin,
+	}
+	return &models.AdminReponseWithToken{
+		Users:        adminData,
+		AccessToken:  data.Reposnse.Accesstoken,
+		RefreshToken: data.Reposnse.Refreshtoken,
+	}, nil
+}
+
+func (au *AuthClient) ShowAllUsers(page, count int) ([]models.UserDetailsAtAdmin, error) {
+	data, err := au.Client.ShowAllUsers(context.Background(), &pb.ShowAllUsersRequest{
+		Page:  int64(page),
+		Count: int64(count),
+	})
+	if err != nil {
+		return []models.UserDetailsAtAdmin{}, err
+	}
+	var result []models.UserDetailsAtAdmin
+
+	for _, userData := range data.UsersData {
+		userDetails := models.UserDetailsAtAdmin{
+			Id:        uint(userData.Id),
+			Firstname: userData.Firstname,
+			Lastname:  userData.Lastname,
+			Username:  userData.Username,
+			Dob:       userData.Dob,
+			Gender:    userData.Gender,
+			Phone:     userData.Phone,
+			Email:     userData.Email,
+			Imageurl:  string(userData.ProfilePhoto),
+			CreatedAt: time.Unix(userData.CreatedAt.Seconds, 0),
+			Blocked:   userData.Blocked,
+		}
+		result = append(result, userDetails)
+	}
+
+	return result, nil
+}
+
+func (au *AuthClient) AdminBlockUser(userID int) error {
+	_, err := au.Client.AdminBlockUser(context.Background(), &pb.AdminBlockUserRequest{
+		Id: int64(userID),
+	})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (au *AuthClient) AdminUnblockUser(userID int) error {
+	_, err := au.Client.AdminUnblockUser(context.Background(), &pb.AdminUnblockUserRequest{
+		Id: int64(userID),
+	})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (au *AuthClient) ShowUserReports(page, count int) ([]models.UserReports, error) {
+	data, err := au.Client.ShowUserReports(context.Background(), &pb.ShowUserReportsRequest{
+		Page:  int64(page),
+		Count: int64(count),
+	})
+	if err != nil {
+		return []models.UserReports{}, err
+	}
+	var result []models.UserReports
+
+	for _, report := range data.Reports {
+		Details := models.UserReports{
+			ReportUserID: uint(report.ReportedUserID),
+			UserID:       uint(report.UserID),
+			Report:       report.Report,
+		}
+		result = append(result, Details)
+	}
+
+	return result, nil
+}
+func (au *AuthClient) ShowPostReports(page, count int) ([]models.PostReports, error) {
+	data, err := au.Client.ShowPostReports(context.Background(), &pb.ShowPostReportsRequest{
+		Page:  int64(page),
+		Count: int64(count),
+	})
+	if err != nil {
+		return []models.PostReports{}, err
+	}
+	var result []models.PostReports
+
+	for _, report := range data.Reports {
+		Details := models.PostReports{
+			ReportUserID: uint(report.ReportedUserID),
+			PostID:       uint(report.PostID),
+			Report:       report.Report,
+		}
+		result = append(result, Details)
+	}
+
+	return result, nil
+}
+
+func (au *AuthClient) GetAllPosts(page, count int) ([]models.PostResponse, error) {
+	data, err := au.Client.GetAllPosts(context.Background(), &pb.GetAllPostsRequest{
+		Page:  int64(page),
+		Count: int64(count),
+	})
+	if err != nil {
+		return []models.PostResponse{}, err
+	}
+	var result []models.PostResponse
+
+	for _, report := range data.Posts {
+		user := models.UserData{
+			UserId:   uint(report.User.UserID),
+			Username: report.User.Username,
+			Profile:  report.User.Profile,
+		}
+		Details := models.PostResponse{
+			ID:        uint(report.Id),
+			Author:    user,
+			Caption:   report.Caption,
+			Url:       report.Url,
+			Likes:     uint(report.Like),
+			Comments:  uint(report.Comment),
+			CreatedAt: report.CreatedAt.AsTime(),
+		}
+		result = append(result, Details)
+	}
+	return result, nil
+}
+
+func (au *AuthClient) RemovePost(postID int) error {
+	_, err := au.Client.RemovePost(context.Background(), &pb.RemovePostRequest{
+		PostID: int64(postID),
+	})
+	if err != nil {
+		return err
+	}
+	return nil
 }

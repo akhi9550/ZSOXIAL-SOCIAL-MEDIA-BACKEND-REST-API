@@ -2,6 +2,7 @@ package repository
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/akhi9550/auth-svc/pkg/domain"
 	interfaces "github.com/akhi9550/auth-svc/pkg/repository/interface"
@@ -108,9 +109,10 @@ func (ur *userRepository) ChangePassword(phone string, password string) error {
 
 func (ur *userRepository) UserDetails(userID int) (models.UsersProfileDetails, error) {
 	var userDetails models.UsersProfileDetails
-	err := ur.DB.Raw("SELECT firstname,lastname,username,dob,gender,phone,email,bio,imageurl FROM users WHERE id = ?", userID).Row().Scan(&userDetails.Firstname, &userDetails.Lastname, &userDetails.Username, &userDetails.Dob, &userDetails.Gender, &userDetails.Phone, &userDetails.Email, &userDetails.Bio, &userDetails.Imageurl)
+	err := ur.DB.Raw("SELECT firstname, lastname, username, dob, gender, phone, email, bio, imageurl FROM users WHERE id = ?", userID).Row().Scan(&userDetails.Firstname, &userDetails.Lastname, &userDetails.Username, &userDetails.Dob, &userDetails.Gender, &userDetails.Phone, &userDetails.Email, &userDetails.Bio, &userDetails.Imageurl)
 	if err != nil {
-		return models.UsersProfileDetails{}, errors.New("could not get user details")
+		fmt.Println("Error retrieving user details:", err)
+		return models.UsersProfileDetails{}, err
 	}
 	return userDetails, nil
 }
@@ -306,11 +308,21 @@ func (ur *userRepository) FollowREQ(userID, FollowingUserID int) error {
 
 func (ur *userRepository) ShowFollowREQ(userID int) ([]models.FollowReqs, error) {
 	var response []models.FollowReqs
-	err := ur.DB.Raw(`SELECT following_user,created_at FROM following_requests WHERE user_id = ?`, userID).Scan(&response).Error
+	err := ur.DB.Raw(`SELECT following_user,created_at FROM following_requests WHERE following_user = ?`, userID).Scan(&response).Error
 	if err != nil {
 		return []models.FollowReqs{}, err
 	}
 	return response, nil
+}
+
+func (ur *userRepository) CheckRequest(userID, FollowingUserID int) bool {
+	var count int
+	err := ur.DB.Raw(`SELECT following_user,user_id FROM following_requests WHERE following_user = ? AND user_id = ?`, FollowingUserID, userID).Scan(&count).Error
+	if err != nil {
+		return false
+	}
+	return count > 0
+
 }
 
 func (ur *userRepository) AcceptFollowREQ(userID, FollowingUserID int) error {

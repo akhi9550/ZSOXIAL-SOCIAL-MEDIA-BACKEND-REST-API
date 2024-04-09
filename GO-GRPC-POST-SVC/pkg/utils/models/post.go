@@ -43,6 +43,16 @@ type Response struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
+type Responses struct {
+	ID        uint      `json:"id"`
+	Url       string    `json:"url"`
+	Caption   string    `json:"caption"`
+	UserID    uint      `json:"user_id"`
+	Likes     uint      `json:"likes"  gorm:"column:likes_count"`
+	Comments  uint      `json:"comments"  gorm:"column:comments_count"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
 type SavedResponse struct {
 	ID        uint      `json:"id"`
 	UserID    uint      `json:"user_id"`

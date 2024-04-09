@@ -2279,6 +2279,689 @@ func (x *AdminUnblockUserResponse) GetError() string {
 	return ""
 }
 
+type ShowUserReportsRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Page  int64 `protobuf:"varint,1,opt,name=page,proto3" json:"page,omitempty"`
+	Count int64 `protobuf:"varint,2,opt,name=count,proto3" json:"count,omitempty"`
+}
+
+func (x *ShowUserReportsRequest) Reset() {
+	*x = ShowUserReportsRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_pkg_pb_auth_auth_proto_msgTypes[38]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ShowUserReportsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ShowUserReportsRequest) ProtoMessage() {}
+
+func (x *ShowUserReportsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_pkg_pb_auth_auth_proto_msgTypes[38]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ShowUserReportsRequest.ProtoReflect.Descriptor instead.
+func (*ShowUserReportsRequest) Descriptor() ([]byte, []int) {
+	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{38}
+}
+
+func (x *ShowUserReportsRequest) GetPage() int64 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+func (x *ShowUserReportsRequest) GetCount() int64 {
+	if x != nil {
+		return x.Count
+	}
+	return 0
+}
+
+type ReportUser struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	ReportedUserID int64  `protobuf:"varint,1,opt,name=reportedUserID,proto3" json:"reportedUserID,omitempty"`
+	UserID         int64  `protobuf:"varint,2,opt,name=UserID,proto3" json:"UserID,omitempty"`
+	Report         string `protobuf:"bytes,3,opt,name=Report,proto3" json:"Report,omitempty"`
+}
+
+func (x *ReportUser) Reset() {
+	*x = ReportUser{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_pkg_pb_auth_auth_proto_msgTypes[39]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ReportUser) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ReportUser) ProtoMessage() {}
+
+func (x *ReportUser) ProtoReflect() protoreflect.Message {
+	mi := &file_pkg_pb_auth_auth_proto_msgTypes[39]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ReportUser.ProtoReflect.Descriptor instead.
+func (*ReportUser) Descriptor() ([]byte, []int) {
+	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{39}
+}
+
+func (x *ReportUser) GetReportedUserID() int64 {
+	if x != nil {
+		return x.ReportedUserID
+	}
+	return 0
+}
+
+func (x *ReportUser) GetUserID() int64 {
+	if x != nil {
+		return x.UserID
+	}
+	return 0
+}
+
+func (x *ReportUser) GetReport() string {
+	if x != nil {
+		return x.Report
+	}
+	return ""
+}
+
+type ShowUserReportsResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Reports []*ReportUser `protobuf:"bytes,1,rep,name=reports,proto3" json:"reports,omitempty"`
+}
+
+func (x *ShowUserReportsResponse) Reset() {
+	*x = ShowUserReportsResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_pkg_pb_auth_auth_proto_msgTypes[40]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ShowUserReportsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ShowUserReportsResponse) ProtoMessage() {}
+
+func (x *ShowUserReportsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_pkg_pb_auth_auth_proto_msgTypes[40]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ShowUserReportsResponse.ProtoReflect.Descriptor instead.
+func (*ShowUserReportsResponse) Descriptor() ([]byte, []int) {
+	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{40}
+}
+
+func (x *ShowUserReportsResponse) GetReports() []*ReportUser {
+	if x != nil {
+		return x.Reports
+	}
+	return nil
+}
+
+type ShowPostReportsRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Page  int64 `protobuf:"varint,1,opt,name=page,proto3" json:"page,omitempty"`
+	Count int64 `protobuf:"varint,2,opt,name=count,proto3" json:"count,omitempty"`
+}
+
+func (x *ShowPostReportsRequest) Reset() {
+	*x = ShowPostReportsRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_pkg_pb_auth_auth_proto_msgTypes[41]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ShowPostReportsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ShowPostReportsRequest) ProtoMessage() {}
+
+func (x *ShowPostReportsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_pkg_pb_auth_auth_proto_msgTypes[41]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ShowPostReportsRequest.ProtoReflect.Descriptor instead.
+func (*ShowPostReportsRequest) Descriptor() ([]byte, []int) {
+	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{41}
+}
+
+func (x *ShowPostReportsRequest) GetPage() int64 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+func (x *ShowPostReportsRequest) GetCount() int64 {
+	if x != nil {
+		return x.Count
+	}
+	return 0
+}
+
+type ReprotPost struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	ReportedUserID int64  `protobuf:"varint,1,opt,name=reportedUserID,proto3" json:"reportedUserID,omitempty"`
+	PostID         int64  `protobuf:"varint,2,opt,name=postID,proto3" json:"postID,omitempty"`
+	Report         string `protobuf:"bytes,3,opt,name=Report,proto3" json:"Report,omitempty"`
+}
+
+func (x *ReprotPost) Reset() {
+	*x = ReprotPost{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_pkg_pb_auth_auth_proto_msgTypes[42]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ReprotPost) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ReprotPost) ProtoMessage() {}
+
+func (x *ReprotPost) ProtoReflect() protoreflect.Message {
+	mi := &file_pkg_pb_auth_auth_proto_msgTypes[42]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ReprotPost.ProtoReflect.Descriptor instead.
+func (*ReprotPost) Descriptor() ([]byte, []int) {
+	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{42}
+}
+
+func (x *ReprotPost) GetReportedUserID() int64 {
+	if x != nil {
+		return x.ReportedUserID
+	}
+	return 0
+}
+
+func (x *ReprotPost) GetPostID() int64 {
+	if x != nil {
+		return x.PostID
+	}
+	return 0
+}
+
+func (x *ReprotPost) GetReport() string {
+	if x != nil {
+		return x.Report
+	}
+	return ""
+}
+
+type ShowPostReportsResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Reports []*ReprotPost `protobuf:"bytes,1,rep,name=reports,proto3" json:"reports,omitempty"`
+}
+
+func (x *ShowPostReportsResponse) Reset() {
+	*x = ShowPostReportsResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_pkg_pb_auth_auth_proto_msgTypes[43]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ShowPostReportsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ShowPostReportsResponse) ProtoMessage() {}
+
+func (x *ShowPostReportsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_pkg_pb_auth_auth_proto_msgTypes[43]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ShowPostReportsResponse.ProtoReflect.Descriptor instead.
+func (*ShowPostReportsResponse) Descriptor() ([]byte, []int) {
+	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{43}
+}
+
+func (x *ShowPostReportsResponse) GetReports() []*ReprotPost {
+	if x != nil {
+		return x.Reports
+	}
+	return nil
+}
+
+type GetAllPostsRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Page  int64 `protobuf:"varint,1,opt,name=page,proto3" json:"page,omitempty"`
+	Count int64 `protobuf:"varint,2,opt,name=count,proto3" json:"count,omitempty"`
+}
+
+func (x *GetAllPostsRequest) Reset() {
+	*x = GetAllPostsRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_pkg_pb_auth_auth_proto_msgTypes[44]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetAllPostsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetAllPostsRequest) ProtoMessage() {}
+
+func (x *GetAllPostsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_pkg_pb_auth_auth_proto_msgTypes[44]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetAllPostsRequest.ProtoReflect.Descriptor instead.
+func (*GetAllPostsRequest) Descriptor() ([]byte, []int) {
+	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{44}
+}
+
+func (x *GetAllPostsRequest) GetPage() int64 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+func (x *GetAllPostsRequest) GetCount() int64 {
+	if x != nil {
+		return x.Count
+	}
+	return 0
+}
+
+type UserDatas struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	UserID   int64  `protobuf:"varint,1,opt,name=userID,proto3" json:"userID,omitempty"`
+	Username string `protobuf:"bytes,2,opt,name=username,proto3" json:"username,omitempty"`
+	Profile  string `protobuf:"bytes,3,opt,name=profile,proto3" json:"profile,omitempty"`
+}
+
+func (x *UserDatas) Reset() {
+	*x = UserDatas{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_pkg_pb_auth_auth_proto_msgTypes[45]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UserDatas) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UserDatas) ProtoMessage() {}
+
+func (x *UserDatas) ProtoReflect() protoreflect.Message {
+	mi := &file_pkg_pb_auth_auth_proto_msgTypes[45]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UserDatas.ProtoReflect.Descriptor instead.
+func (*UserDatas) Descriptor() ([]byte, []int) {
+	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{45}
+}
+
+func (x *UserDatas) GetUserID() int64 {
+	if x != nil {
+		return x.UserID
+	}
+	return 0
+}
+
+func (x *UserDatas) GetUsername() string {
+	if x != nil {
+		return x.Username
+	}
+	return ""
+}
+
+func (x *UserDatas) GetProfile() string {
+	if x != nil {
+		return x.Profile
+	}
+	return ""
+}
+
+type Posts struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id        int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	User      *UserDatas             `protobuf:"bytes,2,opt,name=user,proto3" json:"user,omitempty"`
+	Caption   string                 `protobuf:"bytes,3,opt,name=caption,proto3" json:"caption,omitempty"`
+	Tag       []string               `protobuf:"bytes,4,rep,name=tag,proto3" json:"tag,omitempty"`
+	Url       string                 `protobuf:"bytes,5,opt,name=url,proto3" json:"url,omitempty"`
+	Like      int64                  `protobuf:"varint,6,opt,name=like,proto3" json:"like,omitempty"`
+	Comment   int64                  `protobuf:"varint,7,opt,name=comment,proto3" json:"comment,omitempty"`
+	CreatedAt *timestamppb.Timestamp `protobuf:"bytes,8,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+}
+
+func (x *Posts) Reset() {
+	*x = Posts{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_pkg_pb_auth_auth_proto_msgTypes[46]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Posts) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Posts) ProtoMessage() {}
+
+func (x *Posts) ProtoReflect() protoreflect.Message {
+	mi := &file_pkg_pb_auth_auth_proto_msgTypes[46]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Posts.ProtoReflect.Descriptor instead.
+func (*Posts) Descriptor() ([]byte, []int) {
+	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{46}
+}
+
+func (x *Posts) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *Posts) GetUser() *UserDatas {
+	if x != nil {
+		return x.User
+	}
+	return nil
+}
+
+func (x *Posts) GetCaption() string {
+	if x != nil {
+		return x.Caption
+	}
+	return ""
+}
+
+func (x *Posts) GetTag() []string {
+	if x != nil {
+		return x.Tag
+	}
+	return nil
+}
+
+func (x *Posts) GetUrl() string {
+	if x != nil {
+		return x.Url
+	}
+	return ""
+}
+
+func (x *Posts) GetLike() int64 {
+	if x != nil {
+		return x.Like
+	}
+	return 0
+}
+
+func (x *Posts) GetComment() int64 {
+	if x != nil {
+		return x.Comment
+	}
+	return 0
+}
+
+func (x *Posts) GetCreatedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return nil
+}
+
+type GetAllPostsResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Posts []*Posts `protobuf:"bytes,1,rep,name=posts,proto3" json:"posts,omitempty"`
+}
+
+func (x *GetAllPostsResponse) Reset() {
+	*x = GetAllPostsResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_pkg_pb_auth_auth_proto_msgTypes[47]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetAllPostsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetAllPostsResponse) ProtoMessage() {}
+
+func (x *GetAllPostsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_pkg_pb_auth_auth_proto_msgTypes[47]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetAllPostsResponse.ProtoReflect.Descriptor instead.
+func (*GetAllPostsResponse) Descriptor() ([]byte, []int) {
+	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{47}
+}
+
+func (x *GetAllPostsResponse) GetPosts() []*Posts {
+	if x != nil {
+		return x.Posts
+	}
+	return nil
+}
+
+type RemovePostRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	PostID int64 `protobuf:"varint,1,opt,name=postID,proto3" json:"postID,omitempty"`
+}
+
+func (x *RemovePostRequest) Reset() {
+	*x = RemovePostRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_pkg_pb_auth_auth_proto_msgTypes[48]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *RemovePostRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RemovePostRequest) ProtoMessage() {}
+
+func (x *RemovePostRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_pkg_pb_auth_auth_proto_msgTypes[48]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RemovePostRequest.ProtoReflect.Descriptor instead.
+func (*RemovePostRequest) Descriptor() ([]byte, []int) {
+	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{48}
+}
+
+func (x *RemovePostRequest) GetPostID() int64 {
+	if x != nil {
+		return x.PostID
+	}
+	return 0
+}
+
+type RemovePostResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *RemovePostResponse) Reset() {
+	*x = RemovePostResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_pkg_pb_auth_auth_proto_msgTypes[49]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *RemovePostResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RemovePostResponse) ProtoMessage() {}
+
+func (x *RemovePostResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_pkg_pb_auth_auth_proto_msgTypes[49]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RemovePostResponse.ProtoReflect.Descriptor instead.
+func (*RemovePostResponse) Descriptor() ([]byte, []int) {
+	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{49}
+}
+
 type CheckUserAvalilabilityWithUserIDRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -2290,7 +2973,7 @@ type CheckUserAvalilabilityWithUserIDRequest struct {
 func (x *CheckUserAvalilabilityWithUserIDRequest) Reset() {
 	*x = CheckUserAvalilabilityWithUserIDRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pkg_pb_auth_auth_proto_msgTypes[38]
+		mi := &file_pkg_pb_auth_auth_proto_msgTypes[50]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2303,7 +2986,7 @@ func (x *CheckUserAvalilabilityWithUserIDRequest) String() string {
 func (*CheckUserAvalilabilityWithUserIDRequest) ProtoMessage() {}
 
 func (x *CheckUserAvalilabilityWithUserIDRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_pkg_pb_auth_auth_proto_msgTypes[38]
+	mi := &file_pkg_pb_auth_auth_proto_msgTypes[50]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2316,7 +2999,7 @@ func (x *CheckUserAvalilabilityWithUserIDRequest) ProtoReflect() protoreflect.Me
 
 // Deprecated: Use CheckUserAvalilabilityWithUserIDRequest.ProtoReflect.Descriptor instead.
 func (*CheckUserAvalilabilityWithUserIDRequest) Descriptor() ([]byte, []int) {
-	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{38}
+	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{50}
 }
 
 func (x *CheckUserAvalilabilityWithUserIDRequest) GetId() int64 {
@@ -2337,7 +3020,7 @@ type CheckUserAvalilabilityWithUserIDResponse struct {
 func (x *CheckUserAvalilabilityWithUserIDResponse) Reset() {
 	*x = CheckUserAvalilabilityWithUserIDResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pkg_pb_auth_auth_proto_msgTypes[39]
+		mi := &file_pkg_pb_auth_auth_proto_msgTypes[51]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2350,7 +3033,7 @@ func (x *CheckUserAvalilabilityWithUserIDResponse) String() string {
 func (*CheckUserAvalilabilityWithUserIDResponse) ProtoMessage() {}
 
 func (x *CheckUserAvalilabilityWithUserIDResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_pkg_pb_auth_auth_proto_msgTypes[39]
+	mi := &file_pkg_pb_auth_auth_proto_msgTypes[51]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2363,7 +3046,7 @@ func (x *CheckUserAvalilabilityWithUserIDResponse) ProtoReflect() protoreflect.M
 
 // Deprecated: Use CheckUserAvalilabilityWithUserIDResponse.ProtoReflect.Descriptor instead.
 func (*CheckUserAvalilabilityWithUserIDResponse) Descriptor() ([]byte, []int) {
-	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{39}
+	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{51}
 }
 
 func (x *CheckUserAvalilabilityWithUserIDResponse) GetValid() bool {
@@ -2384,7 +3067,7 @@ type UserDataRequest struct {
 func (x *UserDataRequest) Reset() {
 	*x = UserDataRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pkg_pb_auth_auth_proto_msgTypes[40]
+		mi := &file_pkg_pb_auth_auth_proto_msgTypes[52]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2397,7 +3080,7 @@ func (x *UserDataRequest) String() string {
 func (*UserDataRequest) ProtoMessage() {}
 
 func (x *UserDataRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_pkg_pb_auth_auth_proto_msgTypes[40]
+	mi := &file_pkg_pb_auth_auth_proto_msgTypes[52]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2410,7 +3093,7 @@ func (x *UserDataRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UserDataRequest.ProtoReflect.Descriptor instead.
 func (*UserDataRequest) Descriptor() ([]byte, []int) {
-	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{40}
+	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{52}
 }
 
 func (x *UserDataRequest) GetId() int64 {
@@ -2433,7 +3116,7 @@ type UserDataResponse struct {
 func (x *UserDataResponse) Reset() {
 	*x = UserDataResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pkg_pb_auth_auth_proto_msgTypes[41]
+		mi := &file_pkg_pb_auth_auth_proto_msgTypes[53]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2446,7 +3129,7 @@ func (x *UserDataResponse) String() string {
 func (*UserDataResponse) ProtoMessage() {}
 
 func (x *UserDataResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_pkg_pb_auth_auth_proto_msgTypes[41]
+	mi := &file_pkg_pb_auth_auth_proto_msgTypes[53]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2459,7 +3142,7 @@ func (x *UserDataResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UserDataResponse.ProtoReflect.Descriptor instead.
 func (*UserDataResponse) Descriptor() ([]byte, []int) {
-	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{41}
+	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{53}
 }
 
 func (x *UserDataResponse) GetId() int64 {
@@ -2494,7 +3177,7 @@ type CheckUserAvalilabilityWithTagUserIDRequest struct {
 func (x *CheckUserAvalilabilityWithTagUserIDRequest) Reset() {
 	*x = CheckUserAvalilabilityWithTagUserIDRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pkg_pb_auth_auth_proto_msgTypes[42]
+		mi := &file_pkg_pb_auth_auth_proto_msgTypes[54]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2507,7 +3190,7 @@ func (x *CheckUserAvalilabilityWithTagUserIDRequest) String() string {
 func (*CheckUserAvalilabilityWithTagUserIDRequest) ProtoMessage() {}
 
 func (x *CheckUserAvalilabilityWithTagUserIDRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_pkg_pb_auth_auth_proto_msgTypes[42]
+	mi := &file_pkg_pb_auth_auth_proto_msgTypes[54]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2520,7 +3203,7 @@ func (x *CheckUserAvalilabilityWithTagUserIDRequest) ProtoReflect() protoreflect
 
 // Deprecated: Use CheckUserAvalilabilityWithTagUserIDRequest.ProtoReflect.Descriptor instead.
 func (*CheckUserAvalilabilityWithTagUserIDRequest) Descriptor() ([]byte, []int) {
-	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{42}
+	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{54}
 }
 
 func (x *CheckUserAvalilabilityWithTagUserIDRequest) GetTag() *Tag {
@@ -2541,7 +3224,7 @@ type Tag struct {
 func (x *Tag) Reset() {
 	*x = Tag{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pkg_pb_auth_auth_proto_msgTypes[43]
+		mi := &file_pkg_pb_auth_auth_proto_msgTypes[55]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2554,7 +3237,7 @@ func (x *Tag) String() string {
 func (*Tag) ProtoMessage() {}
 
 func (x *Tag) ProtoReflect() protoreflect.Message {
-	mi := &file_pkg_pb_auth_auth_proto_msgTypes[43]
+	mi := &file_pkg_pb_auth_auth_proto_msgTypes[55]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2567,7 +3250,7 @@ func (x *Tag) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Tag.ProtoReflect.Descriptor instead.
 func (*Tag) Descriptor() ([]byte, []int) {
-	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{43}
+	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{55}
 }
 
 func (x *Tag) GetUser() []string {
@@ -2588,7 +3271,7 @@ type CheckUserAvalilabilityWithTagUserIDResponse struct {
 func (x *CheckUserAvalilabilityWithTagUserIDResponse) Reset() {
 	*x = CheckUserAvalilabilityWithTagUserIDResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pkg_pb_auth_auth_proto_msgTypes[44]
+		mi := &file_pkg_pb_auth_auth_proto_msgTypes[56]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2601,7 +3284,7 @@ func (x *CheckUserAvalilabilityWithTagUserIDResponse) String() string {
 func (*CheckUserAvalilabilityWithTagUserIDResponse) ProtoMessage() {}
 
 func (x *CheckUserAvalilabilityWithTagUserIDResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_pkg_pb_auth_auth_proto_msgTypes[44]
+	mi := &file_pkg_pb_auth_auth_proto_msgTypes[56]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2614,7 +3297,7 @@ func (x *CheckUserAvalilabilityWithTagUserIDResponse) ProtoReflect() protoreflec
 
 // Deprecated: Use CheckUserAvalilabilityWithTagUserIDResponse.ProtoReflect.Descriptor instead.
 func (*CheckUserAvalilabilityWithTagUserIDResponse) Descriptor() ([]byte, []int) {
-	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{44}
+	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{56}
 }
 
 func (x *CheckUserAvalilabilityWithTagUserIDResponse) GetValid() bool {
@@ -2635,7 +3318,7 @@ type GetUserNameWithTagUserIDRequest struct {
 func (x *GetUserNameWithTagUserIDRequest) Reset() {
 	*x = GetUserNameWithTagUserIDRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pkg_pb_auth_auth_proto_msgTypes[45]
+		mi := &file_pkg_pb_auth_auth_proto_msgTypes[57]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2648,7 +3331,7 @@ func (x *GetUserNameWithTagUserIDRequest) String() string {
 func (*GetUserNameWithTagUserIDRequest) ProtoMessage() {}
 
 func (x *GetUserNameWithTagUserIDRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_pkg_pb_auth_auth_proto_msgTypes[45]
+	mi := &file_pkg_pb_auth_auth_proto_msgTypes[57]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2661,7 +3344,7 @@ func (x *GetUserNameWithTagUserIDRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetUserNameWithTagUserIDRequest.ProtoReflect.Descriptor instead.
 func (*GetUserNameWithTagUserIDRequest) Descriptor() ([]byte, []int) {
-	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{45}
+	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{57}
 }
 
 func (x *GetUserNameWithTagUserIDRequest) GetTag() *Tag {
@@ -2682,7 +3365,7 @@ type TagUsernames struct {
 func (x *TagUsernames) Reset() {
 	*x = TagUsernames{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pkg_pb_auth_auth_proto_msgTypes[46]
+		mi := &file_pkg_pb_auth_auth_proto_msgTypes[58]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2695,7 +3378,7 @@ func (x *TagUsernames) String() string {
 func (*TagUsernames) ProtoMessage() {}
 
 func (x *TagUsernames) ProtoReflect() protoreflect.Message {
-	mi := &file_pkg_pb_auth_auth_proto_msgTypes[46]
+	mi := &file_pkg_pb_auth_auth_proto_msgTypes[58]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2708,7 +3391,7 @@ func (x *TagUsernames) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TagUsernames.ProtoReflect.Descriptor instead.
 func (*TagUsernames) Descriptor() ([]byte, []int) {
-	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{46}
+	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{58}
 }
 
 func (x *TagUsernames) GetUsername() string {
@@ -2729,7 +3412,7 @@ type GetUserNameWithTagUserIDResponse struct {
 func (x *GetUserNameWithTagUserIDResponse) Reset() {
 	*x = GetUserNameWithTagUserIDResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pkg_pb_auth_auth_proto_msgTypes[47]
+		mi := &file_pkg_pb_auth_auth_proto_msgTypes[59]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2742,7 +3425,7 @@ func (x *GetUserNameWithTagUserIDResponse) String() string {
 func (*GetUserNameWithTagUserIDResponse) ProtoMessage() {}
 
 func (x *GetUserNameWithTagUserIDResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_pkg_pb_auth_auth_proto_msgTypes[47]
+	mi := &file_pkg_pb_auth_auth_proto_msgTypes[59]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2755,7 +3438,7 @@ func (x *GetUserNameWithTagUserIDResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetUserNameWithTagUserIDResponse.ProtoReflect.Descriptor instead.
 func (*GetUserNameWithTagUserIDResponse) Descriptor() ([]byte, []int) {
-	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{47}
+	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{59}
 }
 
 func (x *GetUserNameWithTagUserIDResponse) GetName() []*TagUsernames {
@@ -2778,7 +3461,7 @@ type ReportUserRequest struct {
 func (x *ReportUserRequest) Reset() {
 	*x = ReportUserRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pkg_pb_auth_auth_proto_msgTypes[48]
+		mi := &file_pkg_pb_auth_auth_proto_msgTypes[60]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2791,7 +3474,7 @@ func (x *ReportUserRequest) String() string {
 func (*ReportUserRequest) ProtoMessage() {}
 
 func (x *ReportUserRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_pkg_pb_auth_auth_proto_msgTypes[48]
+	mi := &file_pkg_pb_auth_auth_proto_msgTypes[60]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2804,7 +3487,7 @@ func (x *ReportUserRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ReportUserRequest.ProtoReflect.Descriptor instead.
 func (*ReportUserRequest) Descriptor() ([]byte, []int) {
-	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{48}
+	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{60}
 }
 
 func (x *ReportUserRequest) GetRepostedUserid() int64 {
@@ -2837,7 +3520,7 @@ type ReportUserResponse struct {
 func (x *ReportUserResponse) Reset() {
 	*x = ReportUserResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pkg_pb_auth_auth_proto_msgTypes[49]
+		mi := &file_pkg_pb_auth_auth_proto_msgTypes[61]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2850,7 +3533,7 @@ func (x *ReportUserResponse) String() string {
 func (*ReportUserResponse) ProtoMessage() {}
 
 func (x *ReportUserResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_pkg_pb_auth_auth_proto_msgTypes[49]
+	mi := &file_pkg_pb_auth_auth_proto_msgTypes[61]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2863,7 +3546,7 @@ func (x *ReportUserResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ReportUserResponse.ProtoReflect.Descriptor instead.
 func (*ReportUserResponse) Descriptor() ([]byte, []int) {
-	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{49}
+	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{61}
 }
 
 type FollowREQRequest struct {
@@ -2878,7 +3561,7 @@ type FollowREQRequest struct {
 func (x *FollowREQRequest) Reset() {
 	*x = FollowREQRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pkg_pb_auth_auth_proto_msgTypes[50]
+		mi := &file_pkg_pb_auth_auth_proto_msgTypes[62]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2891,7 +3574,7 @@ func (x *FollowREQRequest) String() string {
 func (*FollowREQRequest) ProtoMessage() {}
 
 func (x *FollowREQRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_pkg_pb_auth_auth_proto_msgTypes[50]
+	mi := &file_pkg_pb_auth_auth_proto_msgTypes[62]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2904,7 +3587,7 @@ func (x *FollowREQRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FollowREQRequest.ProtoReflect.Descriptor instead.
 func (*FollowREQRequest) Descriptor() ([]byte, []int) {
-	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{50}
+	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{62}
 }
 
 func (x *FollowREQRequest) GetUserid() int64 {
@@ -2930,7 +3613,7 @@ type FollowREQResponse struct {
 func (x *FollowREQResponse) Reset() {
 	*x = FollowREQResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pkg_pb_auth_auth_proto_msgTypes[51]
+		mi := &file_pkg_pb_auth_auth_proto_msgTypes[63]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2943,7 +3626,7 @@ func (x *FollowREQResponse) String() string {
 func (*FollowREQResponse) ProtoMessage() {}
 
 func (x *FollowREQResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_pkg_pb_auth_auth_proto_msgTypes[51]
+	mi := &file_pkg_pb_auth_auth_proto_msgTypes[63]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2956,7 +3639,7 @@ func (x *FollowREQResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FollowREQResponse.ProtoReflect.Descriptor instead.
 func (*FollowREQResponse) Descriptor() ([]byte, []int) {
-	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{51}
+	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{63}
 }
 
 type ShowREQRequest struct {
@@ -2970,7 +3653,7 @@ type ShowREQRequest struct {
 func (x *ShowREQRequest) Reset() {
 	*x = ShowREQRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pkg_pb_auth_auth_proto_msgTypes[52]
+		mi := &file_pkg_pb_auth_auth_proto_msgTypes[64]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2983,7 +3666,7 @@ func (x *ShowREQRequest) String() string {
 func (*ShowREQRequest) ProtoMessage() {}
 
 func (x *ShowREQRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_pkg_pb_auth_auth_proto_msgTypes[52]
+	mi := &file_pkg_pb_auth_auth_proto_msgTypes[64]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2996,7 +3679,7 @@ func (x *ShowREQRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ShowREQRequest.ProtoReflect.Descriptor instead.
 func (*ShowREQRequest) Descriptor() ([]byte, []int) {
-	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{52}
+	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{64}
 }
 
 func (x *ShowREQRequest) GetUserid() int64 {
@@ -3020,7 +3703,7 @@ type REQResponse struct {
 func (x *REQResponse) Reset() {
 	*x = REQResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pkg_pb_auth_auth_proto_msgTypes[53]
+		mi := &file_pkg_pb_auth_auth_proto_msgTypes[65]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3033,7 +3716,7 @@ func (x *REQResponse) String() string {
 func (*REQResponse) ProtoMessage() {}
 
 func (x *REQResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_pkg_pb_auth_auth_proto_msgTypes[53]
+	mi := &file_pkg_pb_auth_auth_proto_msgTypes[65]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3046,7 +3729,7 @@ func (x *REQResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use REQResponse.ProtoReflect.Descriptor instead.
 func (*REQResponse) Descriptor() ([]byte, []int) {
-	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{53}
+	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{65}
 }
 
 func (x *REQResponse) GetFollowingUserID() int64 {
@@ -3088,7 +3771,7 @@ type ShowREQResponse struct {
 func (x *ShowREQResponse) Reset() {
 	*x = ShowREQResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pkg_pb_auth_auth_proto_msgTypes[54]
+		mi := &file_pkg_pb_auth_auth_proto_msgTypes[66]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3101,7 +3784,7 @@ func (x *ShowREQResponse) String() string {
 func (*ShowREQResponse) ProtoMessage() {}
 
 func (x *ShowREQResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_pkg_pb_auth_auth_proto_msgTypes[54]
+	mi := &file_pkg_pb_auth_auth_proto_msgTypes[66]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3114,7 +3797,7 @@ func (x *ShowREQResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ShowREQResponse.ProtoReflect.Descriptor instead.
 func (*ShowREQResponse) Descriptor() ([]byte, []int) {
-	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{54}
+	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{66}
 }
 
 func (x *ShowREQResponse) GetResponse() []*REQResponse {
@@ -3136,7 +3819,7 @@ type AcceptFollowREQRequest struct {
 func (x *AcceptFollowREQRequest) Reset() {
 	*x = AcceptFollowREQRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pkg_pb_auth_auth_proto_msgTypes[55]
+		mi := &file_pkg_pb_auth_auth_proto_msgTypes[67]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3149,7 +3832,7 @@ func (x *AcceptFollowREQRequest) String() string {
 func (*AcceptFollowREQRequest) ProtoMessage() {}
 
 func (x *AcceptFollowREQRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_pkg_pb_auth_auth_proto_msgTypes[55]
+	mi := &file_pkg_pb_auth_auth_proto_msgTypes[67]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3162,7 +3845,7 @@ func (x *AcceptFollowREQRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AcceptFollowREQRequest.ProtoReflect.Descriptor instead.
 func (*AcceptFollowREQRequest) Descriptor() ([]byte, []int) {
-	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{55}
+	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{67}
 }
 
 func (x *AcceptFollowREQRequest) GetUserid() int64 {
@@ -3188,7 +3871,7 @@ type AcceptFollowREQResponse struct {
 func (x *AcceptFollowREQResponse) Reset() {
 	*x = AcceptFollowREQResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pkg_pb_auth_auth_proto_msgTypes[56]
+		mi := &file_pkg_pb_auth_auth_proto_msgTypes[68]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3201,7 +3884,7 @@ func (x *AcceptFollowREQResponse) String() string {
 func (*AcceptFollowREQResponse) ProtoMessage() {}
 
 func (x *AcceptFollowREQResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_pkg_pb_auth_auth_proto_msgTypes[56]
+	mi := &file_pkg_pb_auth_auth_proto_msgTypes[68]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3214,7 +3897,7 @@ func (x *AcceptFollowREQResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AcceptFollowREQResponse.ProtoReflect.Descriptor instead.
 func (*AcceptFollowREQResponse) Descriptor() ([]byte, []int) {
-	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{56}
+	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{68}
 }
 
 type FollowingRequest struct {
@@ -3228,7 +3911,7 @@ type FollowingRequest struct {
 func (x *FollowingRequest) Reset() {
 	*x = FollowingRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pkg_pb_auth_auth_proto_msgTypes[57]
+		mi := &file_pkg_pb_auth_auth_proto_msgTypes[69]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3241,7 +3924,7 @@ func (x *FollowingRequest) String() string {
 func (*FollowingRequest) ProtoMessage() {}
 
 func (x *FollowingRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_pkg_pb_auth_auth_proto_msgTypes[57]
+	mi := &file_pkg_pb_auth_auth_proto_msgTypes[69]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3254,7 +3937,7 @@ func (x *FollowingRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FollowingRequest.ProtoReflect.Descriptor instead.
 func (*FollowingRequest) Descriptor() ([]byte, []int) {
-	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{57}
+	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{69}
 }
 
 func (x *FollowingRequest) GetUserid() int64 {
@@ -3276,7 +3959,7 @@ type FollowResponse struct {
 func (x *FollowResponse) Reset() {
 	*x = FollowResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pkg_pb_auth_auth_proto_msgTypes[58]
+		mi := &file_pkg_pb_auth_auth_proto_msgTypes[70]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3289,7 +3972,7 @@ func (x *FollowResponse) String() string {
 func (*FollowResponse) ProtoMessage() {}
 
 func (x *FollowResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_pkg_pb_auth_auth_proto_msgTypes[58]
+	mi := &file_pkg_pb_auth_auth_proto_msgTypes[70]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3302,7 +3985,7 @@ func (x *FollowResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FollowResponse.ProtoReflect.Descriptor instead.
 func (*FollowResponse) Descriptor() ([]byte, []int) {
-	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{58}
+	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{70}
 }
 
 func (x *FollowResponse) GetUsername() string {
@@ -3330,7 +4013,7 @@ type FollowingResponse struct {
 func (x *FollowingResponse) Reset() {
 	*x = FollowingResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pkg_pb_auth_auth_proto_msgTypes[59]
+		mi := &file_pkg_pb_auth_auth_proto_msgTypes[71]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3343,7 +4026,7 @@ func (x *FollowingResponse) String() string {
 func (*FollowingResponse) ProtoMessage() {}
 
 func (x *FollowingResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_pkg_pb_auth_auth_proto_msgTypes[59]
+	mi := &file_pkg_pb_auth_auth_proto_msgTypes[71]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3356,7 +4039,7 @@ func (x *FollowingResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FollowingResponse.ProtoReflect.Descriptor instead.
 func (*FollowingResponse) Descriptor() ([]byte, []int) {
-	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{59}
+	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{71}
 }
 
 func (x *FollowingResponse) GetUsers() []*FollowResponse {
@@ -3377,7 +4060,7 @@ type FollowerRequest struct {
 func (x *FollowerRequest) Reset() {
 	*x = FollowerRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pkg_pb_auth_auth_proto_msgTypes[60]
+		mi := &file_pkg_pb_auth_auth_proto_msgTypes[72]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3390,7 +4073,7 @@ func (x *FollowerRequest) String() string {
 func (*FollowerRequest) ProtoMessage() {}
 
 func (x *FollowerRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_pkg_pb_auth_auth_proto_msgTypes[60]
+	mi := &file_pkg_pb_auth_auth_proto_msgTypes[72]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3403,7 +4086,7 @@ func (x *FollowerRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FollowerRequest.ProtoReflect.Descriptor instead.
 func (*FollowerRequest) Descriptor() ([]byte, []int) {
-	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{60}
+	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{72}
 }
 
 func (x *FollowerRequest) GetUserid() int64 {
@@ -3424,7 +4107,7 @@ type FollowerResponse struct {
 func (x *FollowerResponse) Reset() {
 	*x = FollowerResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pkg_pb_auth_auth_proto_msgTypes[61]
+		mi := &file_pkg_pb_auth_auth_proto_msgTypes[73]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3437,7 +4120,7 @@ func (x *FollowerResponse) String() string {
 func (*FollowerResponse) ProtoMessage() {}
 
 func (x *FollowerResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_pkg_pb_auth_auth_proto_msgTypes[61]
+	mi := &file_pkg_pb_auth_auth_proto_msgTypes[73]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3450,7 +4133,7 @@ func (x *FollowerResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FollowerResponse.ProtoReflect.Descriptor instead.
 func (*FollowerResponse) Descriptor() ([]byte, []int) {
-	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{61}
+	return file_pkg_pb_auth_auth_proto_rawDescGZIP(), []int{73}
 }
 
 func (x *FollowerResponse) GetUsers() []*FollowResponse {
@@ -3689,7 +4372,69 @@ var file_pkg_pb_auth_auth_proto_rawDesc = []byte{
 	0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x02, 0x69, 0x64, 0x22, 0x30, 0x0a, 0x18,
 	0x41, 0x64, 0x6d, 0x69, 0x6e, 0x55, 0x6e, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x55, 0x73, 0x65, 0x72,
 	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x65, 0x72, 0x72, 0x6f,
-	0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x65, 0x72, 0x72, 0x6f, 0x72, 0x22, 0x39,
+	0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x65, 0x72, 0x72, 0x6f, 0x72, 0x22, 0x42,
+	0x0a, 0x16, 0x53, 0x68, 0x6f, 0x77, 0x55, 0x73, 0x65, 0x72, 0x52, 0x65, 0x70, 0x6f, 0x72, 0x74,
+	0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x70, 0x61, 0x67, 0x65,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x04, 0x70, 0x61, 0x67, 0x65, 0x12, 0x14, 0x0a, 0x05,
+	0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x05, 0x63, 0x6f, 0x75,
+	0x6e, 0x74, 0x22, 0x64, 0x0a, 0x0a, 0x52, 0x65, 0x70, 0x6f, 0x72, 0x74, 0x55, 0x73, 0x65, 0x72,
+	0x12, 0x26, 0x0a, 0x0e, 0x72, 0x65, 0x70, 0x6f, 0x72, 0x74, 0x65, 0x64, 0x55, 0x73, 0x65, 0x72,
+	0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x0e, 0x72, 0x65, 0x70, 0x6f, 0x72, 0x74,
+	0x65, 0x64, 0x55, 0x73, 0x65, 0x72, 0x49, 0x44, 0x12, 0x16, 0x0a, 0x06, 0x55, 0x73, 0x65, 0x72,
+	0x49, 0x44, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x06, 0x55, 0x73, 0x65, 0x72, 0x49, 0x44,
+	0x12, 0x16, 0x0a, 0x06, 0x52, 0x65, 0x70, 0x6f, 0x72, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x06, 0x52, 0x65, 0x70, 0x6f, 0x72, 0x74, 0x22, 0x45, 0x0a, 0x17, 0x53, 0x68, 0x6f, 0x77,
+	0x55, 0x73, 0x65, 0x72, 0x52, 0x65, 0x70, 0x6f, 0x72, 0x74, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x12, 0x2a, 0x0a, 0x07, 0x72, 0x65, 0x70, 0x6f, 0x72, 0x74, 0x73, 0x18, 0x01,
+	0x20, 0x03, 0x28, 0x0b, 0x32, 0x10, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x52, 0x65, 0x70, 0x6f,
+	0x72, 0x74, 0x55, 0x73, 0x65, 0x72, 0x52, 0x07, 0x72, 0x65, 0x70, 0x6f, 0x72, 0x74, 0x73, 0x22,
+	0x42, 0x0a, 0x16, 0x53, 0x68, 0x6f, 0x77, 0x50, 0x6f, 0x73, 0x74, 0x52, 0x65, 0x70, 0x6f, 0x72,
+	0x74, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x70, 0x61, 0x67,
+	0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x04, 0x70, 0x61, 0x67, 0x65, 0x12, 0x14, 0x0a,
+	0x05, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x05, 0x63, 0x6f,
+	0x75, 0x6e, 0x74, 0x22, 0x64, 0x0a, 0x0a, 0x52, 0x65, 0x70, 0x72, 0x6f, 0x74, 0x50, 0x6f, 0x73,
+	0x74, 0x12, 0x26, 0x0a, 0x0e, 0x72, 0x65, 0x70, 0x6f, 0x72, 0x74, 0x65, 0x64, 0x55, 0x73, 0x65,
+	0x72, 0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x0e, 0x72, 0x65, 0x70, 0x6f, 0x72,
+	0x74, 0x65, 0x64, 0x55, 0x73, 0x65, 0x72, 0x49, 0x44, 0x12, 0x16, 0x0a, 0x06, 0x70, 0x6f, 0x73,
+	0x74, 0x49, 0x44, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x06, 0x70, 0x6f, 0x73, 0x74, 0x49,
+	0x44, 0x12, 0x16, 0x0a, 0x06, 0x52, 0x65, 0x70, 0x6f, 0x72, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x06, 0x52, 0x65, 0x70, 0x6f, 0x72, 0x74, 0x22, 0x45, 0x0a, 0x17, 0x53, 0x68, 0x6f,
+	0x77, 0x50, 0x6f, 0x73, 0x74, 0x52, 0x65, 0x70, 0x6f, 0x72, 0x74, 0x73, 0x52, 0x65, 0x73, 0x70,
+	0x6f, 0x6e, 0x73, 0x65, 0x12, 0x2a, 0x0a, 0x07, 0x72, 0x65, 0x70, 0x6f, 0x72, 0x74, 0x73, 0x18,
+	0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x10, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x52, 0x65, 0x70,
+	0x72, 0x6f, 0x74, 0x50, 0x6f, 0x73, 0x74, 0x52, 0x07, 0x72, 0x65, 0x70, 0x6f, 0x72, 0x74, 0x73,
+	0x22, 0x3e, 0x0a, 0x12, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x6c, 0x50, 0x6f, 0x73, 0x74, 0x73, 0x52,
+	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x70, 0x61, 0x67, 0x65, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x03, 0x52, 0x04, 0x70, 0x61, 0x67, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x63, 0x6f,
+	0x75, 0x6e, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x05, 0x63, 0x6f, 0x75, 0x6e, 0x74,
+	0x22, 0x59, 0x0a, 0x09, 0x55, 0x73, 0x65, 0x72, 0x44, 0x61, 0x74, 0x61, 0x73, 0x12, 0x16, 0x0a,
+	0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x06, 0x75,
+	0x73, 0x65, 0x72, 0x49, 0x44, 0x12, 0x1a, 0x0a, 0x08, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d,
+	0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d,
+	0x65, 0x12, 0x18, 0x0a, 0x07, 0x70, 0x72, 0x6f, 0x66, 0x69, 0x6c, 0x65, 0x18, 0x03, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x07, 0x70, 0x72, 0x6f, 0x66, 0x69, 0x6c, 0x65, 0x22, 0xe3, 0x01, 0x0a, 0x05,
+	0x50, 0x6f, 0x73, 0x74, 0x73, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x03, 0x52, 0x02, 0x69, 0x64, 0x12, 0x23, 0x0a, 0x04, 0x75, 0x73, 0x65, 0x72, 0x18, 0x02, 0x20,
+	0x01, 0x28, 0x0b, 0x32, 0x0f, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x44,
+	0x61, 0x74, 0x61, 0x73, 0x52, 0x04, 0x75, 0x73, 0x65, 0x72, 0x12, 0x18, 0x0a, 0x07, 0x63, 0x61,
+	0x70, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x63, 0x61, 0x70,
+	0x74, 0x69, 0x6f, 0x6e, 0x12, 0x10, 0x0a, 0x03, 0x74, 0x61, 0x67, 0x18, 0x04, 0x20, 0x03, 0x28,
+	0x09, 0x52, 0x03, 0x74, 0x61, 0x67, 0x12, 0x10, 0x0a, 0x03, 0x75, 0x72, 0x6c, 0x18, 0x05, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x03, 0x75, 0x72, 0x6c, 0x12, 0x12, 0x0a, 0x04, 0x6c, 0x69, 0x6b, 0x65,
+	0x18, 0x06, 0x20, 0x01, 0x28, 0x03, 0x52, 0x04, 0x6c, 0x69, 0x6b, 0x65, 0x12, 0x18, 0x0a, 0x07,
+	0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x18, 0x07, 0x20, 0x01, 0x28, 0x03, 0x52, 0x07, 0x63,
+	0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x12, 0x39, 0x0a, 0x0a, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65,
+	0x64, 0x5f, 0x61, 0x74, 0x18, 0x08, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x67, 0x6f, 0x6f,
+	0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x69, 0x6d,
+	0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x52, 0x09, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x64, 0x41,
+	0x74, 0x22, 0x38, 0x0a, 0x13, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x6c, 0x50, 0x6f, 0x73, 0x74, 0x73,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x21, 0x0a, 0x05, 0x70, 0x6f, 0x73, 0x74,
+	0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0b, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x50,
+	0x6f, 0x73, 0x74, 0x73, 0x52, 0x05, 0x70, 0x6f, 0x73, 0x74, 0x73, 0x22, 0x2b, 0x0a, 0x11, 0x52,
+	0x65, 0x6d, 0x6f, 0x76, 0x65, 0x50, 0x6f, 0x73, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
+	0x12, 0x16, 0x0a, 0x06, 0x70, 0x6f, 0x73, 0x74, 0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03,
+	0x52, 0x06, 0x70, 0x6f, 0x73, 0x74, 0x49, 0x44, 0x22, 0x14, 0x0a, 0x12, 0x52, 0x65, 0x6d, 0x6f,
+	0x76, 0x65, 0x50, 0x6f, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x39,
 	0x0a, 0x27, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x55, 0x73, 0x65, 0x72, 0x41, 0x76, 0x61, 0x6c, 0x69,
 	0x6c, 0x61, 0x62, 0x69, 0x6c, 0x69, 0x74, 0x79, 0x57, 0x69, 0x74, 0x68, 0x55, 0x73, 0x65, 0x72,
 	0x49, 0x44, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18,
@@ -3787,7 +4532,7 @@ var file_pkg_pb_auth_auth_proto_rawDesc = []byte{
 	0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x2a, 0x0a, 0x05, 0x75, 0x73,
 	0x65, 0x72, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x75, 0x73, 0x65, 0x72,
 	0x2e, 0x46, 0x6f, 0x6c, 0x6c, 0x6f, 0x77, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x52,
-	0x05, 0x75, 0x73, 0x65, 0x72, 0x73, 0x32, 0xc3, 0x0e, 0x0a, 0x0b, 0x41, 0x75, 0x74, 0x68, 0x53,
+	0x05, 0x75, 0x73, 0x65, 0x72, 0x73, 0x32, 0xec, 0x10, 0x0a, 0x0b, 0x41, 0x75, 0x74, 0x68, 0x53,
 	0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x41, 0x0a, 0x0a, 0x55, 0x73, 0x65, 0x72, 0x53, 0x69,
 	0x67, 0x6e, 0x55, 0x70, 0x12, 0x17, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x55, 0x73, 0x65, 0x72,
 	0x53, 0x69, 0x67, 0x6e, 0x55, 0x70, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x18, 0x2e,
@@ -3831,26 +4576,7 @@ var file_pkg_pb_auth_auth_proto_rawDesc = []byte{
 	0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x43, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x50, 0x61, 0x73, 0x73,
 	0x77, 0x6f, 0x72, 0x64, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1c, 0x2e, 0x75, 0x73,
 	0x65, 0x72, 0x2e, 0x43, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x50, 0x61, 0x73, 0x73, 0x77, 0x6f, 0x72,
-	0x64, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x41, 0x0a, 0x0a, 0x41,
-	0x64, 0x6d, 0x69, 0x6e, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x12, 0x17, 0x2e, 0x75, 0x73, 0x65, 0x72,
-	0x2e, 0x41, 0x64, 0x6d, 0x69, 0x6e, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65,
-	0x73, 0x74, 0x1a, 0x18, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x41, 0x64, 0x6d, 0x69, 0x6e, 0x4c,
-	0x6f, 0x67, 0x69, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x47,
-	0x0a, 0x0c, 0x53, 0x68, 0x6f, 0x77, 0x41, 0x6c, 0x6c, 0x55, 0x73, 0x65, 0x72, 0x73, 0x12, 0x19,
-	0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x53, 0x68, 0x6f, 0x77, 0x41, 0x6c, 0x6c, 0x55, 0x73, 0x65,
-	0x72, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1a, 0x2e, 0x75, 0x73, 0x65, 0x72,
-	0x2e, 0x53, 0x68, 0x6f, 0x77, 0x41, 0x6c, 0x6c, 0x55, 0x73, 0x65, 0x72, 0x73, 0x52, 0x65, 0x73,
-	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x4d, 0x0a, 0x0e, 0x41, 0x64, 0x6d, 0x69, 0x6e,
-	0x42, 0x6c, 0x6f, 0x63, 0x6b, 0x55, 0x73, 0x65, 0x72, 0x12, 0x1b, 0x2e, 0x75, 0x73, 0x65, 0x72,
-	0x2e, 0x41, 0x64, 0x6d, 0x69, 0x6e, 0x42, 0x6c, 0x6f, 0x63, 0x6b, 0x55, 0x73, 0x65, 0x72, 0x52,
-	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1c, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x41, 0x64,
-	0x6d, 0x69, 0x6e, 0x42, 0x6c, 0x6f, 0x63, 0x6b, 0x55, 0x73, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70,
-	0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x53, 0x0a, 0x10, 0x41, 0x64, 0x6d, 0x69, 0x6e, 0x55,
-	0x6e, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x55, 0x73, 0x65, 0x72, 0x12, 0x1d, 0x2e, 0x75, 0x73, 0x65,
-	0x72, 0x2e, 0x41, 0x64, 0x6d, 0x69, 0x6e, 0x55, 0x6e, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x55, 0x73,
-	0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1e, 0x2e, 0x75, 0x73, 0x65, 0x72,
-	0x2e, 0x41, 0x64, 0x6d, 0x69, 0x6e, 0x55, 0x6e, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x55, 0x73, 0x65,
-	0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x83, 0x01, 0x0a, 0x20,
+	0x64, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x83, 0x01, 0x0a, 0x20,
 	0x43, 0x68, 0x65, 0x63, 0x6b, 0x55, 0x73, 0x65, 0x72, 0x41, 0x76, 0x61, 0x6c, 0x69, 0x6c, 0x61,
 	0x62, 0x69, 0x6c, 0x69, 0x74, 0x79, 0x57, 0x69, 0x74, 0x68, 0x55, 0x73, 0x65, 0x72, 0x49, 0x44,
 	0x12, 0x2d, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x55, 0x73, 0x65,
@@ -3903,9 +4629,46 @@ var file_pkg_pb_auth_auth_proto_rawDesc = []byte{
 	0x3b, 0x0a, 0x08, 0x46, 0x6f, 0x6c, 0x6c, 0x6f, 0x77, 0x65, 0x72, 0x12, 0x15, 0x2e, 0x75, 0x73,
 	0x65, 0x72, 0x2e, 0x46, 0x6f, 0x6c, 0x6c, 0x6f, 0x77, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65,
 	0x73, 0x74, 0x1a, 0x16, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x46, 0x6f, 0x6c, 0x6c, 0x6f, 0x77,
-	0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x42, 0x0f, 0x5a, 0x0d,
-	0x2e, 0x2f, 0x70, 0x6b, 0x67, 0x2f, 0x70, 0x62, 0x2f, 0x61, 0x75, 0x74, 0x68, 0x62, 0x06, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x41, 0x0a, 0x0a,
+	0x41, 0x64, 0x6d, 0x69, 0x6e, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x12, 0x17, 0x2e, 0x75, 0x73, 0x65,
+	0x72, 0x2e, 0x41, 0x64, 0x6d, 0x69, 0x6e, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x1a, 0x18, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x41, 0x64, 0x6d, 0x69, 0x6e,
+	0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12,
+	0x47, 0x0a, 0x0c, 0x53, 0x68, 0x6f, 0x77, 0x41, 0x6c, 0x6c, 0x55, 0x73, 0x65, 0x72, 0x73, 0x12,
+	0x19, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x53, 0x68, 0x6f, 0x77, 0x41, 0x6c, 0x6c, 0x55, 0x73,
+	0x65, 0x72, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1a, 0x2e, 0x75, 0x73, 0x65,
+	0x72, 0x2e, 0x53, 0x68, 0x6f, 0x77, 0x41, 0x6c, 0x6c, 0x55, 0x73, 0x65, 0x72, 0x73, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x4d, 0x0a, 0x0e, 0x41, 0x64, 0x6d, 0x69,
+	0x6e, 0x42, 0x6c, 0x6f, 0x63, 0x6b, 0x55, 0x73, 0x65, 0x72, 0x12, 0x1b, 0x2e, 0x75, 0x73, 0x65,
+	0x72, 0x2e, 0x41, 0x64, 0x6d, 0x69, 0x6e, 0x42, 0x6c, 0x6f, 0x63, 0x6b, 0x55, 0x73, 0x65, 0x72,
+	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1c, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x41,
+	0x64, 0x6d, 0x69, 0x6e, 0x42, 0x6c, 0x6f, 0x63, 0x6b, 0x55, 0x73, 0x65, 0x72, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x53, 0x0a, 0x10, 0x41, 0x64, 0x6d, 0x69, 0x6e,
+	0x55, 0x6e, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x55, 0x73, 0x65, 0x72, 0x12, 0x1d, 0x2e, 0x75, 0x73,
+	0x65, 0x72, 0x2e, 0x41, 0x64, 0x6d, 0x69, 0x6e, 0x55, 0x6e, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x55,
+	0x73, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1e, 0x2e, 0x75, 0x73, 0x65,
+	0x72, 0x2e, 0x41, 0x64, 0x6d, 0x69, 0x6e, 0x55, 0x6e, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x55, 0x73,
+	0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x50, 0x0a, 0x0f,
+	0x53, 0x68, 0x6f, 0x77, 0x55, 0x73, 0x65, 0x72, 0x52, 0x65, 0x70, 0x6f, 0x72, 0x74, 0x73, 0x12,
+	0x1c, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x53, 0x68, 0x6f, 0x77, 0x55, 0x73, 0x65, 0x72, 0x52,
+	0x65, 0x70, 0x6f, 0x72, 0x74, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1d, 0x2e,
+	0x75, 0x73, 0x65, 0x72, 0x2e, 0x53, 0x68, 0x6f, 0x77, 0x55, 0x73, 0x65, 0x72, 0x52, 0x65, 0x70,
+	0x6f, 0x72, 0x74, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x4e,
+	0x0a, 0x0f, 0x53, 0x68, 0x6f, 0x77, 0x50, 0x6f, 0x73, 0x74, 0x52, 0x65, 0x70, 0x6f, 0x72, 0x74,
+	0x73, 0x12, 0x1c, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x53, 0x68, 0x6f, 0x77, 0x50, 0x6f, 0x73,
+	0x74, 0x52, 0x65, 0x70, 0x6f, 0x72, 0x74, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
+	0x1d, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x53, 0x68, 0x6f, 0x77, 0x50, 0x6f, 0x73, 0x74, 0x52,
+	0x65, 0x70, 0x6f, 0x72, 0x74, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x44,
+	0x0a, 0x0b, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x6c, 0x50, 0x6f, 0x73, 0x74, 0x73, 0x12, 0x18, 0x2e,
+	0x75, 0x73, 0x65, 0x72, 0x2e, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x6c, 0x50, 0x6f, 0x73, 0x74, 0x73,
+	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x19, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x47,
+	0x65, 0x74, 0x41, 0x6c, 0x6c, 0x50, 0x6f, 0x73, 0x74, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x22, 0x00, 0x12, 0x3f, 0x0a, 0x0a, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x50, 0x6f,
+	0x73, 0x74, 0x12, 0x17, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65,
+	0x50, 0x6f, 0x73, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x18, 0x2e, 0x75, 0x73,
+	0x65, 0x72, 0x2e, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x50, 0x6f, 0x73, 0x74, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x42, 0x0f, 0x5a, 0x0d, 0x2e, 0x2f, 0x70, 0x6b, 0x67, 0x2f, 0x70,
+	0x62, 0x2f, 0x61, 0x75, 0x74, 0x68, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -3920,7 +4683,7 @@ func file_pkg_pb_auth_auth_proto_rawDescGZIP() []byte {
 	return file_pkg_pb_auth_auth_proto_rawDescData
 }
 
-var file_pkg_pb_auth_auth_proto_msgTypes = make([]protoimpl.MessageInfo, 62)
+var file_pkg_pb_auth_auth_proto_msgTypes = make([]protoimpl.MessageInfo, 74)
 var file_pkg_pb_auth_auth_proto_goTypes = []interface{}{
 	(*UserSignUpRequest)(nil),                           // 0: user.UserSignUpRequest
 	(*UserProfile)(nil),                                 // 1: user.UserProfile
@@ -3960,31 +4723,43 @@ var file_pkg_pb_auth_auth_proto_goTypes = []interface{}{
 	(*AdminBlockUserResponse)(nil),                      // 35: user.AdminBlockUserResponse
 	(*AdminUnblockUserRequest)(nil),                     // 36: user.AdminUnblockUserRequest
 	(*AdminUnblockUserResponse)(nil),                    // 37: user.AdminUnblockUserResponse
-	(*CheckUserAvalilabilityWithUserIDRequest)(nil),     // 38: user.CheckUserAvalilabilityWithUserIDRequest
-	(*CheckUserAvalilabilityWithUserIDResponse)(nil),    // 39: user.CheckUserAvalilabilityWithUserIDResponse
-	(*UserDataRequest)(nil),                             // 40: user.UserDataRequest
-	(*UserDataResponse)(nil),                            // 41: user.UserDataResponse
-	(*CheckUserAvalilabilityWithTagUserIDRequest)(nil),  // 42: user.CheckUserAvalilabilityWithTagUserIDRequest
-	(*Tag)(nil),                                         // 43: user.Tag
-	(*CheckUserAvalilabilityWithTagUserIDResponse)(nil), // 44: user.CheckUserAvalilabilityWithTagUserIDResponse
-	(*GetUserNameWithTagUserIDRequest)(nil),             // 45: user.GetUserNameWithTagUserIDRequest
-	(*TagUsernames)(nil),                                // 46: user.TagUsernames
-	(*GetUserNameWithTagUserIDResponse)(nil),            // 47: user.GetUserNameWithTagUserIDResponse
-	(*ReportUserRequest)(nil),                           // 48: user.ReportUserRequest
-	(*ReportUserResponse)(nil),                          // 49: user.ReportUserResponse
-	(*FollowREQRequest)(nil),                            // 50: user.FollowREQRequest
-	(*FollowREQResponse)(nil),                           // 51: user.FollowREQResponse
-	(*ShowREQRequest)(nil),                              // 52: user.ShowREQRequest
-	(*REQResponse)(nil),                                 // 53: user.REQResponse
-	(*ShowREQResponse)(nil),                             // 54: user.ShowREQResponse
-	(*AcceptFollowREQRequest)(nil),                      // 55: user.AcceptFollowREQRequest
-	(*AcceptFollowREQResponse)(nil),                     // 56: user.AcceptFollowREQResponse
-	(*FollowingRequest)(nil),                            // 57: user.FollowingRequest
-	(*FollowResponse)(nil),                              // 58: user.FollowResponse
-	(*FollowingResponse)(nil),                           // 59: user.FollowingResponse
-	(*FollowerRequest)(nil),                             // 60: user.FollowerRequest
-	(*FollowerResponse)(nil),                            // 61: user.FollowerResponse
-	(*timestamppb.Timestamp)(nil),                       // 62: google.protobuf.Timestamp
+	(*ShowUserReportsRequest)(nil),                      // 38: user.ShowUserReportsRequest
+	(*ReportUser)(nil),                                  // 39: user.ReportUser
+	(*ShowUserReportsResponse)(nil),                     // 40: user.ShowUserReportsResponse
+	(*ShowPostReportsRequest)(nil),                      // 41: user.ShowPostReportsRequest
+	(*ReprotPost)(nil),                                  // 42: user.ReprotPost
+	(*ShowPostReportsResponse)(nil),                     // 43: user.ShowPostReportsResponse
+	(*GetAllPostsRequest)(nil),                          // 44: user.GetAllPostsRequest
+	(*UserDatas)(nil),                                   // 45: user.UserDatas
+	(*Posts)(nil),                                       // 46: user.Posts
+	(*GetAllPostsResponse)(nil),                         // 47: user.GetAllPostsResponse
+	(*RemovePostRequest)(nil),                           // 48: user.RemovePostRequest
+	(*RemovePostResponse)(nil),                          // 49: user.RemovePostResponse
+	(*CheckUserAvalilabilityWithUserIDRequest)(nil),     // 50: user.CheckUserAvalilabilityWithUserIDRequest
+	(*CheckUserAvalilabilityWithUserIDResponse)(nil),    // 51: user.CheckUserAvalilabilityWithUserIDResponse
+	(*UserDataRequest)(nil),                             // 52: user.UserDataRequest
+	(*UserDataResponse)(nil),                            // 53: user.UserDataResponse
+	(*CheckUserAvalilabilityWithTagUserIDRequest)(nil),  // 54: user.CheckUserAvalilabilityWithTagUserIDRequest
+	(*Tag)(nil),                                         // 55: user.Tag
+	(*CheckUserAvalilabilityWithTagUserIDResponse)(nil), // 56: user.CheckUserAvalilabilityWithTagUserIDResponse
+	(*GetUserNameWithTagUserIDRequest)(nil),             // 57: user.GetUserNameWithTagUserIDRequest
+	(*TagUsernames)(nil),                                // 58: user.TagUsernames
+	(*GetUserNameWithTagUserIDResponse)(nil),            // 59: user.GetUserNameWithTagUserIDResponse
+	(*ReportUserRequest)(nil),                           // 60: user.ReportUserRequest
+	(*ReportUserResponse)(nil),                          // 61: user.ReportUserResponse
+	(*FollowREQRequest)(nil),                            // 62: user.FollowREQRequest
+	(*FollowREQResponse)(nil),                           // 63: user.FollowREQResponse
+	(*ShowREQRequest)(nil),                              // 64: user.ShowREQRequest
+	(*REQResponse)(nil),                                 // 65: user.REQResponse
+	(*ShowREQResponse)(nil),                             // 66: user.ShowREQResponse
+	(*AcceptFollowREQRequest)(nil),                      // 67: user.AcceptFollowREQRequest
+	(*AcceptFollowREQResponse)(nil),                     // 68: user.AcceptFollowREQResponse
+	(*FollowingRequest)(nil),                            // 69: user.FollowingRequest
+	(*FollowResponse)(nil),                              // 70: user.FollowResponse
+	(*FollowingResponse)(nil),                           // 71: user.FollowingResponse
+	(*FollowerRequest)(nil),                             // 72: user.FollowerRequest
+	(*FollowerResponse)(nil),                            // 73: user.FollowerResponse
+	(*timestamppb.Timestamp)(nil),                       // 74: google.protobuf.Timestamp
 }
 var file_pkg_pb_auth_auth_proto_depIdxs = []int32{
 	2,  // 0: user.UserResponse.info:type_name -> user.UserInfo
@@ -4001,66 +4776,79 @@ var file_pkg_pb_auth_auth_proto_depIdxs = []int32{
 	24, // 11: user.ChangePasswordRequest.password:type_name -> user.ChangePassword
 	28, // 12: user.AdminResponse.info:type_name -> user.AdminInfo
 	29, // 13: user.AdminLoginResponse.reposnse:type_name -> user.AdminResponse
-	62, // 14: user.Users.created_at:type_name -> google.protobuf.Timestamp
+	74, // 14: user.Users.created_at:type_name -> google.protobuf.Timestamp
 	32, // 15: user.ShowAllUsersResponse.UsersData:type_name -> user.Users
-	43, // 16: user.CheckUserAvalilabilityWithTagUserIDRequest.tag:type_name -> user.Tag
-	43, // 17: user.GetUserNameWithTagUserIDRequest.tag:type_name -> user.Tag
-	46, // 18: user.GetUserNameWithTagUserIDResponse.name:type_name -> user.TagUsernames
-	62, // 19: user.REQResponse.createdAt:type_name -> google.protobuf.Timestamp
-	53, // 20: user.ShowREQResponse.response:type_name -> user.REQResponse
-	58, // 21: user.FollowingResponse.users:type_name -> user.FollowResponse
-	58, // 22: user.FollowerResponse.users:type_name -> user.FollowResponse
-	0,  // 23: user.AuthService.UserSignUp:input_type -> user.UserSignUpRequest
-	5,  // 24: user.AuthService.UserLogin:input_type -> user.UserLoginRequest
-	7,  // 25: user.AuthService.SendOtp:input_type -> user.SendOtpRequest
-	11, // 26: user.AuthService.VerifyOtp:input_type -> user.VerifyOtpRequest
-	13, // 27: user.AuthService.ForgotPassword:input_type -> user.ForgotPasswordRequest
-	16, // 28: user.AuthService.ForgotPasswordVerifyAndChange:input_type -> user.ForgotPasswordVerifyAndChangeRequest
-	18, // 29: user.AuthService.UserDetails:input_type -> user.UserDetailsRequest
-	22, // 30: user.AuthService.UpdateUserDetails:input_type -> user.UpdateUserDetailsRequest
-	25, // 31: user.AuthService.ChangePassword:input_type -> user.ChangePasswordRequest
-	27, // 32: user.AuthService.AdminLogin:input_type -> user.AdminLoginRequest
-	31, // 33: user.AuthService.ShowAllUsers:input_type -> user.ShowAllUsersRequest
-	34, // 34: user.AuthService.AdminBlockUser:input_type -> user.AdminBlockUserRequest
-	36, // 35: user.AuthService.AdminUnblockUser:input_type -> user.AdminUnblockUserRequest
-	38, // 36: user.AuthService.CheckUserAvalilabilityWithUserID:input_type -> user.CheckUserAvalilabilityWithUserIDRequest
-	40, // 37: user.AuthService.UserData:input_type -> user.UserDataRequest
-	42, // 38: user.AuthService.CheckUserAvalilabilityWithTagUserID:input_type -> user.CheckUserAvalilabilityWithTagUserIDRequest
-	45, // 39: user.AuthService.GetUserNameWithTagUserID:input_type -> user.GetUserNameWithTagUserIDRequest
-	48, // 40: user.AuthService.ReportUser:input_type -> user.ReportUserRequest
-	50, // 41: user.AuthService.FollowREQ:input_type -> user.FollowREQRequest
-	52, // 42: user.AuthService.ShowFollowREQ:input_type -> user.ShowREQRequest
-	55, // 43: user.AuthService.AcceptFollowREQ:input_type -> user.AcceptFollowREQRequest
-	57, // 44: user.AuthService.Following:input_type -> user.FollowingRequest
-	60, // 45: user.AuthService.Follower:input_type -> user.FollowerRequest
-	4,  // 46: user.AuthService.UserSignUp:output_type -> user.UserSignUpResponse
-	6,  // 47: user.AuthService.UserLogin:output_type -> user.UserLoginResponse
-	8,  // 48: user.AuthService.SendOtp:output_type -> user.SendOtpResponse
-	12, // 49: user.AuthService.VerifyOtp:output_type -> user.VerifyOtpResponse
-	14, // 50: user.AuthService.ForgotPassword:output_type -> user.ForgotPasswordResponse
-	17, // 51: user.AuthService.ForgotPasswordVerifyAndChange:output_type -> user.ForgotPasswordVerifyAndChangeResponse
-	20, // 52: user.AuthService.UserDetails:output_type -> user.UserDetailsResponse
-	23, // 53: user.AuthService.UpdateUserDetails:output_type -> user.UpdateUserDetailsResponse
-	26, // 54: user.AuthService.ChangePassword:output_type -> user.ChangePasswordResponse
-	30, // 55: user.AuthService.AdminLogin:output_type -> user.AdminLoginResponse
-	33, // 56: user.AuthService.ShowAllUsers:output_type -> user.ShowAllUsersResponse
-	35, // 57: user.AuthService.AdminBlockUser:output_type -> user.AdminBlockUserResponse
-	37, // 58: user.AuthService.AdminUnblockUser:output_type -> user.AdminUnblockUserResponse
-	39, // 59: user.AuthService.CheckUserAvalilabilityWithUserID:output_type -> user.CheckUserAvalilabilityWithUserIDResponse
-	41, // 60: user.AuthService.UserData:output_type -> user.UserDataResponse
-	44, // 61: user.AuthService.CheckUserAvalilabilityWithTagUserID:output_type -> user.CheckUserAvalilabilityWithTagUserIDResponse
-	47, // 62: user.AuthService.GetUserNameWithTagUserID:output_type -> user.GetUserNameWithTagUserIDResponse
-	49, // 63: user.AuthService.ReportUser:output_type -> user.ReportUserResponse
-	51, // 64: user.AuthService.FollowREQ:output_type -> user.FollowREQResponse
-	54, // 65: user.AuthService.ShowFollowREQ:output_type -> user.ShowREQResponse
-	56, // 66: user.AuthService.AcceptFollowREQ:output_type -> user.AcceptFollowREQResponse
-	59, // 67: user.AuthService.Following:output_type -> user.FollowingResponse
-	61, // 68: user.AuthService.Follower:output_type -> user.FollowerResponse
-	46, // [46:69] is the sub-list for method output_type
-	23, // [23:46] is the sub-list for method input_type
-	23, // [23:23] is the sub-list for extension type_name
-	23, // [23:23] is the sub-list for extension extendee
-	0,  // [0:23] is the sub-list for field type_name
+	39, // 16: user.ShowUserReportsResponse.reports:type_name -> user.ReportUser
+	42, // 17: user.ShowPostReportsResponse.reports:type_name -> user.ReprotPost
+	45, // 18: user.Posts.user:type_name -> user.UserDatas
+	74, // 19: user.Posts.created_at:type_name -> google.protobuf.Timestamp
+	46, // 20: user.GetAllPostsResponse.posts:type_name -> user.Posts
+	55, // 21: user.CheckUserAvalilabilityWithTagUserIDRequest.tag:type_name -> user.Tag
+	55, // 22: user.GetUserNameWithTagUserIDRequest.tag:type_name -> user.Tag
+	58, // 23: user.GetUserNameWithTagUserIDResponse.name:type_name -> user.TagUsernames
+	74, // 24: user.REQResponse.createdAt:type_name -> google.protobuf.Timestamp
+	65, // 25: user.ShowREQResponse.response:type_name -> user.REQResponse
+	70, // 26: user.FollowingResponse.users:type_name -> user.FollowResponse
+	70, // 27: user.FollowerResponse.users:type_name -> user.FollowResponse
+	0,  // 28: user.AuthService.UserSignUp:input_type -> user.UserSignUpRequest
+	5,  // 29: user.AuthService.UserLogin:input_type -> user.UserLoginRequest
+	7,  // 30: user.AuthService.SendOtp:input_type -> user.SendOtpRequest
+	11, // 31: user.AuthService.VerifyOtp:input_type -> user.VerifyOtpRequest
+	13, // 32: user.AuthService.ForgotPassword:input_type -> user.ForgotPasswordRequest
+	16, // 33: user.AuthService.ForgotPasswordVerifyAndChange:input_type -> user.ForgotPasswordVerifyAndChangeRequest
+	18, // 34: user.AuthService.UserDetails:input_type -> user.UserDetailsRequest
+	22, // 35: user.AuthService.UpdateUserDetails:input_type -> user.UpdateUserDetailsRequest
+	25, // 36: user.AuthService.ChangePassword:input_type -> user.ChangePasswordRequest
+	50, // 37: user.AuthService.CheckUserAvalilabilityWithUserID:input_type -> user.CheckUserAvalilabilityWithUserIDRequest
+	52, // 38: user.AuthService.UserData:input_type -> user.UserDataRequest
+	54, // 39: user.AuthService.CheckUserAvalilabilityWithTagUserID:input_type -> user.CheckUserAvalilabilityWithTagUserIDRequest
+	57, // 40: user.AuthService.GetUserNameWithTagUserID:input_type -> user.GetUserNameWithTagUserIDRequest
+	60, // 41: user.AuthService.ReportUser:input_type -> user.ReportUserRequest
+	62, // 42: user.AuthService.FollowREQ:input_type -> user.FollowREQRequest
+	64, // 43: user.AuthService.ShowFollowREQ:input_type -> user.ShowREQRequest
+	67, // 44: user.AuthService.AcceptFollowREQ:input_type -> user.AcceptFollowREQRequest
+	69, // 45: user.AuthService.Following:input_type -> user.FollowingRequest
+	72, // 46: user.AuthService.Follower:input_type -> user.FollowerRequest
+	27, // 47: user.AuthService.AdminLogin:input_type -> user.AdminLoginRequest
+	31, // 48: user.AuthService.ShowAllUsers:input_type -> user.ShowAllUsersRequest
+	34, // 49: user.AuthService.AdminBlockUser:input_type -> user.AdminBlockUserRequest
+	36, // 50: user.AuthService.AdminUnblockUser:input_type -> user.AdminUnblockUserRequest
+	38, // 51: user.AuthService.ShowUserReports:input_type -> user.ShowUserReportsRequest
+	41, // 52: user.AuthService.ShowPostReports:input_type -> user.ShowPostReportsRequest
+	44, // 53: user.AuthService.GetAllPosts:input_type -> user.GetAllPostsRequest
+	48, // 54: user.AuthService.RemovePost:input_type -> user.RemovePostRequest
+	4,  // 55: user.AuthService.UserSignUp:output_type -> user.UserSignUpResponse
+	6,  // 56: user.AuthService.UserLogin:output_type -> user.UserLoginResponse
+	8,  // 57: user.AuthService.SendOtp:output_type -> user.SendOtpResponse
+	12, // 58: user.AuthService.VerifyOtp:output_type -> user.VerifyOtpResponse
+	14, // 59: user.AuthService.ForgotPassword:output_type -> user.ForgotPasswordResponse
+	17, // 60: user.AuthService.ForgotPasswordVerifyAndChange:output_type -> user.ForgotPasswordVerifyAndChangeResponse
+	20, // 61: user.AuthService.UserDetails:output_type -> user.UserDetailsResponse
+	23, // 62: user.AuthService.UpdateUserDetails:output_type -> user.UpdateUserDetailsResponse
+	26, // 63: user.AuthService.ChangePassword:output_type -> user.ChangePasswordResponse
+	51, // 64: user.AuthService.CheckUserAvalilabilityWithUserID:output_type -> user.CheckUserAvalilabilityWithUserIDResponse
+	53, // 65: user.AuthService.UserData:output_type -> user.UserDataResponse
+	56, // 66: user.AuthService.CheckUserAvalilabilityWithTagUserID:output_type -> user.CheckUserAvalilabilityWithTagUserIDResponse
+	59, // 67: user.AuthService.GetUserNameWithTagUserID:output_type -> user.GetUserNameWithTagUserIDResponse
+	61, // 68: user.AuthService.ReportUser:output_type -> user.ReportUserResponse
+	63, // 69: user.AuthService.FollowREQ:output_type -> user.FollowREQResponse
+	66, // 70: user.AuthService.ShowFollowREQ:output_type -> user.ShowREQResponse
+	68, // 71: user.AuthService.AcceptFollowREQ:output_type -> user.AcceptFollowREQResponse
+	71, // 72: user.AuthService.Following:output_type -> user.FollowingResponse
+	73, // 73: user.AuthService.Follower:output_type -> user.FollowerResponse
+	30, // 74: user.AuthService.AdminLogin:output_type -> user.AdminLoginResponse
+	33, // 75: user.AuthService.ShowAllUsers:output_type -> user.ShowAllUsersResponse
+	35, // 76: user.AuthService.AdminBlockUser:output_type -> user.AdminBlockUserResponse
+	37, // 77: user.AuthService.AdminUnblockUser:output_type -> user.AdminUnblockUserResponse
+	40, // 78: user.AuthService.ShowUserReports:output_type -> user.ShowUserReportsResponse
+	43, // 79: user.AuthService.ShowPostReports:output_type -> user.ShowPostReportsResponse
+	47, // 80: user.AuthService.GetAllPosts:output_type -> user.GetAllPostsResponse
+	49, // 81: user.AuthService.RemovePost:output_type -> user.RemovePostResponse
+	55, // [55:82] is the sub-list for method output_type
+	28, // [28:55] is the sub-list for method input_type
+	28, // [28:28] is the sub-list for extension type_name
+	28, // [28:28] is the sub-list for extension extendee
+	0,  // [0:28] is the sub-list for field type_name
 }
 
 func init() { file_pkg_pb_auth_auth_proto_init() }
@@ -4526,7 +5314,7 @@ func file_pkg_pb_auth_auth_proto_init() {
 			}
 		}
 		file_pkg_pb_auth_auth_proto_msgTypes[38].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CheckUserAvalilabilityWithUserIDRequest); i {
+			switch v := v.(*ShowUserReportsRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -4538,7 +5326,7 @@ func file_pkg_pb_auth_auth_proto_init() {
 			}
 		}
 		file_pkg_pb_auth_auth_proto_msgTypes[39].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CheckUserAvalilabilityWithUserIDResponse); i {
+			switch v := v.(*ReportUser); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -4550,7 +5338,7 @@ func file_pkg_pb_auth_auth_proto_init() {
 			}
 		}
 		file_pkg_pb_auth_auth_proto_msgTypes[40].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UserDataRequest); i {
+			switch v := v.(*ShowUserReportsResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -4562,7 +5350,7 @@ func file_pkg_pb_auth_auth_proto_init() {
 			}
 		}
 		file_pkg_pb_auth_auth_proto_msgTypes[41].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UserDataResponse); i {
+			switch v := v.(*ShowPostReportsRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -4574,7 +5362,7 @@ func file_pkg_pb_auth_auth_proto_init() {
 			}
 		}
 		file_pkg_pb_auth_auth_proto_msgTypes[42].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CheckUserAvalilabilityWithTagUserIDRequest); i {
+			switch v := v.(*ReprotPost); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -4586,7 +5374,7 @@ func file_pkg_pb_auth_auth_proto_init() {
 			}
 		}
 		file_pkg_pb_auth_auth_proto_msgTypes[43].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Tag); i {
+			switch v := v.(*ShowPostReportsResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -4598,7 +5386,7 @@ func file_pkg_pb_auth_auth_proto_init() {
 			}
 		}
 		file_pkg_pb_auth_auth_proto_msgTypes[44].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CheckUserAvalilabilityWithTagUserIDResponse); i {
+			switch v := v.(*GetAllPostsRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -4610,7 +5398,7 @@ func file_pkg_pb_auth_auth_proto_init() {
 			}
 		}
 		file_pkg_pb_auth_auth_proto_msgTypes[45].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetUserNameWithTagUserIDRequest); i {
+			switch v := v.(*UserDatas); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -4622,7 +5410,7 @@ func file_pkg_pb_auth_auth_proto_init() {
 			}
 		}
 		file_pkg_pb_auth_auth_proto_msgTypes[46].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*TagUsernames); i {
+			switch v := v.(*Posts); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -4634,7 +5422,7 @@ func file_pkg_pb_auth_auth_proto_init() {
 			}
 		}
 		file_pkg_pb_auth_auth_proto_msgTypes[47].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetUserNameWithTagUserIDResponse); i {
+			switch v := v.(*GetAllPostsResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -4646,7 +5434,7 @@ func file_pkg_pb_auth_auth_proto_init() {
 			}
 		}
 		file_pkg_pb_auth_auth_proto_msgTypes[48].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ReportUserRequest); i {
+			switch v := v.(*RemovePostRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -4658,7 +5446,7 @@ func file_pkg_pb_auth_auth_proto_init() {
 			}
 		}
 		file_pkg_pb_auth_auth_proto_msgTypes[49].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ReportUserResponse); i {
+			switch v := v.(*RemovePostResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -4670,7 +5458,7 @@ func file_pkg_pb_auth_auth_proto_init() {
 			}
 		}
 		file_pkg_pb_auth_auth_proto_msgTypes[50].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*FollowREQRequest); i {
+			switch v := v.(*CheckUserAvalilabilityWithUserIDRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -4682,7 +5470,7 @@ func file_pkg_pb_auth_auth_proto_init() {
 			}
 		}
 		file_pkg_pb_auth_auth_proto_msgTypes[51].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*FollowREQResponse); i {
+			switch v := v.(*CheckUserAvalilabilityWithUserIDResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -4694,7 +5482,7 @@ func file_pkg_pb_auth_auth_proto_init() {
 			}
 		}
 		file_pkg_pb_auth_auth_proto_msgTypes[52].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ShowREQRequest); i {
+			switch v := v.(*UserDataRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -4706,7 +5494,7 @@ func file_pkg_pb_auth_auth_proto_init() {
 			}
 		}
 		file_pkg_pb_auth_auth_proto_msgTypes[53].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*REQResponse); i {
+			switch v := v.(*UserDataResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -4718,7 +5506,7 @@ func file_pkg_pb_auth_auth_proto_init() {
 			}
 		}
 		file_pkg_pb_auth_auth_proto_msgTypes[54].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ShowREQResponse); i {
+			switch v := v.(*CheckUserAvalilabilityWithTagUserIDRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -4730,7 +5518,7 @@ func file_pkg_pb_auth_auth_proto_init() {
 			}
 		}
 		file_pkg_pb_auth_auth_proto_msgTypes[55].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AcceptFollowREQRequest); i {
+			switch v := v.(*Tag); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -4742,7 +5530,7 @@ func file_pkg_pb_auth_auth_proto_init() {
 			}
 		}
 		file_pkg_pb_auth_auth_proto_msgTypes[56].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AcceptFollowREQResponse); i {
+			switch v := v.(*CheckUserAvalilabilityWithTagUserIDResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -4754,7 +5542,7 @@ func file_pkg_pb_auth_auth_proto_init() {
 			}
 		}
 		file_pkg_pb_auth_auth_proto_msgTypes[57].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*FollowingRequest); i {
+			switch v := v.(*GetUserNameWithTagUserIDRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -4766,7 +5554,7 @@ func file_pkg_pb_auth_auth_proto_init() {
 			}
 		}
 		file_pkg_pb_auth_auth_proto_msgTypes[58].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*FollowResponse); i {
+			switch v := v.(*TagUsernames); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -4778,7 +5566,7 @@ func file_pkg_pb_auth_auth_proto_init() {
 			}
 		}
 		file_pkg_pb_auth_auth_proto_msgTypes[59].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*FollowingResponse); i {
+			switch v := v.(*GetUserNameWithTagUserIDResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -4790,7 +5578,7 @@ func file_pkg_pb_auth_auth_proto_init() {
 			}
 		}
 		file_pkg_pb_auth_auth_proto_msgTypes[60].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*FollowerRequest); i {
+			switch v := v.(*ReportUserRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -4802,6 +5590,150 @@ func file_pkg_pb_auth_auth_proto_init() {
 			}
 		}
 		file_pkg_pb_auth_auth_proto_msgTypes[61].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ReportUserResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_pkg_pb_auth_auth_proto_msgTypes[62].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*FollowREQRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_pkg_pb_auth_auth_proto_msgTypes[63].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*FollowREQResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_pkg_pb_auth_auth_proto_msgTypes[64].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ShowREQRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_pkg_pb_auth_auth_proto_msgTypes[65].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*REQResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_pkg_pb_auth_auth_proto_msgTypes[66].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ShowREQResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_pkg_pb_auth_auth_proto_msgTypes[67].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AcceptFollowREQRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_pkg_pb_auth_auth_proto_msgTypes[68].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AcceptFollowREQResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_pkg_pb_auth_auth_proto_msgTypes[69].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*FollowingRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_pkg_pb_auth_auth_proto_msgTypes[70].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*FollowResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_pkg_pb_auth_auth_proto_msgTypes[71].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*FollowingResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_pkg_pb_auth_auth_proto_msgTypes[72].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*FollowerRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_pkg_pb_auth_auth_proto_msgTypes[73].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*FollowerResponse); i {
 			case 0:
 				return &v.state
@@ -4820,7 +5752,7 @@ func file_pkg_pb_auth_auth_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_pkg_pb_auth_auth_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   62,
+			NumMessages:   74,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

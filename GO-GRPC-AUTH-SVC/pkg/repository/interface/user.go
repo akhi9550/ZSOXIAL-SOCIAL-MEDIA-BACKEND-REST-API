@@ -39,6 +39,7 @@ type UserRepository interface {
 	ReportUser(userID int, req models.ReportRequest) error
 	FollowREQ(userID, FollowingUserID int) error
 	ShowFollowREQ(userID int) ([]models.FollowReqs, error)
+	CheckRequest(userID, FollowingUserID int) bool
 	AcceptFollowREQ(userID, FollowingUserID int) error
 	Following(userID int) ([]models.FollowResp, error)
 	Follower(userID int) ([]models.FollowResp, error)

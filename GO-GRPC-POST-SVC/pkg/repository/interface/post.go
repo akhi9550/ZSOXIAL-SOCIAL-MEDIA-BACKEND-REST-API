@@ -10,13 +10,16 @@ type PostRepository interface {
 	CheckPostAvalilabilityWithID(postID int) bool
 	UserData(userID int) (models.UserData, error)
 	CreatePost(userID int, Caption string, TypeId int, file string, users []models.Tag) (models.Response, []models.Tag, error)
-	GetPost(userID, postID int) (models.Response, []models.Tag, error)
+	GetPost(postID int) (models.Responses, error)
+	GetTagUser(postID int) ([]models.Tag, error)
 	UpdateCaption(postID, userID int, caption string) error
 	UpdateTypeID(userID, PostID, TypeID int) error
 	UpdateTags(userID, PostID int, tag []models.Tag) error
 	PostDetails(PostID, userID int) (models.Response, []models.Tag, error)
 	DeletePost(userID, postID int) error
 	GetPostAll(userID int) ([]models.Response, error)
+	CheckPostAvalilabilityWithUserID(postID, userID int) bool
+	// CheckPostAvalilabilityWithIDFromArchive(postID int)bool
 	ArchivePost(userID, postID int) error
 	UnArchivePost(userID, postID int) error
 	GetAllArchivePost(userID int) ([]models.ArchivePostResponse, error)
@@ -30,7 +33,7 @@ type PostRepository interface {
 	GetAllPostComments(PostID int) ([]models.PostCommentResponses, error)
 	GetCommentsByPostID(postID int) ([]models.AllComments, error)
 	GetRepliesByID(PostID, CommentID int) ([]models.Replies, error)
-	AlreadyReported(userID,postID int) bool
+	AlreadyReported(userID, postID int) bool
 	ReportPost(userID int, req models.ReportRequest) error
 	AllReadyExistReply(userID, CommentID int) bool
 	ReplyComment(userID int, req models.ReplyCommentReq) (models.PostComments, models.ReplyResponse, error)

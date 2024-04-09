@@ -36,8 +36,6 @@ func (p *PostClient) CreatePost(userID int, req models.PostRequest, file *multip
 		return models.PostResponse{}, err
 	}
 	defer f.Close()
-
-	// Read the file content
 	fileData, err := io.ReadAll(f)
 	if err != nil {
 		return models.PostResponse{}, err
@@ -127,7 +125,6 @@ func (p *PostClient) UpdatePost(userID int, req models.UpdatePostReq, user []str
 		Username: data.User.Username,
 		Profile:  data.User.Imageurl,
 	}
-
 	var tags []models.Tag
 	for _, tagStr := range data.Tag {
 		var tag models.Tag

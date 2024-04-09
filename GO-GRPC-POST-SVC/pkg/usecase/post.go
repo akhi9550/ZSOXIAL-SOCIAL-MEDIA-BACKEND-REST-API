@@ -84,7 +84,14 @@ func (p *postUseCase) GetPost(userID int, postID int) (models.PostResponse, erro
 	if !ok {
 		return models.PostResponse{}, errors.New("post doesn't exist")
 	}
-	post, tag, err := p.postRepository.GetPost(userID, postID)
+	post, err := p.postRepository.GetPost(postID)
+	if err != nil {
+		return models.PostResponse{}, err
+	}
+	if post.ID == 0 {
+		return models.PostResponse{}, errors.New(" post archived")
+	}
+	tag, err := p.postRepository.GetTagUser(postID)
 	if err != nil {
 		return models.PostResponse{}, err
 	}
@@ -99,7 +106,7 @@ func (p *postUseCase) GetPost(userID int, postID int) (models.PostResponse, erro
 		}
 		Users = append(Users, tag)
 	}
-	userData, err := p.authClient.UserData(userID)
+	userData, err := p.authClient.UserData(int(post.UserID))
 	if err != nil {
 		return models.PostResponse{}, err
 	}
@@ -226,7 +233,7 @@ func (p *postUseCase) ArchivePost(userID, postID int) error {
 	if !userExist {
 		return errors.New("user doesn't exist")
 	}
-	ok := p.postRepository.CheckPostAvalilabilityWithID(postID)
+	ok := p.postRepository.CheckPostAvalilabilityWithUserID(postID, userID)
 	if !ok {
 		return errors.New("post doesn't exist")
 	}
@@ -242,7 +249,7 @@ func (p *postUseCase) UnArchivePost(userID, postID int) error {
 	if !userExist {
 		return errors.New("user doesn't exist")
 	}
-	ok := p.postRepository.CheckPostAvalilabilityWithID(postID)
+	ok := p.postRepository.CheckPostAvalilabilityWithUserID(postID, userID)
 	if !ok {
 		return errors.New("post doesn't exist")
 	}
@@ -539,10 +546,7 @@ func (p *postUseCase) UnSavedPost(userID, postID int) error {
 	if !ok {
 		return errors.New("post doesn't exist")
 	}
-	saved := p.postRepository.AllReadyExistPost(userID, postID)
-	if !saved {
-		return errors.New("post doesn't exist")
-	}
+
 	err := p.postRepository.UnSavedPost(userID, postID)
 	if err != nil {
 		return err

@@ -427,8 +427,8 @@ func (p *PostServer) CreateStory(ctx context.Context, req *pb.CreateStoryRequest
 }
 
 func (p *PostServer) GetStory(ctx context.Context, req *pb.GetStoryRequest) (*pb.GetStoryResponse, error) {
-	userID,viewer := req.Userid,req.Viewer
-	data, err := p.storyUseCase.GetStory(int(userID),int(viewer))
+	userID, viewer := req.Userid, req.Viewer
+	data, err := p.storyUseCase.GetStory(int(userID), int(viewer))
 	if err != nil {
 		return nil, err
 	}

@@ -72,19 +72,27 @@ func (p *postRepository) UserData(userID int) (models.UserData, error) {
 	return user, nil
 }
 
-func (p *postRepository) GetPost(userID, postID int) (models.Response, []models.Tag, error) {
-	var post models.Response
+func (p *postRepository) GetPost(postID int) (models.Responses, error) {
+	var post models.Responses
+	err := p.DB.Raw(`SELECT id,url,caption,user_id,likes_count, comments_count,created_at FROM posts WHERE  id = ? AND is_archive = 'false' `, postID).Scan(&post).Error
+	if err != nil {
+		return models.Responses{}, err
+	}
+	if post.ID == 0 {
+		return models.Responses{}, err
+	}
+
+	return post, nil
+
+}
+
+func (p *postRepository) GetTagUser(postID int) ([]models.Tag, error) {
 	var tag []models.Tag
 	err := p.DB.Raw(`SELECT taguser FROM tags WHERE post_id = ?`, postID).Scan(&tag).Error
 	if err != nil {
-		return models.Response{}, []models.Tag{}, err
+		return []models.Tag{}, err
 	}
-	err = p.DB.Raw(`SELECT id,url,caption,likes_count, comments_count,created_at FROM posts WHERE user_id = ? AND id = ? AND is_archive = 'false' `, userID, postID).Scan(&post).Error
-	if err != nil {
-		return models.Response{}, []models.Tag{}, err
-	}
-	return post, tag, nil
-
+	return tag, nil
 }
 
 func (ur *postRepository) UpdateCaption(userID, postID int, caption string) error {
@@ -152,6 +160,15 @@ func (p *postRepository) GetPostAll(userID int) ([]models.Response, error) {
 	return post, nil
 }
 
+func (p *postRepository) CheckPostAvalilabilityWithUserID(postID, userID int) bool {
+	var count int
+	err := p.DB.Raw(`SELECT COUNT(*) FROM posts WHERE id = ? AND user_id = ?`, postID, userID).Scan(&count).Error
+	if err != nil {
+		return false
+	}
+	return count > 0
+}
+
 func (p *postRepository) ArchivePost(userID, postID int) error {
 	err := p.DB.Exec(`INSERT INTO archive_posts (user_id,post_id) VALUES (?,?)`, userID, postID).Error
 	if err != nil {
@@ -163,6 +180,8 @@ func (p *postRepository) ArchivePost(userID, postID int) error {
 	}
 	return nil
 }
+
+// func(p *postRepository)CheckPostAvalilabilityWithIDFromArchive(postID int)bool
 
 func (p *postRepository) UnArchivePost(userID, postID int) error {
 	err := p.DB.Exec(`DELETE FROM archive_posts WHERE user_id = ? AND post_id = ?`, userID, postID).Error

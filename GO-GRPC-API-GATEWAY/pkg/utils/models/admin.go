@@ -37,3 +37,15 @@ type UserDetailsAtAdmin struct {
 	CreatedAt time.Time `json:"created_at"`
 	Blocked   bool      `json:"blocked" gorm:"default:false"`
 }
+
+type UserReports struct {
+	ReportUserID uint   `json:"report_user_id"`
+	UserID       uint   `json:"user_id"`
+	Report       string `json:"reports"`
+}
+
+type PostReports struct {
+	ReportUserID uint   `json:"report_user_id"`
+	PostID       uint   `json:"post_id"`
+	Report       string `json:"reports"`
+}

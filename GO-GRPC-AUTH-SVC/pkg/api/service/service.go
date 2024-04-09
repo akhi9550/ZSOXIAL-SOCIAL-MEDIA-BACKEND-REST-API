@@ -163,69 +163,6 @@ func (au *AuthSever) ChangePassword(ctx context.Context, req *pb.ChangePasswordR
 	return &pb.ChangePasswordResponse{}, nil
 }
 
-func (au *AuthSever) AdminLogin(ctx context.Context, req *pb.AdminLoginRequest) (*pb.AdminLoginResponse, error) {
-	login := models.AdminLoginRequest{
-		Email:    req.Email,
-		Password: req.Password,
-	}
-	data, err := au.adminUsecase.AdminLogin(login)
-	if err != nil {
-		return &pb.AdminLoginResponse{}, err
-	}
-	adminDetails := &pb.AdminInfo{Id: int64(data.Users.Id), Email: data.Users.Email, ProfilePhoto: []byte(data.Users.Imageurl), Isadmin: data.Users.Isadmin}
-	AdminResponse := &pb.AdminResponse{Info: adminDetails, Accesstoken: data.AccessToken, Refreshtoken: data.RefreshToken}
-	return &pb.AdminLoginResponse{
-		Reposnse: AdminResponse,
-	}, nil
-}
-
-func (au *AuthSever) ShowAllUsers(ctx context.Context, req *pb.ShowAllUsersRequest) (*pb.ShowAllUsersResponse, error) {
-	page := req.Page
-	count := req.Count
-	data, err := au.adminUsecase.ShowAllUsers(int(page), int(count))
-	if err != nil {
-		return &pb.ShowAllUsersResponse{
-			UsersData: []*pb.Users{},
-		}, err
-	}
-	var result pb.ShowAllUsersResponse
-	for _, v := range data {
-		createdAtTimestamp := timestamppb.New(v.CreatedAt)
-		result.UsersData = append(result.UsersData, &pb.Users{
-			Id:           int64(v.Id),
-			Firstname:    v.Firstname,
-			Lastname:     v.Lastname,
-			Username:     v.Username,
-			Dob:          v.Dob,
-			Gender:       v.Gender,
-			Phone:        v.Phone,
-			Email:        v.Email,
-			ProfilePhoto: v.Imageurl,
-			CreatedAt:    createdAtTimestamp,
-			Blocked:      v.Blocked,
-		})
-	}
-	return &result, nil
-}
-
-func (au *AuthSever) AdminBlockUser(ctx context.Context, req *pb.AdminBlockUserRequest) (*pb.AdminBlockUserResponse, error) {
-	userID := req.Id
-	err := au.adminUsecase.AdminBlockUser(uint(userID))
-	if err != nil {
-		return &pb.AdminBlockUserResponse{}, err
-	}
-	return &pb.AdminBlockUserResponse{}, nil
-}
-
-func (au *AuthSever) AdminUnblockUser(ctx context.Context, req *pb.AdminUnblockUserRequest) (*pb.AdminUnblockUserResponse, error) {
-	userID := req.Id
-	err := au.adminUsecase.AdminUnBlockUser(uint(userID))
-	if err != nil {
-		return &pb.AdminUnblockUserResponse{}, err
-	}
-	return &pb.AdminUnblockUserResponse{}, nil
-}
-
 func (au *AuthSever) CheckUserAvalilabilityWithUserID(ctx context.Context, req *pb.CheckUserAvalilabilityWithUserIDRequest) (*pb.CheckUserAvalilabilityWithUserIDResponse, error) {
 	userId := req.Id
 	ok, err := au.userUseCase.CheckUserAvalilabilityWithUserID(int(userId))
@@ -347,15 +284,15 @@ func (au *AuthSever) AcceptFollowREQ(ctx context.Context, req *pb.AcceptFollowRE
 }
 
 func (au *AuthSever) Following(ctx context.Context, req *pb.FollowingRequest) (*pb.FollowingResponse, error) {
-	userID:=req.Userid
-	data,err:=au.userUseCase.Following(int(userID))
-	if err!=nil{
-		return &pb.FollowingResponse{},err
+	userID := req.Userid
+	data, err := au.userUseCase.Following(int(userID))
+	if err != nil {
+		return &pb.FollowingResponse{}, err
 	}
 	var response []*pb.FollowResponse
 	for _, req := range data {
 		requests := &pb.FollowResponse{
-			Username: req.FollowingUser,
+			Username:    req.FollowingUser,
 			UserProfile: req.Profile,
 		}
 		response = append(response, requests)
@@ -365,16 +302,16 @@ func (au *AuthSever) Following(ctx context.Context, req *pb.FollowingRequest) (*
 	}, nil
 }
 
-func (au *AuthSever) Follower(ctx context.Context, req *pb.FollowerRequest) (*pb.FollowerResponse, error){
-	userID:=req.Userid
-	data,err:=au.userUseCase.Follower(int(userID))
-	if err!=nil{
-		return &pb.FollowerResponse{},err
+func (au *AuthSever) Follower(ctx context.Context, req *pb.FollowerRequest) (*pb.FollowerResponse, error) {
+	userID := req.Userid
+	data, err := au.userUseCase.Follower(int(userID))
+	if err != nil {
+		return &pb.FollowerResponse{}, err
 	}
 	var response []*pb.FollowResponse
 	for _, req := range data {
 		requests := &pb.FollowResponse{
-			Username: req.FollowingUser,
+			Username:    req.FollowingUser,
 			UserProfile: req.Profile,
 		}
 		response = append(response, requests)
@@ -383,3 +320,72 @@ func (au *AuthSever) Follower(ctx context.Context, req *pb.FollowerRequest) (*pb
 		Users: response,
 	}, nil
 }
+
+func (au *AuthSever) AdminLogin(ctx context.Context, req *pb.AdminLoginRequest) (*pb.AdminLoginResponse, error) {
+	login := models.AdminLoginRequest{
+		Email:    req.Email,
+		Password: req.Password,
+	}
+	data, err := au.adminUsecase.AdminLogin(login)
+	if err != nil {
+		return &pb.AdminLoginResponse{}, err
+	}
+	adminDetails := &pb.AdminInfo{Id: int64(data.Users.Id), Email: data.Users.Email, ProfilePhoto: []byte(data.Users.Imageurl), Isadmin: data.Users.Isadmin}
+	AdminResponse := &pb.AdminResponse{Info: adminDetails, Accesstoken: data.AccessToken, Refreshtoken: data.RefreshToken}
+	return &pb.AdminLoginResponse{
+		Reposnse: AdminResponse,
+	}, nil
+}
+
+func (au *AuthSever) ShowAllUsers(ctx context.Context, req *pb.ShowAllUsersRequest) (*pb.ShowAllUsersResponse, error) {
+	page := req.Page
+	count := req.Count
+	data, err := au.adminUsecase.ShowAllUsers(int(page), int(count))
+	if err != nil {
+		return &pb.ShowAllUsersResponse{
+			UsersData: []*pb.Users{},
+		}, err
+	}
+	var result pb.ShowAllUsersResponse
+	for _, v := range data {
+		createdAtTimestamp := timestamppb.New(v.CreatedAt)
+		result.UsersData = append(result.UsersData, &pb.Users{
+			Id:           int64(v.Id),
+			Firstname:    v.Firstname,
+			Lastname:     v.Lastname,
+			Username:     v.Username,
+			Dob:          v.Dob,
+			Gender:       v.Gender,
+			Phone:        v.Phone,
+			Email:        v.Email,
+			ProfilePhoto: v.Imageurl,
+			CreatedAt:    createdAtTimestamp,
+			Blocked:      v.Blocked,
+		})
+	}
+	return &result, nil
+}
+
+func (au *AuthSever) AdminBlockUser(ctx context.Context, req *pb.AdminBlockUserRequest) (*pb.AdminBlockUserResponse, error) {
+	userID := req.Id
+	err := au.adminUsecase.AdminBlockUser(uint(userID))
+	if err != nil {
+		return &pb.AdminBlockUserResponse{}, err
+	}
+	return &pb.AdminBlockUserResponse{}, nil
+}
+
+func (au *AuthSever) AdminUnblockUser(ctx context.Context, req *pb.AdminUnblockUserRequest) (*pb.AdminUnblockUserResponse, error) {
+	userID := req.Id
+	err := au.adminUsecase.AdminUnBlockUser(uint(userID))
+	if err != nil {
+		return &pb.AdminUnblockUserResponse{}, err
+	}
+	return &pb.AdminUnblockUserResponse{}, nil
+}
+
+func (au *AuthSever)ShowUserReports(ctx context.Context,req *pb.showuser)(*pb.s)
+ShowUserReports(page, count int) ([]models.UserReports, error)
+	ShowPostReports(page, count int) ([]models.PostReports, error)
+	GetAllPosts(page, count int) ([]models.PostResponse, error)
+	RemovePost(postID int) error

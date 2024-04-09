@@ -28,6 +28,6 @@ func ConnectDatabase(cfg config.Config) (*gorm.DB, error) {
 	db.AutoMigrate(&domain.ViewStory{})
 	db.AutoMigrate(&domain.SavedPost{})
 	db.AutoMigrate(&domain.PostReports{})
-	db.AutoMigrate(&domain.StoryViewes{})
+	db.AutoMigrate(&domain.ViewStory{})
 	return db, dbErr
 }

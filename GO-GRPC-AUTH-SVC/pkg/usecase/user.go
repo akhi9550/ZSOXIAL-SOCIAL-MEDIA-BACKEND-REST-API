@@ -327,6 +327,10 @@ func (ur *userUseCase) AcceptFollowREQ(userID, FollowingUserID int) error {
 	if !FollowuserExist {
 		return errors.New("user doesn't exist")
 	}
+	req := ur.userRepository.CheckRequest(userID, FollowingUserID)
+	if !req {
+		return errors.New("no req available")
+	}
 	err := ur.userRepository.AcceptFollowREQ(userID, FollowingUserID)
 	if err != nil {
 		return err
@@ -380,3 +384,8 @@ func (ur *userUseCase) Follower(userID int) ([]models.FollowingResponse, error) 
 	}
 	return response, nil
 }
+
+AdminLogin(admin models.AdminLoginRequest) (*models.AdminReponseWithToken, error) 
+	ShowAllUsers(page, count int) ([]models.UserDetailsAtAdmin, error)
+	AdminBlockUser(id uint) error
+	AdminUnBlockUser(id uint) error

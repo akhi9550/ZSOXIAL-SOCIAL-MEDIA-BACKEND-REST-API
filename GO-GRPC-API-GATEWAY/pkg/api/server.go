@@ -17,6 +17,7 @@ func NewServerHTTP(authHandler *handler.AuthHandler, postHandler *handler.PostHa
 	r := gin.New()
 
 	r.Use(gin.Logger())
+
 	r.POST("/login", authHandler.AdminLogin)
 
 	// r.Use(middleware.AdminAuthMiddleware())
@@ -35,39 +36,77 @@ func NewServerHTTP(authHandler *handler.AuthHandler, postHandler *handler.PostHa
 
 	r.Use(middleware.UserAuthMiddleware())
 	{
-		r.GET("user/users", authHandler.UserDetails)
-		r.PUT("user/update", authHandler.UpdateUserDetails)
-		r.PUT("user/changepassword", authHandler.ChangePassword)
-		r.POST("/reportuser", authHandler.ReportUser)
-		r.POST("/post", postHandler.CreatePost)
-		r.GET("/getpost", postHandler.GetPost)
-		r.PUT("/updatepost", postHandler.UpdatePost)
-		r.DELETE("/deletepost", postHandler.DeletePost)
-		r.GET("/getallpost", postHandler.GetAllPost)
-		r.POST("/archivePost", postHandler.ArchivePost)
-		r.POST("/unarchivePost", postHandler.UnArchivePost)
-		r.GET("/getarchivePost", postHandler.GetAllArchivePost)
-		r.PUT("/like", postHandler.LikePost)
-		r.PUT("/unlike", postHandler.UnLinkPost)
-		r.POST("/comment", postHandler.PostComment)
-		r.POST("/replycomment", postHandler.ReplyComment)
-		r.DELETE("/comment", postHandler.DeleteComment)
-		r.GET("/allcomment", postHandler.GetAllPostComments)
-		r.GET("/showcomments", postHandler.ShowAllPostComments)
-		r.POST("/reportpost", postHandler.ReportPost)
-		r.DELETE("/saved", postHandler.SavedPost)
-		r.POST("/unsaved", postHandler.UnSavedPost)
-		r.GET("/getsavedpost", postHandler.GetSavedPost)
-		r.POST("/createstory", postHandler.CreateStory)
-		r.GET("/getstories", postHandler.GetStory)
-		r.DELETE("/deletestory", postHandler.DeleteStory)
-		r.PUT("/likestory", postHandler.LikeStory)
-		r.PUT("/unlikestory", postHandler.UnLikeStory)
-		r.PUT("/followreq", authHandler.FollowREQ)
-		r.GET("/showreq", authHandler.ShowFollowREQ)
-		r.PUT("/followeraccept", authHandler.AcceptFollowREQ)
-		r.GET("/following",authHandler.Following)
-		r.GET("/follower",authHandler.Follower)
+		user := r.Group("/user")
+		{
+			user.GET("", authHandler.UserDetails)
+			user.PUT("", authHandler.UpdateUserDetails)
+			user.PUT("/changepassword", authHandler.ChangePassword)
+		}
+
+		report := r.Group("/report")
+		{
+			report.POST("/user", authHandler.ReportUser)
+			report.POST("/post", postHandler.ReportPost)
+		}
+
+		follow := r.Group("/follow")
+		{
+			follow.POST("/request", authHandler.FollowREQ)
+			follow.GET("/requests", authHandler.ShowFollowREQ)
+			follow.POST("/accept", authHandler.AcceptFollowREQ)
+			follow.GET("/following", authHandler.Following)
+			follow.GET("/followers", authHandler.Follower)
+		}
+
+		post := r.Group("/post")
+		{
+			post.POST("", postHandler.CreatePost)
+			post.GET("", postHandler.GetPost)
+			post.PUT("", postHandler.UpdatePost)
+			post.DELETE("", postHandler.DeletePost)
+			post.GET("/getposts", postHandler.GetAllPost)
+		}
+
+		savepost := r.Group("/saved")
+		{
+			savepost.POST("", postHandler.SavedPost)
+			savepost.GET("", postHandler.GetSavedPost)
+			savepost.POST("/unsaved", postHandler.UnSavedPost)
+
+		}
+
+		archive := r.Group("/archive")
+		{
+			archive.POST("", postHandler.ArchivePost)
+			archive.GET("", postHandler.GetAllArchivePost)
+			archive.POST("/unarchive", postHandler.UnArchivePost)
+
+		}
+
+		like := r.Group("/like")
+		{
+			like.PUT("", postHandler.LikePost)
+			like.PUT("/unlike", postHandler.UnLinkPost)
+		}
+
+		comment := r.Group("/comment")
+		{
+			comment.POST("", postHandler.PostComment)
+			comment.DELETE("", postHandler.DeleteComment)
+			comment.POST("/reply", postHandler.ReplyComment)
+			comment.GET("", postHandler.GetAllPostComments)
+			comment.GET("/showcomments", postHandler.ShowAllPostComments)
+		}
+
+		story := r.Group("/story")
+		{
+			story.POST("", postHandler.CreateStory)
+			story.GET("", postHandler.GetStory)
+			story.DELETE("", postHandler.DeleteStory)
+			story.PUT("/like", postHandler.LikeStory)
+			story.PUT("/unlike", postHandler.UnLikeStory)
+		}
+
 	}
 	return &ServerHTTP{engine: r}
 }

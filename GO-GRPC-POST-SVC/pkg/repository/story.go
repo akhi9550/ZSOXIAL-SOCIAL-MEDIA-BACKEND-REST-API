@@ -44,7 +44,7 @@ func (s *storyRepository) GetStory(userID, viewer int) ([]models.CreateStoriesRe
 		return []models.CreateStoriesResponse{}, err
 	}
 	for _, i := range response {
-		err = s.DB.Exec(`INSERT INTO story_viewes (storyID,viewer_id) VALUES (?,?)`, i.StoryID, viewer).Error
+		err = s.DB.Exec(`INSERT INTO view_stories (story_id,viewer_id) VALUES (?,?)`, i.StoryID, viewer).Error
 		if err != nil {
 			return []models.CreateStoriesResponse{}, err
 		}

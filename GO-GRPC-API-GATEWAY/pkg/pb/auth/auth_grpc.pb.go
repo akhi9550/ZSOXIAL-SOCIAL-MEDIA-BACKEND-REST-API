@@ -28,10 +28,6 @@ const (
 	AuthService_UserDetails_FullMethodName                         = "/user.AuthService/UserDetails"
 	AuthService_UpdateUserDetails_FullMethodName                   = "/user.AuthService/UpdateUserDetails"
 	AuthService_ChangePassword_FullMethodName                      = "/user.AuthService/ChangePassword"
-	AuthService_AdminLogin_FullMethodName                          = "/user.AuthService/AdminLogin"
-	AuthService_ShowAllUsers_FullMethodName                        = "/user.AuthService/ShowAllUsers"
-	AuthService_AdminBlockUser_FullMethodName                      = "/user.AuthService/AdminBlockUser"
-	AuthService_AdminUnblockUser_FullMethodName                    = "/user.AuthService/AdminUnblockUser"
 	AuthService_CheckUserAvalilabilityWithUserID_FullMethodName    = "/user.AuthService/CheckUserAvalilabilityWithUserID"
 	AuthService_UserData_FullMethodName                            = "/user.AuthService/UserData"
 	AuthService_CheckUserAvalilabilityWithTagUserID_FullMethodName = "/user.AuthService/CheckUserAvalilabilityWithTagUserID"
@@ -42,6 +38,14 @@ const (
 	AuthService_AcceptFollowREQ_FullMethodName                     = "/user.AuthService/AcceptFollowREQ"
 	AuthService_Following_FullMethodName                           = "/user.AuthService/Following"
 	AuthService_Follower_FullMethodName                            = "/user.AuthService/Follower"
+	AuthService_AdminLogin_FullMethodName                          = "/user.AuthService/AdminLogin"
+	AuthService_ShowAllUsers_FullMethodName                        = "/user.AuthService/ShowAllUsers"
+	AuthService_AdminBlockUser_FullMethodName                      = "/user.AuthService/AdminBlockUser"
+	AuthService_AdminUnblockUser_FullMethodName                    = "/user.AuthService/AdminUnblockUser"
+	AuthService_ShowUserReports_FullMethodName                     = "/user.AuthService/ShowUserReports"
+	AuthService_ShowPostReports_FullMethodName                     = "/user.AuthService/ShowPostReports"
+	AuthService_GetAllPosts_FullMethodName                         = "/user.AuthService/GetAllPosts"
+	AuthService_RemovePost_FullMethodName                          = "/user.AuthService/RemovePost"
 )
 
 // AuthServiceClient is the client API for AuthService service.
@@ -57,10 +61,6 @@ type AuthServiceClient interface {
 	UserDetails(ctx context.Context, in *UserDetailsRequest, opts ...grpc.CallOption) (*UserDetailsResponse, error)
 	UpdateUserDetails(ctx context.Context, in *UpdateUserDetailsRequest, opts ...grpc.CallOption) (*UpdateUserDetailsResponse, error)
 	ChangePassword(ctx context.Context, in *ChangePasswordRequest, opts ...grpc.CallOption) (*ChangePasswordResponse, error)
-	AdminLogin(ctx context.Context, in *AdminLoginRequest, opts ...grpc.CallOption) (*AdminLoginResponse, error)
-	ShowAllUsers(ctx context.Context, in *ShowAllUsersRequest, opts ...grpc.CallOption) (*ShowAllUsersResponse, error)
-	AdminBlockUser(ctx context.Context, in *AdminBlockUserRequest, opts ...grpc.CallOption) (*AdminBlockUserResponse, error)
-	AdminUnblockUser(ctx context.Context, in *AdminUnblockUserRequest, opts ...grpc.CallOption) (*AdminUnblockUserResponse, error)
 	CheckUserAvalilabilityWithUserID(ctx context.Context, in *CheckUserAvalilabilityWithUserIDRequest, opts ...grpc.CallOption) (*CheckUserAvalilabilityWithUserIDResponse, error)
 	UserData(ctx context.Context, in *UserDataRequest, opts ...grpc.CallOption) (*UserDataResponse, error)
 	CheckUserAvalilabilityWithTagUserID(ctx context.Context, in *CheckUserAvalilabilityWithTagUserIDRequest, opts ...grpc.CallOption) (*CheckUserAvalilabilityWithTagUserIDResponse, error)
@@ -71,6 +71,14 @@ type AuthServiceClient interface {
 	AcceptFollowREQ(ctx context.Context, in *AcceptFollowREQRequest, opts ...grpc.CallOption) (*AcceptFollowREQResponse, error)
 	Following(ctx context.Context, in *FollowingRequest, opts ...grpc.CallOption) (*FollowingResponse, error)
 	Follower(ctx context.Context, in *FollowerRequest, opts ...grpc.CallOption) (*FollowerResponse, error)
+	AdminLogin(ctx context.Context, in *AdminLoginRequest, opts ...grpc.CallOption) (*AdminLoginResponse, error)
+	ShowAllUsers(ctx context.Context, in *ShowAllUsersRequest, opts ...grpc.CallOption) (*ShowAllUsersResponse, error)
+	AdminBlockUser(ctx context.Context, in *AdminBlockUserRequest, opts ...grpc.CallOption) (*AdminBlockUserResponse, error)
+	AdminUnblockUser(ctx context.Context, in *AdminUnblockUserRequest, opts ...grpc.CallOption) (*AdminUnblockUserResponse, error)
+	ShowUserReports(ctx context.Context, in *ShowUserReportsRequest, opts ...grpc.CallOption) (*ShowUserReportsResponse, error)
+	ShowPostReports(ctx context.Context, in *ShowPostReportsRequest, opts ...grpc.CallOption) (*ShowPostReportsResponse, error)
+	GetAllPosts(ctx context.Context, in *GetAllPostsRequest, opts ...grpc.CallOption) (*GetAllPostsResponse, error)
+	RemovePost(ctx context.Context, in *RemovePostRequest, opts ...grpc.CallOption) (*RemovePostResponse, error)
 }
 
 type authServiceClient struct {
@@ -156,42 +164,6 @@ func (c *authServiceClient) UpdateUserDetails(ctx context.Context, in *UpdateUse
 func (c *authServiceClient) ChangePassword(ctx context.Context, in *ChangePasswordRequest, opts ...grpc.CallOption) (*ChangePasswordResponse, error) {
 	out := new(ChangePasswordResponse)
 	err := c.cc.Invoke(ctx, AuthService_ChangePassword_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *authServiceClient) AdminLogin(ctx context.Context, in *AdminLoginRequest, opts ...grpc.CallOption) (*AdminLoginResponse, error) {
-	out := new(AdminLoginResponse)
-	err := c.cc.Invoke(ctx, AuthService_AdminLogin_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *authServiceClient) ShowAllUsers(ctx context.Context, in *ShowAllUsersRequest, opts ...grpc.CallOption) (*ShowAllUsersResponse, error) {
-	out := new(ShowAllUsersResponse)
-	err := c.cc.Invoke(ctx, AuthService_ShowAllUsers_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *authServiceClient) AdminBlockUser(ctx context.Context, in *AdminBlockUserRequest, opts ...grpc.CallOption) (*AdminBlockUserResponse, error) {
-	out := new(AdminBlockUserResponse)
-	err := c.cc.Invoke(ctx, AuthService_AdminBlockUser_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *authServiceClient) AdminUnblockUser(ctx context.Context, in *AdminUnblockUserRequest, opts ...grpc.CallOption) (*AdminUnblockUserResponse, error) {
-	out := new(AdminUnblockUserResponse)
-	err := c.cc.Invoke(ctx, AuthService_AdminUnblockUser_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -288,6 +260,78 @@ func (c *authServiceClient) Follower(ctx context.Context, in *FollowerRequest, o
 	return out, nil
 }
 
+func (c *authServiceClient) AdminLogin(ctx context.Context, in *AdminLoginRequest, opts ...grpc.CallOption) (*AdminLoginResponse, error) {
+	out := new(AdminLoginResponse)
+	err := c.cc.Invoke(ctx, AuthService_AdminLogin_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) ShowAllUsers(ctx context.Context, in *ShowAllUsersRequest, opts ...grpc.CallOption) (*ShowAllUsersResponse, error) {
+	out := new(ShowAllUsersResponse)
+	err := c.cc.Invoke(ctx, AuthService_ShowAllUsers_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) AdminBlockUser(ctx context.Context, in *AdminBlockUserRequest, opts ...grpc.CallOption) (*AdminBlockUserResponse, error) {
+	out := new(AdminBlockUserResponse)
+	err := c.cc.Invoke(ctx, AuthService_AdminBlockUser_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) AdminUnblockUser(ctx context.Context, in *AdminUnblockUserRequest, opts ...grpc.CallOption) (*AdminUnblockUserResponse, error) {
+	out := new(AdminUnblockUserResponse)
+	err := c.cc.Invoke(ctx, AuthService_AdminUnblockUser_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) ShowUserReports(ctx context.Context, in *ShowUserReportsRequest, opts ...grpc.CallOption) (*ShowUserReportsResponse, error) {
+	out := new(ShowUserReportsResponse)
+	err := c.cc.Invoke(ctx, AuthService_ShowUserReports_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) ShowPostReports(ctx context.Context, in *ShowPostReportsRequest, opts ...grpc.CallOption) (*ShowPostReportsResponse, error) {
+	out := new(ShowPostReportsResponse)
+	err := c.cc.Invoke(ctx, AuthService_ShowPostReports_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) GetAllPosts(ctx context.Context, in *GetAllPostsRequest, opts ...grpc.CallOption) (*GetAllPostsResponse, error) {
+	out := new(GetAllPostsResponse)
+	err := c.cc.Invoke(ctx, AuthService_GetAllPosts_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) RemovePost(ctx context.Context, in *RemovePostRequest, opts ...grpc.CallOption) (*RemovePostResponse, error) {
+	out := new(RemovePostResponse)
+	err := c.cc.Invoke(ctx, AuthService_RemovePost_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthServiceServer is the server API for AuthService service.
 // All implementations must embed UnimplementedAuthServiceServer
 // for forward compatibility
@@ -301,10 +345,6 @@ type AuthServiceServer interface {
 	UserDetails(context.Context, *UserDetailsRequest) (*UserDetailsResponse, error)
 	UpdateUserDetails(context.Context, *UpdateUserDetailsRequest) (*UpdateUserDetailsResponse, error)
 	ChangePassword(context.Context, *ChangePasswordRequest) (*ChangePasswordResponse, error)
-	AdminLogin(context.Context, *AdminLoginRequest) (*AdminLoginResponse, error)
-	ShowAllUsers(context.Context, *ShowAllUsersRequest) (*ShowAllUsersResponse, error)
-	AdminBlockUser(context.Context, *AdminBlockUserRequest) (*AdminBlockUserResponse, error)
-	AdminUnblockUser(context.Context, *AdminUnblockUserRequest) (*AdminUnblockUserResponse, error)
 	CheckUserAvalilabilityWithUserID(context.Context, *CheckUserAvalilabilityWithUserIDRequest) (*CheckUserAvalilabilityWithUserIDResponse, error)
 	UserData(context.Context, *UserDataRequest) (*UserDataResponse, error)
 	CheckUserAvalilabilityWithTagUserID(context.Context, *CheckUserAvalilabilityWithTagUserIDRequest) (*CheckUserAvalilabilityWithTagUserIDResponse, error)
@@ -315,6 +355,14 @@ type AuthServiceServer interface {
 	AcceptFollowREQ(context.Context, *AcceptFollowREQRequest) (*AcceptFollowREQResponse, error)
 	Following(context.Context, *FollowingRequest) (*FollowingResponse, error)
 	Follower(context.Context, *FollowerRequest) (*FollowerResponse, error)
+	AdminLogin(context.Context, *AdminLoginRequest) (*AdminLoginResponse, error)
+	ShowAllUsers(context.Context, *ShowAllUsersRequest) (*ShowAllUsersResponse, error)
+	AdminBlockUser(context.Context, *AdminBlockUserRequest) (*AdminBlockUserResponse, error)
+	AdminUnblockUser(context.Context, *AdminUnblockUserRequest) (*AdminUnblockUserResponse, error)
+	ShowUserReports(context.Context, *ShowUserReportsRequest) (*ShowUserReportsResponse, error)
+	ShowPostReports(context.Context, *ShowPostReportsRequest) (*ShowPostReportsResponse, error)
+	GetAllPosts(context.Context, *GetAllPostsRequest) (*GetAllPostsResponse, error)
+	RemovePost(context.Context, *RemovePostRequest) (*RemovePostResponse, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
 
@@ -349,18 +397,6 @@ func (UnimplementedAuthServiceServer) UpdateUserDetails(context.Context, *Update
 func (UnimplementedAuthServiceServer) ChangePassword(context.Context, *ChangePasswordRequest) (*ChangePasswordResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ChangePassword not implemented")
 }
-func (UnimplementedAuthServiceServer) AdminLogin(context.Context, *AdminLoginRequest) (*AdminLoginResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AdminLogin not implemented")
-}
-func (UnimplementedAuthServiceServer) ShowAllUsers(context.Context, *ShowAllUsersRequest) (*ShowAllUsersResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ShowAllUsers not implemented")
-}
-func (UnimplementedAuthServiceServer) AdminBlockUser(context.Context, *AdminBlockUserRequest) (*AdminBlockUserResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AdminBlockUser not implemented")
-}
-func (UnimplementedAuthServiceServer) AdminUnblockUser(context.Context, *AdminUnblockUserRequest) (*AdminUnblockUserResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AdminUnblockUser not implemented")
-}
 func (UnimplementedAuthServiceServer) CheckUserAvalilabilityWithUserID(context.Context, *CheckUserAvalilabilityWithUserIDRequest) (*CheckUserAvalilabilityWithUserIDResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CheckUserAvalilabilityWithUserID not implemented")
 }
@@ -390,6 +426,30 @@ func (UnimplementedAuthServiceServer) Following(context.Context, *FollowingReque
 }
 func (UnimplementedAuthServiceServer) Follower(context.Context, *FollowerRequest) (*FollowerResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Follower not implemented")
+}
+func (UnimplementedAuthServiceServer) AdminLogin(context.Context, *AdminLoginRequest) (*AdminLoginResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AdminLogin not implemented")
+}
+func (UnimplementedAuthServiceServer) ShowAllUsers(context.Context, *ShowAllUsersRequest) (*ShowAllUsersResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ShowAllUsers not implemented")
+}
+func (UnimplementedAuthServiceServer) AdminBlockUser(context.Context, *AdminBlockUserRequest) (*AdminBlockUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AdminBlockUser not implemented")
+}
+func (UnimplementedAuthServiceServer) AdminUnblockUser(context.Context, *AdminUnblockUserRequest) (*AdminUnblockUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AdminUnblockUser not implemented")
+}
+func (UnimplementedAuthServiceServer) ShowUserReports(context.Context, *ShowUserReportsRequest) (*ShowUserReportsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ShowUserReports not implemented")
+}
+func (UnimplementedAuthServiceServer) ShowPostReports(context.Context, *ShowPostReportsRequest) (*ShowPostReportsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ShowPostReports not implemented")
+}
+func (UnimplementedAuthServiceServer) GetAllPosts(context.Context, *GetAllPostsRequest) (*GetAllPostsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllPosts not implemented")
+}
+func (UnimplementedAuthServiceServer) RemovePost(context.Context, *RemovePostRequest) (*RemovePostResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RemovePost not implemented")
 }
 func (UnimplementedAuthServiceServer) mustEmbedUnimplementedAuthServiceServer() {}
 
@@ -562,78 +622,6 @@ func _AuthService_ChangePassword_Handler(srv interface{}, ctx context.Context, d
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AuthServiceServer).ChangePassword(ctx, req.(*ChangePasswordRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _AuthService_AdminLogin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AdminLoginRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AuthServiceServer).AdminLogin(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: AuthService_AdminLogin_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServiceServer).AdminLogin(ctx, req.(*AdminLoginRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _AuthService_ShowAllUsers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ShowAllUsersRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AuthServiceServer).ShowAllUsers(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: AuthService_ShowAllUsers_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServiceServer).ShowAllUsers(ctx, req.(*ShowAllUsersRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _AuthService_AdminBlockUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AdminBlockUserRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AuthServiceServer).AdminBlockUser(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: AuthService_AdminBlockUser_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServiceServer).AdminBlockUser(ctx, req.(*AdminBlockUserRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _AuthService_AdminUnblockUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AdminUnblockUserRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AuthServiceServer).AdminUnblockUser(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: AuthService_AdminUnblockUser_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServiceServer).AdminUnblockUser(ctx, req.(*AdminUnblockUserRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -818,6 +806,150 @@ func _AuthService_Follower_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthService_AdminLogin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AdminLoginRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).AdminLogin(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_AdminLogin_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).AdminLogin(ctx, req.(*AdminLoginRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_ShowAllUsers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ShowAllUsersRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).ShowAllUsers(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_ShowAllUsers_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).ShowAllUsers(ctx, req.(*ShowAllUsersRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_AdminBlockUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AdminBlockUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).AdminBlockUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_AdminBlockUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).AdminBlockUser(ctx, req.(*AdminBlockUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_AdminUnblockUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AdminUnblockUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).AdminUnblockUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_AdminUnblockUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).AdminUnblockUser(ctx, req.(*AdminUnblockUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_ShowUserReports_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ShowUserReportsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).ShowUserReports(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_ShowUserReports_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).ShowUserReports(ctx, req.(*ShowUserReportsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_ShowPostReports_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ShowPostReportsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).ShowPostReports(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_ShowPostReports_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).ShowPostReports(ctx, req.(*ShowPostReportsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_GetAllPosts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAllPostsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).GetAllPosts(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_GetAllPosts_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).GetAllPosts(ctx, req.(*GetAllPostsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_RemovePost_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RemovePostRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).RemovePost(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_RemovePost_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).RemovePost(ctx, req.(*RemovePostRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AuthService_ServiceDesc is the grpc.ServiceDesc for AuthService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -862,22 +994,6 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _AuthService_ChangePassword_Handler,
 		},
 		{
-			MethodName: "AdminLogin",
-			Handler:    _AuthService_AdminLogin_Handler,
-		},
-		{
-			MethodName: "ShowAllUsers",
-			Handler:    _AuthService_ShowAllUsers_Handler,
-		},
-		{
-			MethodName: "AdminBlockUser",
-			Handler:    _AuthService_AdminBlockUser_Handler,
-		},
-		{
-			MethodName: "AdminUnblockUser",
-			Handler:    _AuthService_AdminUnblockUser_Handler,
-		},
-		{
 			MethodName: "CheckUserAvalilabilityWithUserID",
 			Handler:    _AuthService_CheckUserAvalilabilityWithUserID_Handler,
 		},
@@ -916,6 +1032,38 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Follower",
 			Handler:    _AuthService_Follower_Handler,
+		},
+		{
+			MethodName: "AdminLogin",
+			Handler:    _AuthService_AdminLogin_Handler,
+		},
+		{
+			MethodName: "ShowAllUsers",
+			Handler:    _AuthService_ShowAllUsers_Handler,
+		},
+		{
+			MethodName: "AdminBlockUser",
+			Handler:    _AuthService_AdminBlockUser_Handler,
+		},
+		{
+			MethodName: "AdminUnblockUser",
+			Handler:    _AuthService_AdminUnblockUser_Handler,
+		},
+		{
+			MethodName: "ShowUserReports",
+			Handler:    _AuthService_ShowUserReports_Handler,
+		},
+		{
+			MethodName: "ShowPostReports",
+			Handler:    _AuthService_ShowPostReports_Handler,
+		},
+		{
+			MethodName: "GetAllPosts",
+			Handler:    _AuthService_GetAllPosts_Handler,
+		},
+		{
+			MethodName: "RemovePost",
+			Handler:    _AuthService_RemovePost_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
