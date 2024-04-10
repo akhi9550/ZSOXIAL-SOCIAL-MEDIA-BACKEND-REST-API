@@ -482,3 +482,68 @@ func (p *PostServer) UnLikeStory(ctx context.Context, req *pb.LikeStoryRequest) 
 	}
 	return &pb.LikeStoryResponse{}, nil
 }
+
+func (p *PostServer) ShowPostReports(ctx context.Context, req *pb.ShowPostReportsRequest) (*pb.ShowPostReportsResponse, error) {
+	page, count := req.Page, req.Count
+	data, err := p.postUseCase.ShowPostReports(int(page), int(count))
+	if err != nil {
+		return &pb.ShowPostReportsResponse{}, err
+	}
+	var reports []*pb.ReportPostResponses
+	for _, v := range data {
+		report := &pb.ReportPostResponses{
+			RepostedUserid: int64(v.ReportUserID),
+			Postid:         int64(v.PostID),
+			Report:         v.Report,
+		}
+		reports = append(reports, report)
+	}
+	return &pb.ShowPostReportsResponse{
+		Reports: reports,
+	}, nil
+}
+
+func (p *PostServer) GetAllPosts(ctx context.Context, req *pb.GetAllpostsRequest) (*pb.GetAllpostsResponse, error) {
+	page, count := req.Page, req.Count
+	data, err := p.postUseCase.GetAllPosts(int(page), int(count))
+	if err != nil {
+		return &pb.GetAllpostsResponse{}, err
+	}
+	var posts []*pb.PostResponse
+	for _, v := range data {
+		Users := &pb.UserData{
+			Userid:   int64(v.Author.UserId),
+			Username: v.Author.Username,
+			Imageurl: v.Author.Profile,
+		}
+		details := &pb.PostResponse{
+			Id:        int64(v.ID),
+			User:      Users,
+			Caption:   v.Caption,
+			Url:       v.Url,
+			Like:      int64(v.Likes),
+			Comment:   int64(v.Comments),
+			CreatedAt: timestamppb.New(v.CreatedAt),
+		}
+		posts = append(posts, details)
+	}
+	return &pb.GetAllpostsResponse{
+		Posts: posts,
+	}, nil
+}
+
+func (p *PostServer) CheckPostIDByID(ctx context.Context, req *pb.CheckPostIDByIDRequest) (*pb.CheckPostIDByIDResponse, error) {
+	postID := req.PostID
+	ok := p.postUseCase.CheckPostIDByID(int(postID))
+	return &pb.CheckPostIDByIDResponse{
+		Exist: ok,
+	}, nil
+}
+func (p *PostServer) RemovePost(ctx context.Context, req *pb.RemovePostRequest) (*pb.RemovePostResponse, error) {
+	postID := req.PostID
+	err := p.postUseCase.RemovePost(int(postID))
+	if err != nil {
+		return &pb.RemovePostResponse{}, err
+	}
+	return &pb.RemovePostResponse{}, nil
+}

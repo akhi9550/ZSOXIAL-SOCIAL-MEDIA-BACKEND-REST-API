@@ -31,6 +31,10 @@ service PostService {
     rpc DeleteStory (DeleteStoryRequest) returns (DeleteStoryResponse){}
     rpc LikeStory (LikeStoryRequest) returns (LikeStoryResponse){}
     rpc UnLikeStory (LikeStoryRequest) returns (LikeStoryResponse){}
+    rpc ShowPostReports (ShowPostReportsRequest) returns (ShowPostReportsResponse){}
+    rpc GetAllposts (GetAllpostsRequest) returns (GetAllpostsResponse){}
+    rpc CheckPostIDByID (CheckPostIDByIDRequest) returns (CheckPostIDByIDResponse){}
+    rpc RemovePost (RemovePostRequest) returns (RemovePostResponse){}
 }
 
 message CreatePostRequest {
@@ -313,4 +317,54 @@ message LikeStoryRequest {
     int64 storyid = 2;
 }
 
+message ShowPostReportsRequest {
+    int64 page = 1;
+    int64 count = 2;
+}
+
+message ReportPostResponses {
+    int64 RepostedUserid = 1;
+    int64  postid = 2;
+    string Report = 3;
+}
+
+message ShowPostReportsResponse{
+    repeated ReportPostResponses reports = 1;
+}
+
 message LikeStoryResponse {}
+
+message GetAllpostsRequest{
+    int64 page = 1;
+    int64 count = 2;
+}
+
+message PostResponse {
+    int64 id = 1;
+    UserData user =2;
+    string caption = 3;
+    repeated string tag = 4; 
+    string url = 5;
+    int64 like =6 ;
+    int64 comment = 7;
+    google.protobuf.Timestamp created_at = 8; 
+}
+
+message GetAllpostsResponse{
+    repeated PostResponse posts = 1;
+}
+
+
+message CheckPostIDByIDRequest {
+    int64 postID = 1;  
+}
+
+message CheckPostIDByIDResponse {
+    bool exist = 1;
+}
+
+message RemovePostRequest {
+    int64 postID = 1;
+}
+
+message RemovePostResponse {}

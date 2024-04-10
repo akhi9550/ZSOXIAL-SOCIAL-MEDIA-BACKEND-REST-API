@@ -229,3 +229,9 @@ type TagUsers struct {
 	Username string `json:"username"`
 	Valid    bool   `json:"valid"`
 }
+
+type PostReports struct {
+	ReportUserID uint   `json:"report_user_id"`
+	PostID       uint   `json:"post_id"`
+	Report       string `json:"reports"`
+}

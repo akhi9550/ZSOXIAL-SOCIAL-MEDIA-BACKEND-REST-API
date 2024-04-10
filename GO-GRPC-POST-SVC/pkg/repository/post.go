@@ -181,8 +181,6 @@ func (p *postRepository) ArchivePost(userID, postID int) error {
 	return nil
 }
 
-// func(p *postRepository)CheckPostAvalilabilityWithIDFromArchive(postID int)bool
-
 func (p *postRepository) UnArchivePost(userID, postID int) error {
 	err := p.DB.Exec(`DELETE FROM archive_posts WHERE user_id = ? AND post_id = ?`, userID, postID).Error
 	if err != nil {
@@ -388,6 +386,7 @@ func (p *postRepository) GetCommentsByPostID(postID int) ([]models.AllComments, 
 	}
 	return response, nil
 }
+
 func (p *postRepository) GetRepliesByID(PostID, CommentID int) ([]models.Replies, error) {
 	var response []models.Replies
 	err := p.DB.Raw(`SELECT reply_user,replies,created_at FROM comment_replies WHERE post_id = ? AND comment_id = ?`, PostID, CommentID).Scan(&response).Error
@@ -395,4 +394,45 @@ func (p *postRepository) GetRepliesByID(PostID, CommentID int) ([]models.Replies
 		return []models.Replies{}, err
 	}
 	return response, nil
+}
+
+func (p *postRepository) ShowPostReports(page, count int) ([]models.PostReports, error) {
+	var response []models.PostReports
+	if page <= 0 {
+		page = 1
+	}
+	offset := (page - 1) * count
+	err := p.DB.Raw(`SELECT report_user_id,post_id,reports FROM post_reports  limit ? offset ?`, count, offset).Scan(&response).Error
+	if err != nil {
+		return []models.PostReports{}, err
+	}
+	return response, nil
+}
+
+func (p *postRepository) GetAllPosts(page, count int) ([]models.Responses, error) {
+	var response []models.Responses
+	if page <= 0 {
+		page = 1
+	}
+	offset := (page - 1) * count
+	err := p.DB.Raw(`id,url,caption,user_id,likes_count, comments_count,created_at FROM posts WHERE is_archive = 'false'  limit ? offset ?`, count, offset).Scan(&response).Error
+	if err != nil {
+		return []models.Responses{}, err
+	}
+	return response, nil
+}
+func (p *postRepository) CheckPostIDByID(postID int) bool {
+	var count int
+	err := p.DB.Raw(`SELECT COUNT(*) FROM posts WHERE id = ?`, postID).Scan(&count).Error
+	if err != nil {
+		return false
+	}
+	return count > 0
+}
+func (p *postRepository) RemovePost(postID int) error {
+	err := p.DB.Exec(`DELETE FROM posts WHERE id = ?`, postID).Error
+	if err != nil {
+		return err
+	}
+	return nil
 }

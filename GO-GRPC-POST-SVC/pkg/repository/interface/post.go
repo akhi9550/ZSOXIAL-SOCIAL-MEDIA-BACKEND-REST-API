@@ -19,7 +19,6 @@ type PostRepository interface {
 	DeletePost(userID, postID int) error
 	GetPostAll(userID int) ([]models.Response, error)
 	CheckPostAvalilabilityWithUserID(postID, userID int) bool
-	// CheckPostAvalilabilityWithIDFromArchive(postID int)bool
 	ArchivePost(userID, postID int) error
 	UnArchivePost(userID, postID int) error
 	GetAllArchivePost(userID int) ([]models.ArchivePostResponse, error)
@@ -41,4 +40,8 @@ type PostRepository interface {
 	AllReadyExistPost(userID, postID int) bool
 	UnSavedPost(userID, postID int) error
 	GetSavedPost(userID int) ([]models.SavedResponse, error)
+	ShowPostReports(page, count int) ([]models.PostReports, error)
+	GetAllPosts(page, count int) ([]models.Responses, error)
+	CheckPostIDByID(postID int) bool
+	RemovePost(postID int) error
 }

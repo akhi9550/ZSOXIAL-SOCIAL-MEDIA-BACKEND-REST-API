@@ -581,3 +581,52 @@ func (p *postUseCase) GetSavedPost(userID int) ([]models.PostResponse, error) {
 	}
 	return postResponses, nil
 }
+
+func (p *postUseCase) ShowPostReports(page, count int) ([]models.PostReports, error) {
+	reports, err := p.postRepository.ShowPostReports(page, count)
+	if err != nil {
+		return []models.PostReports{}, err
+	}
+	return reports, nil
+}
+
+func (p *postUseCase) GetAllPosts(page, count int) ([]models.PostResponse, error) {
+	posts, err := p.postRepository.GetAllPosts(page, count)
+	if err != nil {
+		return []models.PostResponse{}, err
+	}
+	var AllPosts []models.PostResponse
+	for _, v := range posts {
+		userData, err := p.authClient.UserData(int(v.UserID))
+		if err != nil {
+			return []models.PostResponse{}, err
+		}
+		detaiils := models.PostResponse{
+			ID:        v.ID,
+			Author:    userData,
+			Caption:   v.Caption,
+			Url:       v.Url,
+			Likes:     v.Likes,
+			Comments:  v.Comments,
+			CreatedAt: v.CreatedAt,
+		}
+		AllPosts = append(AllPosts, detaiils)
+	}
+	return AllPosts, nil
+}
+func (p *postUseCase) CheckPostIDByID(postID int) bool {
+	ok := p.postRepository.CheckPostIDByID(postID)
+	return ok
+}
+
+func (p *postUseCase) RemovePost(postID int) error {
+	postExist := p.postRepository.CheckPostIDByID(postID)
+	if !postExist {
+		return errors.New("postID doesn't exist")
+	}
+	err := p.postRepository.RemovePost(postID)
+	if err != nil {
+		return err
+	}
+	return nil
+}
