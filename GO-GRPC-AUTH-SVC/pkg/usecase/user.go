@@ -384,8 +384,3 @@ func (ur *userUseCase) Follower(userID int) ([]models.FollowingResponse, error) 
 	}
 	return response, nil
 }
-
-AdminLogin(admin models.AdminLoginRequest) (*models.AdminReponseWithToken, error) 
-	ShowAllUsers(page, count int) ([]models.UserDetailsAtAdmin, error)
-	AdminBlockUser(id uint) error
-	AdminUnBlockUser(id uint) error

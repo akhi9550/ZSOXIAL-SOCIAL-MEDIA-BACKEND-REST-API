@@ -22,8 +22,4 @@ type UserUseCase interface {
 	AcceptFollowREQ(userID, FollowingUserID int) error
 	Following(userID int) ([]models.FollowingResponse, error)
 	Follower(userID int) ([]models.FollowingResponse, error)
-	ShowUserReports(page, count int) ([]models.UserReports, error)
-	ShowPostReports(page, count int) ([]models.PostReports, error)
-	GetAllPosts(page, count int) ([]models.PostResponse, error)
-	RemovePost(postID int) error
 }

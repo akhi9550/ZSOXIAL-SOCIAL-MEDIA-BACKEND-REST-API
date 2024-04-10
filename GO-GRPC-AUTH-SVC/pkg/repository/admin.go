@@ -78,3 +78,16 @@ func (ad *adminRepository) AdminBlockUserByID(user domain.User) error {
 	}
 	return nil
 }
+
+func(ad *adminRepository)ShowUserReports(page, count int) ([]models.UserReports, error) {
+	var reports []models.UserReports
+	if page <= 0 {
+		page = 1
+	}
+	offset := (page - 1) * count
+	err := ad.DB.Raw("SELECT report_user_id, user_id , report FROM user_reports  limit ? offset ?", count, offset).Scan(&reports).Error
+	if err != nil {
+		return []models.UserReports{}, err
+	}
+	return reports, nil
+}

@@ -3,6 +3,7 @@ package usecase
 import (
 	"errors"
 
+	postclientinterfaces "github.com/akhi9550/auth-svc/pkg/client/interface"
 	"github.com/akhi9550/auth-svc/pkg/helper"
 	interfaces "github.com/akhi9550/auth-svc/pkg/repository/interface"
 	services "github.com/akhi9550/auth-svc/pkg/usecase/interface"
@@ -13,11 +14,13 @@ import (
 
 type adminUseCase struct {
 	adminRepository interfaces.AdminRepository
+	postClient      postclientinterfaces.NewPostClient
 }
 
-func NewAdminUseCase(repository interfaces.AdminRepository) services.AdminUseCase {
+func NewAdminUseCase(repository interfaces.AdminRepository, postclient postclientinterfaces.NewPostClient) services.AdminUseCase {
 	return &adminUseCase{
 		adminRepository: repository,
+		postClient:      postclient,
 	}
 }
 func (ad *adminUseCase) AdminLogin(admin models.AdminLoginRequest) (*models.AdminReponseWithToken, error) {
@@ -93,6 +96,42 @@ func (ad *adminUseCase) AdminUnBlockUser(userID uint) error {
 		return errors.New("already unblocked")
 	}
 	err = ad.adminRepository.AdminBlockUserByID(user)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (ad *adminUseCase) ShowUserReports(page, count int) ([]models.UserReports, error) {
+	reports, err := ad.adminRepository.ShowUserReports(page, count)
+	if err != nil {
+		return []models.UserReports{}, err
+	}
+	return reports, nil
+}
+
+func (ad *adminUseCase) ShowPostReports(page, count int) ([]models.PostReports, error) {
+	reports, err := ad.postClient.ShowPostReports(page, count)
+	if err != nil {
+		return []models.PostReports{}, err
+	}
+	return reports, nil
+}
+
+func (ad *adminUseCase) GetAllPosts(page, count int) ([]models.PostResponse, error) {
+	reports, err := ad.postClient.GetAllPosts(page, count)
+	if err != nil {
+		return []models.PostResponse{}, err
+	}
+	return reports, nil
+}
+
+func (ad *adminUseCase) RemovePost(postID int) error {
+	postExist := ad.postClient.CheckPostIDByID(postID)
+	if !postExist {
+		return errors.New("postID doesn't exist")
+	}
+	err := ad.postClient.RemovePost(postID)
 	if err != nil {
 		return err
 	}

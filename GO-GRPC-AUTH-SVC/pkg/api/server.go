@@ -5,7 +5,8 @@ import (
 	"net"
 
 	"github.com/akhi9550/auth-svc/pkg/config"
-	"github.com/akhi9550/auth-svc/pkg/pb"
+	pb "github.com/akhi9550/auth-svc/pkg/pb/auth"
+
 	"google.golang.org/grpc"
 )
 

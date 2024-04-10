@@ -4,7 +4,7 @@ package user;
 
 import "google/protobuf/timestamp.proto";
 
-option go_package = "./pkg/pb";
+option go_package = "./pkg/pb/auth";
 
 service AuthService {
     rpc UserSignUp (UserSignUpRequest) returns (UserSignUpResponse){}

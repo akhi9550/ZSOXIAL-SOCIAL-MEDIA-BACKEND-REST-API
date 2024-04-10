@@ -3,6 +3,7 @@ package di
 import (
 	server "github.com/akhi9550/auth-svc/pkg/api"
 	"github.com/akhi9550/auth-svc/pkg/api/service"
+	"github.com/akhi9550/auth-svc/pkg/client"
 	"github.com/akhi9550/auth-svc/pkg/config"
 	"github.com/akhi9550/auth-svc/pkg/db"
 	"github.com/akhi9550/auth-svc/pkg/repository"
@@ -17,10 +18,11 @@ func InitializeAPI(cfg config.Config) (*server.Server, error) {
 	userRepository := repository.NewUserRepository(gormDB)
 	otpRepository := repository.NewOtpRepository(gormDB)
 	adminRepository := repository.NewAdminRepository(gormDB)
+	postClient := client.NewPostClient(&cfg)
 
 	userUseCase := usecase.NewUserUseCase(userRepository)
 	otpUseCase := usecase.NewOtpUseCase(otpRepository)
-	adminUseCase := usecase.NewAdminUseCase(adminRepository)
+	adminUseCase := usecase.NewAdminUseCase(adminRepository,postClient)
 
 	ServiceServer := service.NewAuthServer(userUseCase, adminUseCase, otpUseCase)
 	grpcServer, err := server.NewGRPCServer(cfg, ServiceServer)

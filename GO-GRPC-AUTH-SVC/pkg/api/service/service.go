@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 
-	"github.com/akhi9550/auth-svc/pkg/pb"
+	pb "github.com/akhi9550/auth-svc/pkg/pb/auth"
 	interfaces "github.com/akhi9550/auth-svc/pkg/usecase/interface"
 	"github.com/akhi9550/auth-svc/pkg/utils/models"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -348,7 +348,6 @@ func (au *AuthSever) ShowAllUsers(ctx context.Context, req *pb.ShowAllUsersReque
 	}
 	var result pb.ShowAllUsersResponse
 	for _, v := range data {
-		createdAtTimestamp := timestamppb.New(v.CreatedAt)
 		result.UsersData = append(result.UsersData, &pb.Users{
 			Id:           int64(v.Id),
 			Firstname:    v.Firstname,
@@ -359,7 +358,7 @@ func (au *AuthSever) ShowAllUsers(ctx context.Context, req *pb.ShowAllUsersReque
 			Phone:        v.Phone,
 			Email:        v.Email,
 			ProfilePhoto: v.Imageurl,
-			CreatedAt:    createdAtTimestamp,
+			CreatedAt:    timestamppb.New(v.CreatedAt),
 			Blocked:      v.Blocked,
 		})
 	}
@@ -384,8 +383,77 @@ func (au *AuthSever) AdminUnblockUser(ctx context.Context, req *pb.AdminUnblockU
 	return &pb.AdminUnblockUserResponse{}, nil
 }
 
-func (au *AuthSever)ShowUserReports(ctx context.Context,req *pb.showuser)(*pb.s)
-ShowUserReports(page, count int) ([]models.UserReports, error)
-	ShowPostReports(page, count int) ([]models.PostReports, error)
-	GetAllPosts(page, count int) ([]models.PostResponse, error)
-	RemovePost(postID int) error
+func (au *AuthSever) ShowUserReports(ctx context.Context, req *pb.ShowUserReportsRequest) (*pb.ShowUserReportsResponse, error) {
+	page := req.Page
+	count := req.Count
+	data, err := au.adminUsecase.ShowUserReports(int(page), int(count))
+	if err != nil {
+		return &pb.ShowUserReportsResponse{}, err
+	}
+	var result pb.ShowUserReportsResponse
+	for _, v := range data {
+		result.Reports = append(result.Reports, &pb.ReportUser{
+			ReportedUserID: int64(v.ReportUserID),
+			UserID:         int64(v.UserID),
+			Report:         v.Report,
+		})
+	}
+	return &result, nil
+}
+
+func (au *AuthSever) ShowPostReports(ctx context.Context, req *pb.ShowPostReportsRequest) (*pb.ShowPostReportsResponse, error) {
+	page := req.Page
+	count := req.Count
+	data, err := au.adminUsecase.ShowPostReports(int(page), int(count))
+	if err != nil {
+		return &pb.ShowPostReportsResponse{}, err
+	}
+	var result pb.ShowPostReportsResponse
+	for _, v := range data {
+		result.Reports = append(result.Reports, &pb.ReprotPost{
+			ReportedUserID: int64(v.ReportUserID),
+			PostID:         int64(v.PostID),
+			Report:         v.Report,
+		})
+	}
+	return &result, nil
+}
+
+func (au *AuthSever) GetAllPosts(ctx context.Context, req *pb.GetAllPostsRequest) (*pb.GetAllPostsResponse, error) {
+	page := req.Page
+	count := req.Count
+	data, err := au.adminUsecase.GetAllPosts(int(page), int(count))
+	if err != nil {
+		return &pb.GetAllPostsResponse{}, err
+	}
+	var result []*pb.Posts
+	for _, v := range data {
+		userData := &pb.UserDatas{
+			UserID:   int64(v.Author.UserId),
+			Username: v.Author.Username,
+			Profile:  v.Author.Profile,
+		}
+		details := &pb.Posts{
+			Id:        int64(v.ID),
+			User:      userData,
+			Caption:   v.Caption,
+			Url:       v.Url,
+			Like:      int64(v.Likes),
+			Comment:   int64(v.Comments),
+			CreatedAt: timestamppb.New(v.CreatedAt),
+		}
+		result = append(result, details)
+	}
+	return &pb.GetAllPostsResponse{
+		Posts: result,
+	}, nil
+}
+
+func (au *AuthSever) RemovePost(ctx context.Context, req *pb.RemovePostRequest) (*pb.RemovePostResponse, error) {
+	postID := req.PostID
+	err := au.adminUsecase.RemovePost(int(postID))
+	if err != nil {
+		return &pb.RemovePostResponse{}, err
+	}
+	return &pb.RemovePostResponse{}, nil
+}
