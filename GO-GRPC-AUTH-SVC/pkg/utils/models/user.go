@@ -144,12 +144,12 @@ type FollowResp struct {
 }
 
 type SearchUser struct {
-	UserName string `json:"user_name"`
+	Username string `json:"username"`
 	Limit    int    `json:"limit"`
 	Offset   int    `json:"offset"`
 }
 
-type SearchResult struct {
+type Users struct {
 	Username string `json:"username"`
 	Profile  string `json:"profile" gorm:"column:imageurl"`
 }

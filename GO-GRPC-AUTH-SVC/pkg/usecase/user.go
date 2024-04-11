@@ -401,10 +401,10 @@ func (ur *userUseCase) Follower(userID int) ([]models.FollowingResponse, error) 
 	return response, nil
 }
 
-func (ur *userUseCase) SearchUser(req models.SearchUser) ([]models.SearchResult, error) {
+func (ur *userUseCase) SearchUser(req models.SearchUser) ([]models.Users, error) {
 	data, err := ur.userRepository.SearchUser(req)
 	if err != nil {
-		return []models.SearchResult{}, err
+		return []models.Users{}, err
 	}
 	return data, nil
 }

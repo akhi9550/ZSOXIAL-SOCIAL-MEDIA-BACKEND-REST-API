@@ -23,5 +23,5 @@ type UserUseCase interface {
 	UnFollow(userID, UnFollowUserID int) error
 	Following(userID int) ([]models.FollowingResponse, error)
 	Follower(userID int) ([]models.FollowingResponse, error)
-	SearchUser(req models.SearchUser)([]models.SearchResult,error)
+	SearchUser(req models.SearchUser) ([]models.Users, error)
 }

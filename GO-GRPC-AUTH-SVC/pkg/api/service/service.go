@@ -332,7 +332,7 @@ func (au *AuthSever) Follower(ctx context.Context, req *pb.FollowerRequest) (*pb
 
 func (au *AuthSever) SearchUser(ctx context.Context, req *pb.SearchUserRequest) (*pb.SearchUserResponse, error) {
 	reqt := models.SearchUser{
-		UserName: req.Username,
+		Username: req.Username,
 		Limit:    int(req.Limit),
 		Offset:   int(req.Offset),
 	}

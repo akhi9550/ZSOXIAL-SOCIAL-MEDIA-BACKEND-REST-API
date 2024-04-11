@@ -44,5 +44,5 @@ type UserRepository interface {
 	UnFollow(userID, UnFollowUserID int) error
 	Following(userID int) ([]models.FollowResp, error)
 	Follower(userID int) ([]models.FollowResp, error)
-	SearchUser(req models.SearchUser) ([]models.SearchResult, error)
+	SearchUser(req models.SearchUser) ([]models.Users, error)
 }

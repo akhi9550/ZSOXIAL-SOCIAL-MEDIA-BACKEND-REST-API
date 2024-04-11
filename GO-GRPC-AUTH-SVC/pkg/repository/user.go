@@ -367,12 +367,12 @@ func (ur *userRepository) Follower(userID int) ([]models.FollowResp, error) {
 	return response, nil
 }
 
-func (ur *userRepository) SearchUser(req models.SearchUser) ([]models.SearchResult, error) {
-	var response []models.SearchResult
-	username := req.UserName + "%"
-	err := ur.DB.Raw(`SELECT username,imageurl FROM users WHERE username ILIKE $1 LIMIT $2 OFFSET $3`, username, req.Limit, req.Offset).Scan(&response).Error
+func (ur *userRepository) SearchUser(req models.SearchUser) ([]models.Users, error) {
+	var response []models.Users
+	username := "%" + req.Username + "%"
+	err := ur.DB.Raw(`SELECT username,imageurl FROM users WHERE username ILIKE ? LIMIT ? OFFSET ?`, username, req.Limit, req.Offset).Scan(&response).Error
 	if err != nil {
-		return []models.SearchResult{}, err
+		return []models.Users{}, err
 	}
 	return response, nil
 }
