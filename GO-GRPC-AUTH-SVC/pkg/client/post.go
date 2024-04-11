@@ -40,18 +40,16 @@ func (p *clientPost) ShowPostReports(page, count int) ([]models.PostReports, err
 	for _, report := range data.Reports {
 		reports := models.PostReports{
 			ReportUserID: uint(report.RepostedUserid),
-			PostID: uint(report.Postid),
-			Report: report.Report,
+			PostID:       uint(report.Postid),
+			Report:       report.Report,
 		}
-
 		Report = append(Report, reports)
 	}
-
 	return Report, nil
 }
 
 func (p *clientPost) GetAllPosts(page, count int) ([]models.PostResponse, error) {
-	data, err := p.Client.GetAllposts(context.Background(), &pb.GetAllpostsRequest{
+	data, err := p.Client.GetAllPosts(context.Background(), &pb.GetAllpostsRequest{
 		Page:  int64(page),
 		Count: int64(count),
 	})

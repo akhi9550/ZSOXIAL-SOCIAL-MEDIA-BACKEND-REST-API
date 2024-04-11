@@ -36,6 +36,7 @@ const (
 	AuthService_FollowREQ_FullMethodName                           = "/user.AuthService/FollowREQ"
 	AuthService_ShowFollowREQ_FullMethodName                       = "/user.AuthService/ShowFollowREQ"
 	AuthService_AcceptFollowREQ_FullMethodName                     = "/user.AuthService/AcceptFollowREQ"
+	AuthService_UnFollow_FullMethodName                            = "/user.AuthService/UnFollow"
 	AuthService_Following_FullMethodName                           = "/user.AuthService/Following"
 	AuthService_Follower_FullMethodName                            = "/user.AuthService/Follower"
 	AuthService_AdminLogin_FullMethodName                          = "/user.AuthService/AdminLogin"
@@ -46,6 +47,7 @@ const (
 	AuthService_ShowPostReports_FullMethodName                     = "/user.AuthService/ShowPostReports"
 	AuthService_GetAllPosts_FullMethodName                         = "/user.AuthService/GetAllPosts"
 	AuthService_RemovePost_FullMethodName                          = "/user.AuthService/RemovePost"
+	AuthService_SearchUser_FullMethodName                          = "/user.AuthService/SearchUser"
 )
 
 // AuthServiceClient is the client API for AuthService service.
@@ -69,6 +71,7 @@ type AuthServiceClient interface {
 	FollowREQ(ctx context.Context, in *FollowREQRequest, opts ...grpc.CallOption) (*FollowREQResponse, error)
 	ShowFollowREQ(ctx context.Context, in *ShowREQRequest, opts ...grpc.CallOption) (*ShowREQResponse, error)
 	AcceptFollowREQ(ctx context.Context, in *AcceptFollowREQRequest, opts ...grpc.CallOption) (*AcceptFollowREQResponse, error)
+	UnFollow(ctx context.Context, in *UnFollowRequest, opts ...grpc.CallOption) (*UnFollowResponse, error)
 	Following(ctx context.Context, in *FollowingRequest, opts ...grpc.CallOption) (*FollowingResponse, error)
 	Follower(ctx context.Context, in *FollowerRequest, opts ...grpc.CallOption) (*FollowerResponse, error)
 	AdminLogin(ctx context.Context, in *AdminLoginRequest, opts ...grpc.CallOption) (*AdminLoginResponse, error)
@@ -79,6 +82,7 @@ type AuthServiceClient interface {
 	ShowPostReports(ctx context.Context, in *ShowPostReportsRequest, opts ...grpc.CallOption) (*ShowPostReportsResponse, error)
 	GetAllPosts(ctx context.Context, in *GetAllPostsRequest, opts ...grpc.CallOption) (*GetAllPostsResponse, error)
 	RemovePost(ctx context.Context, in *RemovePostRequest, opts ...grpc.CallOption) (*RemovePostResponse, error)
+	SearchUser(ctx context.Context, in *SearchUserRequest, opts ...grpc.CallOption) (*SearchUserResponse, error)
 }
 
 type authServiceClient struct {
@@ -242,6 +246,15 @@ func (c *authServiceClient) AcceptFollowREQ(ctx context.Context, in *AcceptFollo
 	return out, nil
 }
 
+func (c *authServiceClient) UnFollow(ctx context.Context, in *UnFollowRequest, opts ...grpc.CallOption) (*UnFollowResponse, error) {
+	out := new(UnFollowResponse)
+	err := c.cc.Invoke(ctx, AuthService_UnFollow_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *authServiceClient) Following(ctx context.Context, in *FollowingRequest, opts ...grpc.CallOption) (*FollowingResponse, error) {
 	out := new(FollowingResponse)
 	err := c.cc.Invoke(ctx, AuthService_Following_FullMethodName, in, out, opts...)
@@ -332,6 +345,15 @@ func (c *authServiceClient) RemovePost(ctx context.Context, in *RemovePostReques
 	return out, nil
 }
 
+func (c *authServiceClient) SearchUser(ctx context.Context, in *SearchUserRequest, opts ...grpc.CallOption) (*SearchUserResponse, error) {
+	out := new(SearchUserResponse)
+	err := c.cc.Invoke(ctx, AuthService_SearchUser_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthServiceServer is the server API for AuthService service.
 // All implementations must embed UnimplementedAuthServiceServer
 // for forward compatibility
@@ -353,6 +375,7 @@ type AuthServiceServer interface {
 	FollowREQ(context.Context, *FollowREQRequest) (*FollowREQResponse, error)
 	ShowFollowREQ(context.Context, *ShowREQRequest) (*ShowREQResponse, error)
 	AcceptFollowREQ(context.Context, *AcceptFollowREQRequest) (*AcceptFollowREQResponse, error)
+	UnFollow(context.Context, *UnFollowRequest) (*UnFollowResponse, error)
 	Following(context.Context, *FollowingRequest) (*FollowingResponse, error)
 	Follower(context.Context, *FollowerRequest) (*FollowerResponse, error)
 	AdminLogin(context.Context, *AdminLoginRequest) (*AdminLoginResponse, error)
@@ -363,6 +386,7 @@ type AuthServiceServer interface {
 	ShowPostReports(context.Context, *ShowPostReportsRequest) (*ShowPostReportsResponse, error)
 	GetAllPosts(context.Context, *GetAllPostsRequest) (*GetAllPostsResponse, error)
 	RemovePost(context.Context, *RemovePostRequest) (*RemovePostResponse, error)
+	SearchUser(context.Context, *SearchUserRequest) (*SearchUserResponse, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
 
@@ -421,6 +445,9 @@ func (UnimplementedAuthServiceServer) ShowFollowREQ(context.Context, *ShowREQReq
 func (UnimplementedAuthServiceServer) AcceptFollowREQ(context.Context, *AcceptFollowREQRequest) (*AcceptFollowREQResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AcceptFollowREQ not implemented")
 }
+func (UnimplementedAuthServiceServer) UnFollow(context.Context, *UnFollowRequest) (*UnFollowResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UnFollow not implemented")
+}
 func (UnimplementedAuthServiceServer) Following(context.Context, *FollowingRequest) (*FollowingResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Following not implemented")
 }
@@ -450,6 +477,9 @@ func (UnimplementedAuthServiceServer) GetAllPosts(context.Context, *GetAllPostsR
 }
 func (UnimplementedAuthServiceServer) RemovePost(context.Context, *RemovePostRequest) (*RemovePostResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RemovePost not implemented")
+}
+func (UnimplementedAuthServiceServer) SearchUser(context.Context, *SearchUserRequest) (*SearchUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SearchUser not implemented")
 }
 func (UnimplementedAuthServiceServer) mustEmbedUnimplementedAuthServiceServer() {}
 
@@ -770,6 +800,24 @@ func _AuthService_AcceptFollowREQ_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthService_UnFollow_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UnFollowRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).UnFollow(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_UnFollow_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).UnFollow(ctx, req.(*UnFollowRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _AuthService_Following_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(FollowingRequest)
 	if err := dec(in); err != nil {
@@ -950,6 +998,24 @@ func _AuthService_RemovePost_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthService_SearchUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SearchUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).SearchUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_SearchUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).SearchUser(ctx, req.(*SearchUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AuthService_ServiceDesc is the grpc.ServiceDesc for AuthService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1026,6 +1092,10 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _AuthService_AcceptFollowREQ_Handler,
 		},
 		{
+			MethodName: "UnFollow",
+			Handler:    _AuthService_UnFollow_Handler,
+		},
+		{
 			MethodName: "Following",
 			Handler:    _AuthService_Following_Handler,
 		},
@@ -1064,6 +1134,10 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RemovePost",
 			Handler:    _AuthService_RemovePost_Handler,
+		},
+		{
+			MethodName: "SearchUser",
+			Handler:    _AuthService_SearchUser_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

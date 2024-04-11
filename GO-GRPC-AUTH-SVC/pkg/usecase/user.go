@@ -338,6 +338,22 @@ func (ur *userUseCase) AcceptFollowREQ(userID, FollowingUserID int) error {
 	return nil
 }
 
+func (ur *userUseCase) UnFollow(userID, UnFollowUserID int) error {
+	userExist := ur.userRepository.CheckUserAvailabilityWithUserID(userID)
+	if !userExist {
+		return errors.New("user doesn't exist")
+	}
+	FollowuserExist := ur.userRepository.CheckUserAvailabilityWithUserID(UnFollowUserID)
+	if !FollowuserExist {
+		return errors.New("user doesn't exist")
+	}
+	err := ur.userRepository.UnFollow(userID, UnFollowUserID)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (ur *userUseCase) Following(userID int) ([]models.FollowingResponse, error) {
 	userExist := ur.userRepository.CheckUserAvailabilityWithUserID(userID)
 	if !userExist {
@@ -383,4 +399,12 @@ func (ur *userUseCase) Follower(userID int) ([]models.FollowingResponse, error) 
 		response = append(response, details)
 	}
 	return response, nil
+}
+
+func (ur *userUseCase) SearchUser(req models.SearchUser) ([]models.SearchResult, error) {
+	data, err := ur.userRepository.SearchUser(req)
+	if err != nil {
+		return []models.SearchResult{}, err
+	}
+	return data, nil
 }

@@ -19,10 +19,10 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	PostService_ShowPostReports_FullMethodName = "/user.PostService/ShowPostReports"
-	PostService_GetAllposts_FullMethodName     = "/user.PostService/GetAllposts"
-	PostService_CheckPostIDByID_FullMethodName = "/user.PostService/CheckPostIDByID"
-	PostService_RemovePost_FullMethodName      = "/user.PostService/RemovePost"
+	PostService_ShowPostReports_FullMethodName = "/post.PostService/ShowPostReports"
+	PostService_GetAllPosts_FullMethodName     = "/post.PostService/GetAllPosts"
+	PostService_CheckPostIDByID_FullMethodName = "/post.PostService/CheckPostIDByID"
+	PostService_RemovePost_FullMethodName      = "/post.PostService/RemovePost"
 )
 
 // PostServiceClient is the client API for PostService service.
@@ -30,7 +30,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type PostServiceClient interface {
 	ShowPostReports(ctx context.Context, in *ShowPostReportsRequest, opts ...grpc.CallOption) (*ShowPostReportsResponse, error)
-	GetAllposts(ctx context.Context, in *GetAllpostsRequest, opts ...grpc.CallOption) (*GetAllpostsResponse, error)
+	GetAllPosts(ctx context.Context, in *GetAllpostsRequest, opts ...grpc.CallOption) (*GetAllpostsResponse, error)
 	CheckPostIDByID(ctx context.Context, in *CheckPostIDByIDRequest, opts ...grpc.CallOption) (*CheckPostIDByIDResponse, error)
 	RemovePost(ctx context.Context, in *RemovePostRequest, opts ...grpc.CallOption) (*RemovePostResponse, error)
 }
@@ -52,9 +52,9 @@ func (c *postServiceClient) ShowPostReports(ctx context.Context, in *ShowPostRep
 	return out, nil
 }
 
-func (c *postServiceClient) GetAllposts(ctx context.Context, in *GetAllpostsRequest, opts ...grpc.CallOption) (*GetAllpostsResponse, error) {
+func (c *postServiceClient) GetAllPosts(ctx context.Context, in *GetAllpostsRequest, opts ...grpc.CallOption) (*GetAllpostsResponse, error) {
 	out := new(GetAllpostsResponse)
-	err := c.cc.Invoke(ctx, PostService_GetAllposts_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, PostService_GetAllPosts_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -84,7 +84,7 @@ func (c *postServiceClient) RemovePost(ctx context.Context, in *RemovePostReques
 // for forward compatibility
 type PostServiceServer interface {
 	ShowPostReports(context.Context, *ShowPostReportsRequest) (*ShowPostReportsResponse, error)
-	GetAllposts(context.Context, *GetAllpostsRequest) (*GetAllpostsResponse, error)
+	GetAllPosts(context.Context, *GetAllpostsRequest) (*GetAllpostsResponse, error)
 	CheckPostIDByID(context.Context, *CheckPostIDByIDRequest) (*CheckPostIDByIDResponse, error)
 	RemovePost(context.Context, *RemovePostRequest) (*RemovePostResponse, error)
 	mustEmbedUnimplementedPostServiceServer()
@@ -97,8 +97,8 @@ type UnimplementedPostServiceServer struct {
 func (UnimplementedPostServiceServer) ShowPostReports(context.Context, *ShowPostReportsRequest) (*ShowPostReportsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ShowPostReports not implemented")
 }
-func (UnimplementedPostServiceServer) GetAllposts(context.Context, *GetAllpostsRequest) (*GetAllpostsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetAllposts not implemented")
+func (UnimplementedPostServiceServer) GetAllPosts(context.Context, *GetAllpostsRequest) (*GetAllpostsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllPosts not implemented")
 }
 func (UnimplementedPostServiceServer) CheckPostIDByID(context.Context, *CheckPostIDByIDRequest) (*CheckPostIDByIDResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CheckPostIDByID not implemented")
@@ -137,20 +137,20 @@ func _PostService_ShowPostReports_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _PostService_GetAllposts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _PostService_GetAllPosts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetAllpostsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(PostServiceServer).GetAllposts(ctx, in)
+		return srv.(PostServiceServer).GetAllPosts(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: PostService_GetAllposts_FullMethodName,
+		FullMethod: PostService_GetAllPosts_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PostServiceServer).GetAllposts(ctx, req.(*GetAllpostsRequest))
+		return srv.(PostServiceServer).GetAllPosts(ctx, req.(*GetAllpostsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -195,7 +195,7 @@ func _PostService_RemovePost_Handler(srv interface{}, ctx context.Context, dec f
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var PostService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "user.PostService",
+	ServiceName: "post.PostService",
 	HandlerType: (*PostServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -203,8 +203,8 @@ var PostService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _PostService_ShowPostReports_Handler,
 		},
 		{
-			MethodName: "GetAllposts",
-			Handler:    _PostService_GetAllposts_Handler,
+			MethodName: "GetAllPosts",
+			Handler:    _PostService_GetAllPosts_Handler,
 		},
 		{
 			MethodName: "CheckPostIDByID",

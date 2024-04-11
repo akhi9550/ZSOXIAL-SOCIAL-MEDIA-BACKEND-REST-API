@@ -341,6 +341,14 @@ func (ur *userRepository) AcceptFollowREQ(userID, FollowingUserID int) error {
 	return nil
 }
 
+func (ur *userRepository) UnFollow(userID, UnFollowUserID int) error {
+	err := ur.DB.Exec(`DELETE FROM followings WHERE user_id = ? AND following_user = ?`, userID, UnFollowUserID).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (ur *userRepository) Following(userID int) ([]models.FollowResp, error) {
 	var response []models.FollowResp
 	err := ur.DB.Raw(`SELECT following_user FROM followings WHERE user_id = ?`, userID).Scan(&response).Error
@@ -355,6 +363,16 @@ func (ur *userRepository) Follower(userID int) ([]models.FollowResp, error) {
 	err := ur.DB.Raw(`SELECT following_user FROM followers WHERE user_id = ?`, userID).Scan(&response).Error
 	if err != nil {
 		return []models.FollowResp{}, err
+	}
+	return response, nil
+}
+
+func (ur *userRepository) SearchUser(req models.SearchUser) ([]models.SearchResult, error) {
+	var response []models.SearchResult
+	username := req.UserName + "%"
+	err := ur.DB.Raw(`SELECT username,imageurl FROM users WHERE username ILIKE $1 LIMIT $2 OFFSET $3`, username, req.Limit, req.Offset).Scan(&response).Error
+	if err != nil {
+		return []models.SearchResult{}, err
 	}
 	return response, nil
 }

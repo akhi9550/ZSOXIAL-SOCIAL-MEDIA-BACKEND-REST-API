@@ -283,6 +283,15 @@ func (au *AuthSever) AcceptFollowREQ(ctx context.Context, req *pb.AcceptFollowRE
 	return &pb.AcceptFollowREQResponse{}, nil
 }
 
+func (au *AuthSever) UnFollow(ctx context.Context, req *pb.UnFollowRequest) (*pb.UnFollowResponse, error) {
+	userID, UnFollowUserID := req.Userid, req.FollowingUser
+	err := au.userUseCase.UnFollow(int(userID), int(UnFollowUserID))
+	if err != nil {
+		return &pb.UnFollowResponse{}, err
+	}
+	return &pb.UnFollowResponse{}, nil
+}
+
 func (au *AuthSever) Following(ctx context.Context, req *pb.FollowingRequest) (*pb.FollowingResponse, error) {
 	userID := req.Userid
 	data, err := au.userUseCase.Following(int(userID))
@@ -318,6 +327,28 @@ func (au *AuthSever) Follower(ctx context.Context, req *pb.FollowerRequest) (*pb
 	}
 	return &pb.FollowerResponse{
 		Users: response,
+	}, nil
+}
+
+func (au *AuthSever) SearchUser(ctx context.Context, req *pb.SearchUserRequest) (*pb.SearchUserResponse, error) {
+	reqt := models.SearchUser{
+		UserName: req.Username,
+		Limit:    int(req.Limit),
+		Offset:   int(req.Offset),
+	}
+	data, err := au.userUseCase.SearchUser(reqt)
+	if err != nil {
+		return &pb.SearchUserResponse{}, err
+	}
+	var Users []*pb.User
+	for _, v := range data {
+		Users = append(Users, &pb.User{
+			Username: v.Username,
+			Profile:  v.Profile,
+		})
+	}
+	return &pb.SearchUserResponse{
+		User: Users,
 	}, nil
 }
 
