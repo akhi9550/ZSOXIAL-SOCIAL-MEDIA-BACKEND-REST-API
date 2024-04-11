@@ -6,14 +6,14 @@ type Config struct {
 	Port       string `mapstructure:"PORT"`
 	AuthSvcUrl string `mapstructure:"AUTH_SVC_URL"`
 	PostSvcUrl string `mapstructure:"POST_SVC_URL"`
-
+	ChatSvcUrl string `mapstructure:"CHAT_SVC_URL"`
 
 	KEY       string `mapstructure:"KEY"`
 	KEY_ADMIN string `mapstructure:"KEY_ADMIN"`
 }
 
 var envs = []string{
-	"PORT", "AUTH_SVC_URL","POST_SVC_URL", "KEY", "KEY_ADMIN",
+	"PORT", "AUTH_SVC_URL", "POST_SVC_URL", "CHAT_SVC_URL", "KEY", "KEY_ADMIN",
 }
 
 func LoadConfig() (Config, error) {
