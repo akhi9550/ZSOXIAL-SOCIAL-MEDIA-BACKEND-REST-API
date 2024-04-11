@@ -523,3 +523,35 @@ func (p *PostClient) ReportPost(userID int, req models.ReportPostRequest) error 
 	}
 	return nil
 }
+
+func (p *PostClient) StoryDetails(userID, storyID int) (models.StoryDetails, error) {
+	data, err := p.Client.StoryDetails(context.Background(), &pb.StoryDetailsRequest{
+		UserID:  int64(userID),
+		StoryID: int64(storyID),
+	})
+	if err != nil {
+		return models.StoryDetails{}, err
+	}
+	var viewers []models.Viewer
+	for _, v := range data.Viewer {
+		viewer := models.Viewer{
+			ViewUser: v.Viewer,
+			Profile:  v.Profile,
+		}
+		viewers = append(viewers, viewer)
+	}
+	var LikeUsers []models.Likeduser
+	for _, v := range data.LikedUser {
+		likeuser := models.Likeduser{
+			LikeUser: v.Likeduser,
+			Profile:  v.Profile,
+		}
+		LikeUsers = append(LikeUsers, likeuser)
+	}
+
+	return models.StoryDetails{
+		StoryID:   uint(data.StoryID),
+		Viewer:    viewers,
+		LikedUser: LikeUsers,
+	}, nil
+}

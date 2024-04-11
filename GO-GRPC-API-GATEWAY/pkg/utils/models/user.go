@@ -108,3 +108,14 @@ type FollowingResponse struct {
 	FollowingUser string `json:"following_user"`
 	Profile       string `json:"profile"`
 }
+
+type SearchUser struct {
+	UserName string `json:"user_name"`
+	Limit    int    `json:"limit"`
+	Offset   int    `json:"offset"`
+}
+
+type SearchResult struct {
+	Username string `json:"username"`
+	Profile  string `json:"profile" gorm:"column:imageurl"`
+}

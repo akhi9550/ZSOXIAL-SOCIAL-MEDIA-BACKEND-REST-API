@@ -449,6 +449,25 @@ func (p *PostHandler) UnLikeStory(c *gin.Context) {
 	c.JSON(http.StatusOK, success)
 }
 
+func (p *PostHandler) StoryDetails(c *gin.Context) {
+	userID, _ := c.Get("user_id")
+	StoryID := c.Query("story_id")
+	storyID, err := strconv.Atoi(StoryID)
+	if err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "StoryID not in right format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+		return
+	}
+	data, err := p.GRPC_Client.StoryDetails(userID.(int), storyID)
+	if err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+		return
+	}
+	success := response.ClientResponse(http.StatusOK, "Successfully Retrive Stroy Details", data, nil)
+	c.JSON(http.StatusOK, success)
+}
+
 func (p *PostHandler) ShowAllPostComments(c *gin.Context) {
 	PostID := c.Query("post_id")
 	postID, err := strconv.Atoi(PostID)

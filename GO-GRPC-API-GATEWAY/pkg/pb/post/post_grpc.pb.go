@@ -43,6 +43,7 @@ const (
 	PostService_DeleteStory_FullMethodName         = "/post.PostService/DeleteStory"
 	PostService_LikeStory_FullMethodName           = "/post.PostService/LikeStory"
 	PostService_UnLikeStory_FullMethodName         = "/post.PostService/UnLikeStory"
+	PostService_StoryDetails_FullMethodName        = "/post.PostService/StoryDetails"
 )
 
 // PostServiceClient is the client API for PostService service.
@@ -73,6 +74,7 @@ type PostServiceClient interface {
 	DeleteStory(ctx context.Context, in *DeleteStoryRequest, opts ...grpc.CallOption) (*DeleteStoryResponse, error)
 	LikeStory(ctx context.Context, in *LikeStoryRequest, opts ...grpc.CallOption) (*LikeStoryResponse, error)
 	UnLikeStory(ctx context.Context, in *LikeStoryRequest, opts ...grpc.CallOption) (*LikeStoryResponse, error)
+	StoryDetails(ctx context.Context, in *StoryDetailsRequest, opts ...grpc.CallOption) (*StoryDetailsResponse, error)
 }
 
 type postServiceClient struct {
@@ -299,6 +301,15 @@ func (c *postServiceClient) UnLikeStory(ctx context.Context, in *LikeStoryReques
 	return out, nil
 }
 
+func (c *postServiceClient) StoryDetails(ctx context.Context, in *StoryDetailsRequest, opts ...grpc.CallOption) (*StoryDetailsResponse, error) {
+	out := new(StoryDetailsResponse)
+	err := c.cc.Invoke(ctx, PostService_StoryDetails_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PostServiceServer is the server API for PostService service.
 // All implementations must embed UnimplementedPostServiceServer
 // for forward compatibility
@@ -327,6 +338,7 @@ type PostServiceServer interface {
 	DeleteStory(context.Context, *DeleteStoryRequest) (*DeleteStoryResponse, error)
 	LikeStory(context.Context, *LikeStoryRequest) (*LikeStoryResponse, error)
 	UnLikeStory(context.Context, *LikeStoryRequest) (*LikeStoryResponse, error)
+	StoryDetails(context.Context, *StoryDetailsRequest) (*StoryDetailsResponse, error)
 	mustEmbedUnimplementedPostServiceServer()
 }
 
@@ -405,6 +417,9 @@ func (UnimplementedPostServiceServer) LikeStory(context.Context, *LikeStoryReque
 }
 func (UnimplementedPostServiceServer) UnLikeStory(context.Context, *LikeStoryRequest) (*LikeStoryResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UnLikeStory not implemented")
+}
+func (UnimplementedPostServiceServer) StoryDetails(context.Context, *StoryDetailsRequest) (*StoryDetailsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method StoryDetails not implemented")
 }
 func (UnimplementedPostServiceServer) mustEmbedUnimplementedPostServiceServer() {}
 
@@ -851,6 +866,24 @@ func _PostService_UnLikeStory_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _PostService_StoryDetails_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(StoryDetailsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PostServiceServer).StoryDetails(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PostService_StoryDetails_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PostServiceServer).StoryDetails(ctx, req.(*StoryDetailsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // PostService_ServiceDesc is the grpc.ServiceDesc for PostService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -953,6 +986,10 @@ var PostService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UnLikeStory",
 			Handler:    _PostService_UnLikeStory_Handler,
+		},
+		{
+			MethodName: "StoryDetails",
+			Handler:    _PostService_StoryDetails_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

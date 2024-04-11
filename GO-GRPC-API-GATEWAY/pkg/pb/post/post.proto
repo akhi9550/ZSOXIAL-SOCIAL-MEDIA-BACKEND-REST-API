@@ -31,6 +31,7 @@ service PostService {
     rpc DeleteStory (DeleteStoryRequest) returns (DeleteStoryResponse){}
     rpc LikeStory (LikeStoryRequest) returns (LikeStoryResponse){}
     rpc UnLikeStory (LikeStoryRequest) returns (LikeStoryResponse){}
+    rpc StoryDetails (StoryDetailsRequest) returns (StoryDetailsResponse){}
 }
 
 message CreatePostRequest {
@@ -314,3 +315,24 @@ message LikeStoryRequest {
 }
 
 message LikeStoryResponse {}
+
+message StoryDetailsRequest {
+    int64 userID = 1;
+    int64 storyID = 2;
+}
+
+message likeduser {
+    string likeduser = 1;
+    string profile = 2;
+}
+
+message viewer {
+    string viewer = 1;
+    string profile = 2;
+}
+
+message StoryDetailsResponse {
+    int64 storyID = 1;
+    repeated likeduser likedUser = 2;
+    repeated viewer Viewer = 3;
+}

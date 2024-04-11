@@ -31,4 +31,5 @@ type PostClient interface {
 	DeleteStory(userID, storyID int) error
 	LikeStory(userID, storyID int) error
 	UnLikeStory(userID, storyID int) error
+	StoryDetails(userID, storyID int) (models.StoryDetails,error)
 }

@@ -242,6 +242,132 @@ func (au *AuthHandler) ChangePassword(c *gin.Context) {
 	c.JSON(http.StatusOK, success)
 }
 
+func (au *AuthHandler) ReportUser(c *gin.Context) {
+	ReportedID, _ := c.Get("user_id")
+	var req models.ReportRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+	}
+	err := au.GRPC_Client.ReportUser(ReportedID.(int), req)
+	if err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+		return
+	}
+	success := response.ClientResponse(http.StatusOK, "Successfully Reported", nil, nil)
+	c.JSON(http.StatusOK, success)
+}
+
+func (au *AuthHandler) FollowREQ(c *gin.Context) {
+	userID, _ := c.Get("user_id")
+	id := c.Query("user_id")
+	FollowUserID, err := strconv.Atoi(id)
+	if err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "UserID not in right format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+		return
+	}
+	err = au.GRPC_Client.FollowREQ(userID.(int), FollowUserID)
+	if err != nil {
+		errs := response.ClientResponse(http.StatusInternalServerError, "user could not be unblocked", nil, err.Error())
+		c.JSON(http.StatusInternalServerError, errs)
+		return
+	}
+	sucess := response.ClientResponse(http.StatusOK, "Successfully followed", nil, nil)
+	c.JSON(http.StatusOK, sucess)
+}
+
+func (au *AuthHandler) ShowFollowREQ(c *gin.Context) {
+	userID, _ := c.Get("user_id")
+	data, err := au.GRPC_Client.ShowFollowREQ(userID.(int))
+	if err != nil {
+		errs := response.ClientResponse(http.StatusInternalServerError, "user could not be unblocked", nil, err.Error())
+		c.JSON(http.StatusInternalServerError, errs)
+		return
+	}
+	sucess := response.ClientResponse(http.StatusOK, "Successfully Show All Followed Request", data, nil)
+	c.JSON(http.StatusOK, sucess)
+}
+
+func (au *AuthHandler) AcceptFollowREQ(c *gin.Context) {
+	userID, _ := c.Get("user_id")
+	id := c.Query("user_id")
+	FollowingID, err := strconv.Atoi(id)
+	if err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "UserID not in right format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+		return
+	}
+	err = au.GRPC_Client.AcceptFollowREQ(userID.(int), FollowingID)
+	if err != nil {
+		errs := response.ClientResponse(http.StatusInternalServerError, "user could not be unblocked", nil, err.Error())
+		c.JSON(http.StatusInternalServerError, errs)
+		return
+	}
+	sucess := response.ClientResponse(http.StatusOK, "Successfully Accepted Following", nil, nil)
+	c.JSON(http.StatusOK, sucess)
+}
+
+func (au *AuthHandler) UnFollow(c *gin.Context) {
+	userID, _ := c.Get("user_id")
+	id := c.Query("user_id")
+	UnFollowUserID, err := strconv.Atoi(id)
+	if err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "UserID not in right format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+		return
+	}
+	err = au.GRPC_Client.UnFollow(userID.(int), UnFollowUserID)
+	if err != nil {
+		errs := response.ClientResponse(http.StatusInternalServerError, "user could not be unblocked", nil, err.Error())
+		c.JSON(http.StatusInternalServerError, errs)
+		return
+	}
+	sucess := response.ClientResponse(http.StatusOK, "Successfully Accepted Following", nil, nil)
+	c.JSON(http.StatusOK, sucess)
+}
+
+func (au *AuthHandler) Following(c *gin.Context) {
+	userID, _ := c.Get("user_id")
+	data, err := au.GRPC_Client.Following(userID.(int))
+	if err != nil {
+		errs := response.ClientResponse(http.StatusInternalServerError, "user could not be unblocked", nil, err.Error())
+		c.JSON(http.StatusInternalServerError, errs)
+		return
+	}
+	sucess := response.ClientResponse(http.StatusOK, "Successfully Retrive Followings", data, nil)
+	c.JSON(http.StatusOK, sucess)
+}
+
+func (au *AuthHandler) Follower(c *gin.Context) {
+	userID, _ := c.Get("user_id")
+	data, err := au.GRPC_Client.Follower(userID.(int))
+	if err != nil {
+		errs := response.ClientResponse(http.StatusInternalServerError, "user could not be unblocked", nil, err.Error())
+		c.JSON(http.StatusInternalServerError, errs)
+		return
+	}
+	sucess := response.ClientResponse(http.StatusOK, "Successfully Retrive Followers", data, nil)
+	c.JSON(http.StatusOK, sucess)
+}
+
+func (au *AuthHandler) SearchUser(c *gin.Context) {
+	var req models.SearchUser
+	if err := c.ShouldBindJSON(&req); err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+	}
+	data, err := au.GRPC_Client.SearchUser(req)
+	if err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+		return
+	}
+	success := response.ClientResponse(http.StatusOK, "Successfully Searched User", data, nil)
+	c.JSON(http.StatusOK, success)
+}
+
 func (au *AuthHandler) AdminLogin(c *gin.Context) {
 	var AdminLoginDetail models.AdminLoginRequest
 	if err := c.ShouldBindJSON(&AdminLoginDetail); err != nil {
@@ -272,7 +398,7 @@ func (au *AuthHandler) ShowAllUsers(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
-	countStr := c.DefaultQuery("count", "10")
+	countStr := c.DefaultQuery("count", "100")
 	pageSize, err := strconv.Atoi(countStr)
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "user count in a page not in right format", nil, err.Error())
@@ -315,97 +441,6 @@ func (au *AuthHandler) UnBlockUser(c *gin.Context) {
 	c.JSON(http.StatusOK, sucess)
 }
 
-func (au *AuthHandler) ReportUser(c *gin.Context) {
-	ReportedID, _ := c.Get("user_id")
-	var req models.ReportRequest
-	if err := c.ShouldBindJSON(&req); err != nil {
-		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
-		c.JSON(http.StatusBadRequest, errs)
-	}
-	err := au.GRPC_Client.ReportUser(ReportedID.(int), req)
-	if err != nil {
-		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
-		c.JSON(http.StatusBadRequest, errs)
-		return
-	}
-	success := response.ClientResponse(http.StatusOK, "Successfully Reported", nil, nil)
-	c.JSON(http.StatusOK, success)
-}
-
-func (au *AuthHandler) FollowREQ(c *gin.Context) {
-	userID, _ := c.Get("user_id")
-	id := c.Query("user_id")
-	FollowingID, err := strconv.Atoi(id)
-	if err != nil {
-		errs := response.ClientResponse(http.StatusBadRequest, "PostID not in right format", nil, err.Error())
-		c.JSON(http.StatusBadRequest, errs)
-		return
-	}
-	err = au.GRPC_Client.FollowREQ(userID.(int), FollowingID)
-	if err != nil {
-		errs := response.ClientResponse(http.StatusInternalServerError, "user could not be unblocked", nil, err.Error())
-		c.JSON(http.StatusInternalServerError, errs)
-		return
-	}
-	sucess := response.ClientResponse(http.StatusOK, "Successfully followed", nil, nil)
-	c.JSON(http.StatusOK, sucess)
-}
-
-func (au *AuthHandler) ShowFollowREQ(c *gin.Context) {
-	userID, _ := c.Get("user_id")
-	data, err := au.GRPC_Client.ShowFollowREQ(userID.(int))
-	if err != nil {
-		errs := response.ClientResponse(http.StatusInternalServerError, "user could not be unblocked", nil, err.Error())
-		c.JSON(http.StatusInternalServerError, errs)
-		return
-	}
-	sucess := response.ClientResponse(http.StatusOK, "Successfully Show All Followed Request", data, nil)
-	c.JSON(http.StatusOK, sucess)
-}
-
-func (au *AuthHandler) AcceptFollowREQ(c *gin.Context) {
-	userID, _ := c.Get("user_id")
-	id := c.Query("user_id")
-	FollowingID, err := strconv.Atoi(id)
-	if err != nil {
-		errs := response.ClientResponse(http.StatusBadRequest, "PostID not in right format", nil, err.Error())
-		c.JSON(http.StatusBadRequest, errs)
-		return
-	}
-	err = au.GRPC_Client.AcceptFollowREQ(userID.(int), FollowingID)
-	if err != nil {
-		errs := response.ClientResponse(http.StatusInternalServerError, "user could not be unblocked", nil, err.Error())
-		c.JSON(http.StatusInternalServerError, errs)
-		return
-	}
-	sucess := response.ClientResponse(http.StatusOK, "Successfully Accepted Following", nil, nil)
-	c.JSON(http.StatusOK, sucess)
-}
-
-func (au *AuthHandler) Following(c *gin.Context) {
-	userID, _ := c.Get("user_id")
-	data, err := au.GRPC_Client.Following(userID.(int))
-	if err != nil {
-		errs := response.ClientResponse(http.StatusInternalServerError, "user could not be unblocked", nil, err.Error())
-		c.JSON(http.StatusInternalServerError, errs)
-		return
-	}
-	sucess := response.ClientResponse(http.StatusOK, "Successfully Retrive Followings", data, nil)
-	c.JSON(http.StatusOK, sucess)
-}
-
-func (au *AuthHandler) Follower(c *gin.Context) {
-	userID, _ := c.Get("user_id")
-	data, err := au.GRPC_Client.Follower(userID.(int))
-	if err != nil {
-		errs := response.ClientResponse(http.StatusInternalServerError, "user could not be unblocked", nil, err.Error())
-		c.JSON(http.StatusInternalServerError, errs)
-		return
-	}
-	sucess := response.ClientResponse(http.StatusOK, "Successfully Retrive Followers", data, nil)
-	c.JSON(http.StatusOK, sucess)
-}
-
 func (au *AuthHandler) ShowUserReports(c *gin.Context) {
 	pageStr := c.DefaultQuery("page", "1")
 	page, err := strconv.Atoi(pageStr)
@@ -414,7 +449,7 @@ func (au *AuthHandler) ShowUserReports(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
-	countStr := c.DefaultQuery("count", "10")
+	countStr := c.DefaultQuery("count", "100")
 	pageSize, err := strconv.Atoi(countStr)
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "user count in a page not in right format", nil, err.Error())
@@ -439,7 +474,7 @@ func (au *AuthHandler) ShowPostReports(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
-	countStr := c.DefaultQuery("count", "10")
+	countStr := c.DefaultQuery("count", "100")
 	pageSize, err := strconv.Atoi(countStr)
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "user count in a page not in right format", nil, err.Error())
@@ -464,16 +499,16 @@ func (au *AuthHandler) GetAllPosts(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
-	countStr := c.DefaultQuery("count", "10")
+	countStr := c.DefaultQuery("count", "100")
 	pageSize, err := strconv.Atoi(countStr)
 	if err != nil {
-		errorRes := response.ClientResponse(http.StatusBadRequest, "user count in a page not in right format", nil, err.Error())
+		errorRes := response.ClientResponse(http.StatusBadRequest, "post count in a page not in right format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
 	users, err := au.GRPC_Client.GetAllPosts(page, pageSize)
 	if err != nil {
-		errs := response.ClientResponse(http.StatusInternalServerError, "couldn't retrieve users", nil, err.Error())
+		errs := response.ClientResponse(http.StatusInternalServerError, "couldn't retrieve posts", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errs)
 		return
 	}

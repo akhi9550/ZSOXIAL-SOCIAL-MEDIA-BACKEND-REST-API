@@ -24,6 +24,10 @@ func NewServerHTTP(authHandler *handler.AuthHandler, postHandler *handler.PostHa
 	r.GET("admin/users", middleware.AdminAuthMiddleware(), authHandler.ShowAllUsers)
 	r.PUT("admin/user/block", middleware.AdminAuthMiddleware(), authHandler.BlockUser)
 	r.PUT("admin/user/unblock", middleware.AdminAuthMiddleware(), authHandler.UnBlockUser)
+	r.GET("/admin/report/user", middleware.AdminAuthMiddleware(), authHandler.ShowUserReports)
+	r.GET("/admin/report/post", middleware.AdminAuthMiddleware(), authHandler.ShowPostReports)
+	r.GET("/admin/posts", middleware.AdminAuthMiddleware(), authHandler.GetAllPosts)
+	r.POST("/admin/post/remove", middleware.AdminAuthMiddleware(), authHandler.RemovePost)
 
 	r.POST("user/signup", authHandler.UserSignup)
 	r.POST("user/login", authHandler.Userlogin)
@@ -41,6 +45,7 @@ func NewServerHTTP(authHandler *handler.AuthHandler, postHandler *handler.PostHa
 			user.GET("", authHandler.UserDetails)
 			user.PUT("", authHandler.UpdateUserDetails)
 			user.PUT("/changepassword", authHandler.ChangePassword)
+			user.GET("/search", authHandler.SearchUser)
 		}
 
 		report := r.Group("/report")
@@ -54,6 +59,7 @@ func NewServerHTTP(authHandler *handler.AuthHandler, postHandler *handler.PostHa
 			follow.POST("/request", authHandler.FollowREQ)
 			follow.GET("/requests", authHandler.ShowFollowREQ)
 			follow.POST("/accept", authHandler.AcceptFollowREQ)
+			follow.POST("/unfollow", authHandler.UnFollow)
 			follow.GET("/following", authHandler.Following)
 			follow.GET("/followers", authHandler.Follower)
 		}
@@ -105,6 +111,7 @@ func NewServerHTTP(authHandler *handler.AuthHandler, postHandler *handler.PostHa
 			story.DELETE("", postHandler.DeleteStory)
 			story.PUT("/like", postHandler.LikeStory)
 			story.PUT("/unlike", postHandler.UnLikeStory)
+			story.GET("/details", postHandler.StoryDetails)
 		}
 
 	}

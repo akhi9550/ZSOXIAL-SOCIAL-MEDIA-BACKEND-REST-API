@@ -19,7 +19,8 @@ type AuthClient interface {
 	ReportUser(userID int, req models.ReportRequest) error
 	FollowREQ(userID, FollowingID int) error
 	ShowFollowREQ(userID int) ([]models.FollowingRequests, error)
-	AcceptFollowREQ(userID, FollowingID int) error
+	AcceptFollowREQ(userID, FollowUserID int) error
+	UnFollow(userID, UnFollowUserID int) error
 	Following(userID int) ([]models.FollowingResponse, error)
 	Follower(userID int) ([]models.FollowingResponse, error)
 	AdminLogin(admin models.AdminLoginRequest) (*models.AdminReponseWithToken, error)
@@ -30,4 +31,5 @@ type AuthClient interface {
 	ShowPostReports(page, count int) ([]models.PostReports, error)
 	GetAllPosts(page, count int) ([]models.PostResponse, error)
 	RemovePost(postID int) error
+	SearchUser(req models.SearchUser)([]models.SearchResult,error)
 }

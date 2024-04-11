@@ -270,6 +270,17 @@ func (au *AuthClient) AcceptFollowREQ(userID, FollowingID int) error {
 	return nil
 }
 
+func (au *AuthClient) UnFollow(userID, UnFollowUserID int) error {
+	_, err := au.Client.UnFollow(context.Background(), &pb.UnFollowRequest{
+		Userid:        int64(userID),
+		FollowingUser: int64(UnFollowUserID),
+	})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (au *AuthClient) Following(userID int) ([]models.FollowingResponse, error) {
 	data, err := au.Client.Following(context.Background(), &pb.FollowingRequest{
 		Userid: int64(userID),
@@ -304,6 +315,26 @@ func (au *AuthClient) Follower(userID int) ([]models.FollowingResponse, error) {
 		response = append(response, details)
 	}
 	return response, nil
+}
+
+func (au *AuthClient) SearchUser(req models.SearchUser) ([]models.SearchResult, error) {
+	data, err := au.Client.SearchUser(context.Background(), &pb.SearchUserRequest{
+		Username: req.UserName,
+		Limit:    int64(req.Limit),
+		Offset:   int64(req.Offset),
+	})
+	if err != nil {
+		return []models.SearchResult{}, err
+	}
+	var searchResult []models.SearchResult
+	for _, v := range data.User {
+		users := models.SearchResult{
+			Username: v.Username,
+			Profile:  v.Profile,
+		}
+		searchResult = append(searchResult, users)
+	}
+	return searchResult, nil
 }
 
 func (au *AuthClient) AdminLogin(admin models.AdminLoginRequest) (*models.AdminReponseWithToken, error) {

@@ -174,3 +174,19 @@ type ReportPostRequest struct {
 	PostID uint   `json:"post_id"`
 	Report string `json:"report"`
 }
+
+type Likeduser struct {
+	LikeUser string `json:"like_user"`
+	Profile  string `json:"profile"`
+}
+
+type Viewer struct {
+	ViewUser string `json:"view_user"`
+	Profile  string `json:"profile"`
+}
+
+type StoryDetails struct {
+	StoryID   uint        `json:"story_id"`
+	LikedUser []Likeduser `json:"liked_user"`
+	Viewer    []Viewer    `json:"viewer"`
+}

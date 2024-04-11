@@ -24,6 +24,7 @@ service AuthService {
     rpc FollowREQ (FollowREQRequest) returns (FollowREQResponse){}
     rpc ShowFollowREQ (ShowREQRequest) returns (ShowREQResponse){}
     rpc AcceptFollowREQ (AcceptFollowREQRequest) returns (AcceptFollowREQResponse){}
+    rpc UnFollow (UnFollowRequest) returns (UnFollowResponse){}
     rpc Following (FollowingRequest) returns (FollowingResponse){}
     rpc Follower (FollowerRequest) returns (FollowerResponse){}
     rpc AdminLogin (AdminLoginRequest) returns (AdminLoginResponse){}
@@ -33,7 +34,8 @@ service AuthService {
     rpc ShowUserReports (ShowUserReportsRequest) returns (ShowUserReportsResponse){}
     rpc ShowPostReports (ShowPostReportsRequest) returns (ShowPostReportsResponse);
     rpc GetAllPosts (GetAllPostsRequest) returns (GetAllPostsResponse){}
-    rpc RemovePost (RemovePostRequest) returns (RemovePostResponse);
+    rpc RemovePost (RemovePostRequest) returns (RemovePostResponse){}
+    rpc SearchUser (SearchUserRequest) returns (SearchUserResponse){}
 }
 
 message UserSignUpRequest {
@@ -389,6 +391,13 @@ message AcceptFollowREQRequest {
 
 message AcceptFollowREQResponse{}
 
+message UnFollowRequest {
+    int64 userid = 1;
+    int64 followingUser = 2;
+}
+
+message UnFollowResponse{}
+
 message FollowingRequest {
     int64 userid = 1;  
 }
@@ -408,4 +417,19 @@ message FollowerRequest {
 
 message FollowerResponse {
     repeated FollowResponse users = 1;
+}
+
+message SearchUserRequest {
+    string username = 1;
+    int64 limit = 2;
+    int64 offset = 3;
+}
+
+message User {
+    string username = 1;
+    string profile = 2;
+}
+
+message SearchUserResponse {
+    repeated User user = 1;
 }
