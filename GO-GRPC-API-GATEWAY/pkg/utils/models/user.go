@@ -110,7 +110,7 @@ type FollowingResponse struct {
 }
 
 type SearchUser struct {
-	UserName string `json:"user_name"`
+	Username string `json:"username"`
 	Limit    int    `json:"limit"`
 	Offset   int    `json:"offset"`
 }

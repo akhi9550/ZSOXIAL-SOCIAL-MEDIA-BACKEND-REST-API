@@ -319,7 +319,7 @@ func (au *AuthClient) Follower(userID int) ([]models.FollowingResponse, error) {
 
 func (au *AuthClient) SearchUser(req models.SearchUser) ([]models.SearchResult, error) {
 	data, err := au.Client.SearchUser(context.Background(), &pb.SearchUserRequest{
-		Username: req.UserName,
+		Username: req.Username,
 		Limit:    int64(req.Limit),
 		Offset:   int64(req.Offset),
 	})
