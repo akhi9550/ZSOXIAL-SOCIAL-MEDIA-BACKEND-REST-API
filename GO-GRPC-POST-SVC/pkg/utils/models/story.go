@@ -47,3 +47,27 @@ type CreateStoriesResponse struct {
 	Story     string    `json:"story" gorm:"column:url"`
 	CreatedAt time.Time `json:"created_at" gorm:"column:start_time"`
 }
+
+type Likeduser struct {
+	LikeUserID uint `json:"like_user_id" gorm:"column:liked_user"`
+}
+
+type Likedusers struct {
+	LikeUser string `json:"like_user"`
+	Profile  string `json:"profile"`
+}
+
+type Viewer struct {
+	ViewerID uint `json:"viewer_id"`
+}
+
+type Viewers struct {
+	ViewUser string `json:"view_user"`
+	Profile  string `json:"profile"`
+}
+
+type StoryDetails struct {
+	StoryID   uint         `json:"story_id"`
+	LikedUser []Likedusers `json:"liked_user"`
+	Viewer    []Viewers    `json:"viewer"`
+}

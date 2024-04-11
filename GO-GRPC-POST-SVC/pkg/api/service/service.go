@@ -483,6 +483,35 @@ func (p *PostServer) UnLikeStory(ctx context.Context, req *pb.LikeStoryRequest) 
 	return &pb.LikeStoryResponse{}, nil
 }
 
+func (p *PostServer) StoryDetails(ctx context.Context, req *pb.StoryDetailsRequest) (*pb.StoryDetailsResponse, error) {
+	userID, storyID := req.UserID, req.StoryID
+	data, err := p.storyUseCase.StoryDetails(int(userID), int(storyID))
+	if err != nil {
+		return &pb.StoryDetailsResponse{}, err
+	}
+	var viewers []*pb.Viewer
+	for _, v := range data.Viewer {
+		viewers = append(viewers, &pb.Viewer{
+			Viewer:  v.ViewUser,
+			Profile: v.Profile,
+		})
+	}
+
+	var likedUsers []*pb.Likeduser
+	for _, l := range data.LikedUser {
+		likedUsers = append(likedUsers, &pb.Likeduser{
+			Likeduser: l.LikeUser,
+			Profile:   l.Profile,
+		})
+	}
+
+	return &pb.StoryDetailsResponse{
+		StoryID:   int64(data.StoryID),
+		Viewer:    viewers,
+		LikedUser: likedUsers,
+	}, nil
+}
+
 func (p *PostServer) ShowPostReports(ctx context.Context, req *pb.ShowPostReportsRequest) (*pb.ShowPostReportsResponse, error) {
 	page, count := req.Page, req.Count
 	data, err := p.postUseCase.ShowPostReports(int(page), int(count))

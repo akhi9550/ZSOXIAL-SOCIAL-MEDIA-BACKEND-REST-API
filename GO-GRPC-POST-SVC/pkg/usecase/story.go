@@ -56,7 +56,7 @@ func (s *storyUseCase) GetStory(userID, viewer int) ([]models.CreateStoryRespons
 	if !userExist {
 		return []models.CreateStoryResponses{}, errors.New("user doesn't exist")
 	}
-	data, err := s.storyRepository.GetStory(userID,viewer)
+	data, err := s.storyRepository.GetStory(userID, viewer)
 	if err != nil {
 		return []models.CreateStoryResponses{}, err
 	}
@@ -119,7 +119,7 @@ func (s *storyUseCase) UnLikeStory(userID, storyID int) error {
 	}
 	ok := s.storyRepository.CheckStoryAvalilabilityWithID(userID, storyID)
 	if !ok {
-		return errors.New("post doesn't exist")
+		return errors.New("story doesn't exist")
 	}
 	ok = s.storyRepository.CheckAlreadyLiked(userID, storyID)
 	if !ok {
@@ -135,4 +135,52 @@ func (s *storyUseCase) UnLikeStory(userID, storyID int) error {
 		return err
 	}
 	return nil
+}
+
+func (s *storyUseCase) StoryDetails(userID, storyID int) (models.StoryDetails, error) {
+	userExist := s.authClient.CheckUserAvalilabilityWithUserID(userID)
+	if !userExist {
+		return models.StoryDetails{}, errors.New("user doesn't exist")
+	}
+	ok := s.storyRepository.CheckStoryAvalilabilityWithID(userID, storyID)
+	if !ok {
+		return models.StoryDetails{}, errors.New("story doesn't exist")
+	}
+	view, err := s.storyRepository.ViewersDetails(storyID)
+	if err != nil {
+		return models.StoryDetails{}, err
+	}
+	var viewers []models.Viewers
+	var likeusers []models.Likedusers
+	for _, v := range view {
+		ViewuserData, err := s.authClient.UserData(int(v.ViewerID))
+		if err != nil {
+			return models.StoryDetails{}, err
+		}
+		details := models.Viewers{
+			ViewUser: ViewuserData.Username,
+			Profile:  ViewuserData.Profile,
+		}
+		viewers = append(viewers, details)
+	}
+	likedusers, err := s.storyRepository.LikedUser(storyID)
+	if err != nil {
+		return models.StoryDetails{}, err
+	}
+	for _, v := range likedusers {
+		LikeuserData, err := s.authClient.UserData(int(v.LikeUserID))
+		if err != nil {
+			return models.StoryDetails{}, err
+		}
+		details := models.Likedusers{
+			LikeUser: LikeuserData.Username,
+			Profile:  LikeuserData.Profile,
+		}
+		likeusers = append(likeusers, details)
+	}
+	return models.StoryDetails{
+		StoryID:   uint(storyID),
+		Viewer:    viewers,
+		LikedUser: likeusers,
+	}, nil
 }

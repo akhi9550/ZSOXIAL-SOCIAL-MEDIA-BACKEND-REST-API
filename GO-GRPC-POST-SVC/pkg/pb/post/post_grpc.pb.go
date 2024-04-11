@@ -43,8 +43,9 @@ const (
 	PostService_DeleteStory_FullMethodName         = "/post.PostService/DeleteStory"
 	PostService_LikeStory_FullMethodName           = "/post.PostService/LikeStory"
 	PostService_UnLikeStory_FullMethodName         = "/post.PostService/UnLikeStory"
+	PostService_StoryDetails_FullMethodName        = "/post.PostService/StoryDetails"
 	PostService_ShowPostReports_FullMethodName     = "/post.PostService/ShowPostReports"
-	PostService_GetAllposts_FullMethodName         = "/post.PostService/GetAllposts"
+	PostService_GetAllPosts_FullMethodName         = "/post.PostService/GetAllPosts"
 	PostService_CheckPostIDByID_FullMethodName     = "/post.PostService/CheckPostIDByID"
 	PostService_RemovePost_FullMethodName          = "/post.PostService/RemovePost"
 )
@@ -77,8 +78,9 @@ type PostServiceClient interface {
 	DeleteStory(ctx context.Context, in *DeleteStoryRequest, opts ...grpc.CallOption) (*DeleteStoryResponse, error)
 	LikeStory(ctx context.Context, in *LikeStoryRequest, opts ...grpc.CallOption) (*LikeStoryResponse, error)
 	UnLikeStory(ctx context.Context, in *LikeStoryRequest, opts ...grpc.CallOption) (*LikeStoryResponse, error)
+	StoryDetails(ctx context.Context, in *StoryDetailsRequest, opts ...grpc.CallOption) (*StoryDetailsResponse, error)
 	ShowPostReports(ctx context.Context, in *ShowPostReportsRequest, opts ...grpc.CallOption) (*ShowPostReportsResponse, error)
-	GetAllposts(ctx context.Context, in *GetAllpostsRequest, opts ...grpc.CallOption) (*GetAllpostsResponse, error)
+	GetAllPosts(ctx context.Context, in *GetAllpostsRequest, opts ...grpc.CallOption) (*GetAllpostsResponse, error)
 	CheckPostIDByID(ctx context.Context, in *CheckPostIDByIDRequest, opts ...grpc.CallOption) (*CheckPostIDByIDResponse, error)
 	RemovePost(ctx context.Context, in *RemovePostRequest, opts ...grpc.CallOption) (*RemovePostResponse, error)
 }
@@ -307,6 +309,15 @@ func (c *postServiceClient) UnLikeStory(ctx context.Context, in *LikeStoryReques
 	return out, nil
 }
 
+func (c *postServiceClient) StoryDetails(ctx context.Context, in *StoryDetailsRequest, opts ...grpc.CallOption) (*StoryDetailsResponse, error) {
+	out := new(StoryDetailsResponse)
+	err := c.cc.Invoke(ctx, PostService_StoryDetails_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *postServiceClient) ShowPostReports(ctx context.Context, in *ShowPostReportsRequest, opts ...grpc.CallOption) (*ShowPostReportsResponse, error) {
 	out := new(ShowPostReportsResponse)
 	err := c.cc.Invoke(ctx, PostService_ShowPostReports_FullMethodName, in, out, opts...)
@@ -316,9 +327,9 @@ func (c *postServiceClient) ShowPostReports(ctx context.Context, in *ShowPostRep
 	return out, nil
 }
 
-func (c *postServiceClient) GetAllposts(ctx context.Context, in *GetAllpostsRequest, opts ...grpc.CallOption) (*GetAllpostsResponse, error) {
+func (c *postServiceClient) GetAllPosts(ctx context.Context, in *GetAllpostsRequest, opts ...grpc.CallOption) (*GetAllpostsResponse, error) {
 	out := new(GetAllpostsResponse)
-	err := c.cc.Invoke(ctx, PostService_GetAllposts_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, PostService_GetAllPosts_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -371,8 +382,9 @@ type PostServiceServer interface {
 	DeleteStory(context.Context, *DeleteStoryRequest) (*DeleteStoryResponse, error)
 	LikeStory(context.Context, *LikeStoryRequest) (*LikeStoryResponse, error)
 	UnLikeStory(context.Context, *LikeStoryRequest) (*LikeStoryResponse, error)
+	StoryDetails(context.Context, *StoryDetailsRequest) (*StoryDetailsResponse, error)
 	ShowPostReports(context.Context, *ShowPostReportsRequest) (*ShowPostReportsResponse, error)
-	GetAllposts(context.Context, *GetAllpostsRequest) (*GetAllpostsResponse, error)
+	GetAllPosts(context.Context, *GetAllpostsRequest) (*GetAllpostsResponse, error)
 	CheckPostIDByID(context.Context, *CheckPostIDByIDRequest) (*CheckPostIDByIDResponse, error)
 	RemovePost(context.Context, *RemovePostRequest) (*RemovePostResponse, error)
 	mustEmbedUnimplementedPostServiceServer()
@@ -454,11 +466,14 @@ func (UnimplementedPostServiceServer) LikeStory(context.Context, *LikeStoryReque
 func (UnimplementedPostServiceServer) UnLikeStory(context.Context, *LikeStoryRequest) (*LikeStoryResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UnLikeStory not implemented")
 }
+func (UnimplementedPostServiceServer) StoryDetails(context.Context, *StoryDetailsRequest) (*StoryDetailsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method StoryDetails not implemented")
+}
 func (UnimplementedPostServiceServer) ShowPostReports(context.Context, *ShowPostReportsRequest) (*ShowPostReportsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ShowPostReports not implemented")
 }
-func (UnimplementedPostServiceServer) GetAllposts(context.Context, *GetAllpostsRequest) (*GetAllpostsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetAllposts not implemented")
+func (UnimplementedPostServiceServer) GetAllPosts(context.Context, *GetAllpostsRequest) (*GetAllpostsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllPosts not implemented")
 }
 func (UnimplementedPostServiceServer) CheckPostIDByID(context.Context, *CheckPostIDByIDRequest) (*CheckPostIDByIDResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CheckPostIDByID not implemented")
@@ -911,6 +926,24 @@ func _PostService_UnLikeStory_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _PostService_StoryDetails_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(StoryDetailsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PostServiceServer).StoryDetails(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PostService_StoryDetails_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PostServiceServer).StoryDetails(ctx, req.(*StoryDetailsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _PostService_ShowPostReports_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ShowPostReportsRequest)
 	if err := dec(in); err != nil {
@@ -929,20 +962,20 @@ func _PostService_ShowPostReports_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _PostService_GetAllposts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _PostService_GetAllPosts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetAllpostsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(PostServiceServer).GetAllposts(ctx, in)
+		return srv.(PostServiceServer).GetAllPosts(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: PostService_GetAllposts_FullMethodName,
+		FullMethod: PostService_GetAllPosts_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PostServiceServer).GetAllposts(ctx, req.(*GetAllpostsRequest))
+		return srv.(PostServiceServer).GetAllPosts(ctx, req.(*GetAllpostsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1087,12 +1120,16 @@ var PostService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _PostService_UnLikeStory_Handler,
 		},
 		{
+			MethodName: "StoryDetails",
+			Handler:    _PostService_StoryDetails_Handler,
+		},
+		{
 			MethodName: "ShowPostReports",
 			Handler:    _PostService_ShowPostReports_Handler,
 		},
 		{
-			MethodName: "GetAllposts",
-			Handler:    _PostService_GetAllposts_Handler,
+			MethodName: "GetAllPosts",
+			Handler:    _PostService_GetAllPosts_Handler,
 		},
 		{
 			MethodName: "CheckPostIDByID",

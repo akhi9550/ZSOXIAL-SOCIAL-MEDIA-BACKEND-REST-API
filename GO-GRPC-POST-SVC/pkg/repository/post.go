@@ -402,7 +402,7 @@ func (p *postRepository) ShowPostReports(page, count int) ([]models.PostReports,
 		page = 1
 	}
 	offset := (page - 1) * count
-	err := p.DB.Raw(`SELECT report_user_id,post_id,reports FROM post_reports  limit ? offset ?`, count, offset).Scan(&response).Error
+	err := p.DB.Raw(`SELECT report_user_id,post_id,report FROM post_reports  limit ? offset ?`, count, offset).Scan(&response).Error
 	if err != nil {
 		return []models.PostReports{}, err
 	}
@@ -415,7 +415,7 @@ func (p *postRepository) GetAllPosts(page, count int) ([]models.Responses, error
 		page = 1
 	}
 	offset := (page - 1) * count
-	err := p.DB.Raw(`id,url,caption,user_id,likes_count, comments_count,created_at FROM posts WHERE is_archive = 'false'  limit ? offset ?`, count, offset).Scan(&response).Error
+	err := p.DB.Raw(`SELECT id,url,caption,user_id,likes_count, comments_count,created_at FROM posts WHERE is_archive = 'false'  limit ? offset ?`, count, offset).Scan(&response).Error
 	if err != nil {
 		return []models.Responses{}, err
 	}

@@ -233,5 +233,5 @@ type TagUsers struct {
 type PostReports struct {
 	ReportUserID uint   `json:"report_user_id"`
 	PostID       uint   `json:"post_id"`
-	Report       string `json:"reports"`
+	Report       string `json:"report"`
 }

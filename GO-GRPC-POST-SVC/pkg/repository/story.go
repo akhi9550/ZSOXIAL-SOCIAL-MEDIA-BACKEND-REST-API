@@ -105,3 +105,20 @@ func (s *storyRepository) UnLikeStory(userID, storyID int) error {
 	}
 	return nil
 }
+
+func (s *storyRepository) ViewersDetails(storyID int) ([]models.Viewer, error) {
+	var response []models.Viewer
+	err := s.DB.Raw(`SELECT viewer_id FROM view_story WHERE story_id = ?`, storyID).Scan(&response).Error
+	if err != nil {
+		return []models.Viewer{}, err
+	}
+	return response, nil
+}
+func (s *storyRepository) LikedUser(storyID int) ([]models.Likeduser, error) {
+	var response []models.Likeduser
+	err := s.DB.Raw(`SELECT liked_user FROM story_likes WHERE story_id = ?`, storyID).Scan(&response).Error
+	if err != nil {
+		return []models.Likeduser{}, err
+	}
+	return response, nil
+}

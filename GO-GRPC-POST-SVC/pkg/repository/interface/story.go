@@ -6,10 +6,12 @@ import (
 
 type StoryRepository interface {
 	CreateStory(userID int, file string) (models.CreateStory, error)
-	GetStory(userID,viewer int) ([]models.CreateStoriesResponse, error)
+	GetStory(userID, viewer int) ([]models.CreateStoriesResponse, error)
 	CheckStoryAvalilabilityWithID(userID, storyID int) bool
 	DeleteStory(userID, storyID int) error
 	CheckAlreadyLiked(userID, storyID int) bool
 	LikeStory(userID, storyID int) error
 	UnLikeStory(userID, storyID int) error
+	ViewersDetails(storyID int) ([]models.Viewer, error)
+	LikedUser(storyID int) ([]models.Likeduser, error)
 }
