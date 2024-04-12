@@ -3,6 +3,7 @@ package usecase
 import (
 	"errors"
 
+	chatclientinterfaces "github.com/akhi9550/auth-svc/pkg/client/interface"
 	"github.com/akhi9550/auth-svc/pkg/config"
 	"github.com/akhi9550/auth-svc/pkg/helper"
 	interfaces "github.com/akhi9550/auth-svc/pkg/repository/interface"
@@ -16,11 +17,13 @@ import (
 
 type userUseCase struct {
 	userRepository interfaces.UserRepository
+	chatClient     chatclientinterfaces.NewChatClient
 }
 
-func NewUserUseCase(repository interfaces.UserRepository) services.UserUseCase {
+func NewUserUseCase(repository interfaces.UserRepository, chatClient chatclientinterfaces.NewChatClient) services.UserUseCase {
 	return &userUseCase{
 		userRepository: repository,
+		chatClient:     chatClient,
 	}
 }
 func (ur *userUseCase) UserSignUp(user models.UserSignUpRequest) (*models.ReponseWithToken, error) {
@@ -285,10 +288,19 @@ func (ur *userUseCase) FollowREQ(userID, FollowingUserID int) error {
 	if !FollowuserExist {
 		return errors.New("user doesn't exist")
 	}
+	exist := ur.userRepository.ExistFollowreq(userID, FollowingUserID)
+	if exist {
+		return errors.New("already send following request")
+	}
 	err := ur.userRepository.FollowREQ(userID, FollowingUserID)
 	if err != nil {
 		return err
 	}
+	err = ur.chatClient.CreateChatRoom(userID, FollowingUserID)
+	if err != nil {
+		return errors.New("error creating chat room")
+	}
+
 	return nil
 }
 

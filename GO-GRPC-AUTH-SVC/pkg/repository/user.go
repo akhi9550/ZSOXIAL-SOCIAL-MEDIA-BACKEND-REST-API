@@ -306,9 +306,18 @@ func (ur *userRepository) FollowREQ(userID, FollowingUserID int) error {
 	return nil
 }
 
+func (ur *userRepository) ExistFollowreq(userID, FollowingUserID int) bool {
+	var count int
+	err := ur.DB.Raw(`SELECT COUNT(*) FROM following_requests WHERE following_user = ? AND user_id = ?`, FollowingUserID, userID).Scan(&count).Error
+	if err != nil {
+		return false
+	}
+	return count > 0
+}
+
 func (ur *userRepository) ShowFollowREQ(userID int) ([]models.FollowReqs, error) {
 	var response []models.FollowReqs
-	err := ur.DB.Raw(`SELECT following_user,created_at FROM following_requests WHERE following_user = ?`, userID).Scan(&response).Error
+	err := ur.DB.Raw(`SELECT following_user,created_at FROM following_requests WHERE user_id = ?`, userID).Scan(&response).Error
 	if err != nil {
 		return []models.FollowReqs{}, err
 	}

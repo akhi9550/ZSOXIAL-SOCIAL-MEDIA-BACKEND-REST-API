@@ -37,6 +37,7 @@ type UserRepository interface {
 	GetUserNameWithTagUserID(users []models.Tag) ([]models.UserTag, error)
 	AlreadyReported(RuserID, userID int) bool
 	ReportUser(userID int, req models.ReportRequest) error
+	ExistFollowreq(userID, FollowingUserID int) bool
 	FollowREQ(userID, FollowingUserID int) error
 	ShowFollowREQ(userID int) ([]models.FollowReqs, error)
 	CheckRequest(userID, FollowingUserID int) bool

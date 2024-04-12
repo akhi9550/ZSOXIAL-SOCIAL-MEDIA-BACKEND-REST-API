@@ -13,6 +13,7 @@ type Config struct {
 	Port       string `mapstructure:"PORT"`
 
 	PostSvcUrl string `mapstructure:"POST_SVC_URL"`
+	ChatSvcUrl string `mapstructure:"CHAT_SVC_URL"`
 
 	KEY       string `mapstructure:"KEY"`
 	KEY_ADMIN string `mapstructure:"KEY_ADMIN"`
@@ -27,7 +28,7 @@ type Config struct {
 }
 
 var envs = []string{
-	"DB_HOST", "DB_NAME", "DB_USER", "DB_PORT", "DB_PASSWORD", "PORT","POST_SVC_URL", "KEY", "KEY_ADMIN", "TWILIO_AUTHTOKEN", "TWILIO_ACCOUNTSID", "TWILIO_SERVICESID", "AWS_REGION", "AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY",
+	"DB_HOST", "DB_NAME", "DB_USER", "DB_PORT", "DB_PASSWORD", "PORT", "POST_SVC_URL", "CHAT_SVC_URL", "KEY", "KEY_ADMIN", "TWILIO_AUTHTOKEN", "TWILIO_ACCOUNTSID", "TWILIO_SERVICESID", "AWS_REGION", "AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY",
 }
 
 func LoadConfig() (Config, error) {
