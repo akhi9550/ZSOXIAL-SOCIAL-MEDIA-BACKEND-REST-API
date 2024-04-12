@@ -11,4 +11,5 @@ type ChatClient interface {
 	SaveMessage(chatId primitive.ObjectID, senderId uint, message string) (primitive.ObjectID, error)
 	ReadMessage(userId uint, chatId primitive.ObjectID) (int64, error)
 	FetchRecipient(chatId primitive.ObjectID, userId uint) (uint, error)
+	
 }

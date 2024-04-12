@@ -32,8 +32,8 @@ message userData {
 }
 
 message chatResponse {
-    repeated chat chat = 1;
-    repeated userData user = 2;
+    chat chat = 1;
+    userData user = 2;
 }
 
 message GetAllChatsResponse {

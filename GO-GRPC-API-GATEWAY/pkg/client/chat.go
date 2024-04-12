@@ -43,22 +43,27 @@ func (ch *ChatClient) GetAllChats(userId uint) ([]models.ChatResponse, error) {
 	var chatResponses []models.ChatResponse
 
 	for _, chat := range data.Response {
-		var users []models.UserData
-		for _, user := range chat.User {
-			users = append(users, models.UserData{
-				UserId:   uint(user.Userid),
-				Username: user.Username,
-				Profile:  user.Profile,
-			})
+		users := models.UserData{
+			UserId:   uint(chat.User.Userid),
+			Username: chat.User.Username,
+			Profile:  chat.User.Profile,
+		}
+		lastMessageTime := time.Unix(chat.Chat.Lastmessagetime.Seconds, int64(chat.Chat.Lastmessagetime.Nanos))
+
+		var convertedUsers []uint
+		for _, id := range chat.Chat.Users {
+			convertedUsers = append(convertedUsers, uint(id))
 		}
 
-		lastMessageTime := time.Unix(chat.ChatSeconds, int64(chat.LastMessageTime.Nanos))
-
+		chatID, err := primitive.ObjectIDFromHex(chat.Chat.Id)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to convert chat ID to ObjectID")
+		}
 		chatResponse := models.ChatResponse{
 			Chat: models.Chat{
-				ID:              primitive.ObjectID(chat.ID),
-				Users:           chat.User,
-				LastMessage:     chat.lat,
+				ID:              chatID,
+				Users:           convertedUsers,
+				LastMessage:     chat.Chat.Lastmessage,
 				LastMessageTime: lastMessageTime,
 			},
 			User: users,

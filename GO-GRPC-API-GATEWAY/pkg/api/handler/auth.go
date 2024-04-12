@@ -270,7 +270,7 @@ func (au *AuthHandler) FollowREQ(c *gin.Context) {
 	}
 	err = au.GRPC_Client.FollowREQ(userID.(int), FollowUserID)
 	if err != nil {
-		errs := response.ClientResponse(http.StatusInternalServerError, "user could not be unblocked", nil, err.Error())
+		errs := response.ClientResponse(http.StatusInternalServerError, "Details is incorrect", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errs)
 		return
 	}

@@ -13,7 +13,7 @@ type ServerHTTP struct {
 	engine *gin.Engine
 }
 
-func NewServerHTTP(authHandler *handler.AuthHandler, postHandler *handler.PostHandler) *ServerHTTP {
+func NewServerHTTP(authHandler *handler.AuthHandler, postHandler *handler.PostHandler, chatHandler *handler.ChatHandler) *ServerHTTP {
 	r := gin.New()
 
 	r.Use(gin.Logger())
@@ -112,6 +112,15 @@ func NewServerHTTP(authHandler *handler.AuthHandler, postHandler *handler.PostHa
 			story.PUT("/like", postHandler.LikeStory)
 			story.PUT("/unlike", postHandler.UnLikeStory)
 			story.GET("/details", postHandler.StoryDetails)
+		}
+		
+		chat := r.Group("/chat")
+		{
+			chat.GET("", chatHandler.GetAllChats)
+			chat.GET("/:chatId/message", chatHandler.GetMessages)
+			chat.PATCH("/:chatId/message", chatHandler.MakeMessageRead)
+			chat.GET("/:chatId", chatHandler.ChatPage)
+			chat.GET("/ws/:chatId", chatHandler.Chat)
 		}
 
 	}

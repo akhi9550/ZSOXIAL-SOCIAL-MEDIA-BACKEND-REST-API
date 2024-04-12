@@ -48,14 +48,19 @@ func NewChatHandler(chatClient interfaces.ChatClient) *ChatHandler {
 }
 
 func (ch *ChatHandler) GetAllChats(c *gin.Context) {
-	userID, _ := c.Get("user_id")
-	data, err := ch.GRPC_Client.GetAllChats(userID.(uint))
+	userIDInterface, _ := c.Get("user_id")
+	userID, ok := userIDInterface.(int)
+	if !ok {
+		return
+	}
+	data, err := ch.GRPC_Client.GetAllChats(uint(userID))
 	if err != nil {
 		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
 		return
 	}
-	success := response.ClientResponse(http.StatusOK, "Get a Post", data, nil)
+
+	success := response.ClientResponse(http.StatusOK, "Successfully Get Chats", data, nil)
 	c.JSON(http.StatusOK, success)
 }
 
