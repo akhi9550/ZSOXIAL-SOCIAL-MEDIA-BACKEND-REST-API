@@ -3,6 +3,7 @@ module github.com/akhi9550/chat-svc
 go 1.21.2
 
 require (
+	github.com/golang/protobuf v1.5.4
 	github.com/spf13/viper v1.18.2
 	go.mongodb.org/mongo-driver v1.14.0
 	google.golang.org/grpc v1.63.2

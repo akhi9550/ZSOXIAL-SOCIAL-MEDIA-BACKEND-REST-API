@@ -24,6 +24,7 @@ const (
 	ChatService_SaveMessage_FullMethodName    = "/chat.ChatService/SaveMessage"
 	ChatService_ReadMessage_FullMethodName    = "/chat.ChatService/ReadMessage"
 	ChatService_FetchRecipient_FullMethodName = "/chat.ChatService/FetchRecipient"
+	ChatService_CreateChatRoom_FullMethodName = "/chat.ChatService/CreateChatRoom"
 )
 
 // ChatServiceClient is the client API for ChatService service.
@@ -35,6 +36,7 @@ type ChatServiceClient interface {
 	SaveMessage(ctx context.Context, in *SaveMessageRequest, opts ...grpc.CallOption) (*SaveMessageResponse, error)
 	ReadMessage(ctx context.Context, in *ReadMessageRequest, opts ...grpc.CallOption) (*ReadMessageResponse, error)
 	FetchRecipient(ctx context.Context, in *FetchRecipientRequest, opts ...grpc.CallOption) (*FetchRecipientResponse, error)
+	CreateChatRoom(ctx context.Context, in *CreateChatRoomRequest, opts ...grpc.CallOption) (*CreateChatRoomResponse, error)
 }
 
 type chatServiceClient struct {
@@ -90,6 +92,15 @@ func (c *chatServiceClient) FetchRecipient(ctx context.Context, in *FetchRecipie
 	return out, nil
 }
 
+func (c *chatServiceClient) CreateChatRoom(ctx context.Context, in *CreateChatRoomRequest, opts ...grpc.CallOption) (*CreateChatRoomResponse, error) {
+	out := new(CreateChatRoomResponse)
+	err := c.cc.Invoke(ctx, ChatService_CreateChatRoom_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ChatServiceServer is the server API for ChatService service.
 // All implementations must embed UnimplementedChatServiceServer
 // for forward compatibility
@@ -99,6 +110,7 @@ type ChatServiceServer interface {
 	SaveMessage(context.Context, *SaveMessageRequest) (*SaveMessageResponse, error)
 	ReadMessage(context.Context, *ReadMessageRequest) (*ReadMessageResponse, error)
 	FetchRecipient(context.Context, *FetchRecipientRequest) (*FetchRecipientResponse, error)
+	CreateChatRoom(context.Context, *CreateChatRoomRequest) (*CreateChatRoomResponse, error)
 	mustEmbedUnimplementedChatServiceServer()
 }
 
@@ -120,6 +132,9 @@ func (UnimplementedChatServiceServer) ReadMessage(context.Context, *ReadMessageR
 }
 func (UnimplementedChatServiceServer) FetchRecipient(context.Context, *FetchRecipientRequest) (*FetchRecipientResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FetchRecipient not implemented")
+}
+func (UnimplementedChatServiceServer) CreateChatRoom(context.Context, *CreateChatRoomRequest) (*CreateChatRoomResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateChatRoom not implemented")
 }
 func (UnimplementedChatServiceServer) mustEmbedUnimplementedChatServiceServer() {}
 
@@ -224,6 +239,24 @@ func _ChatService_FetchRecipient_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ChatService_CreateChatRoom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateChatRoomRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChatServiceServer).CreateChatRoom(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ChatService_CreateChatRoom_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChatServiceServer).CreateChatRoom(ctx, req.(*CreateChatRoomRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ChatService_ServiceDesc is the grpc.ServiceDesc for ChatService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -250,6 +283,10 @@ var ChatService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "FetchRecipient",
 			Handler:    _ChatService_FetchRecipient_Handler,
+		},
+		{
+			MethodName: "CreateChatRoom",
+			Handler:    _ChatService_CreateChatRoom_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

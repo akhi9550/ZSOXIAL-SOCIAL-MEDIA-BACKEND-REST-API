@@ -1,4 +1,4 @@
-package Interfaces
+package interfaces
 
 import (
 	"github.com/akhi9550/chat-svc/pkg/domain"
@@ -12,4 +12,5 @@ type ChatUseCase interface {
 	SaveMessage(chatId primitive.ObjectID, senderId uint, message string) (primitive.ObjectID, error)
 	ReadMessage(userId uint, chatId primitive.ObjectID) (int64, error)
 	FetchRecipient(chatId primitive.ObjectID, userId uint) (uint, error)
+	CreateChatRoom(user1, user2 int64) error
 }

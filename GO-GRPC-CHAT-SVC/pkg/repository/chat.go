@@ -21,7 +21,7 @@ type ChatRepository struct {
 }
 
 func NewChatRepository(db *mongo.Database) interfaces.ChatRepository {
-	return &ChatRepository{ChatCollection: db.Collection("chats"), MessageCollection: db.Collection("messages")}
+	return &ChatRepository{ChatCollection: db.Collection("Chats"), MessageCollection: db.Collection("Messages")}
 }
 
 func (c *ChatRepository) CreateChatRoom(user1, user2 uint) error {

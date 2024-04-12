@@ -5,6 +5,7 @@ import (
 
 	pb "github.com/akhi9550/chat-svc/pkg/pb/chat"
 	interfaces "github.com/akhi9550/chat-svc/pkg/usecase/interface"
+	"github.com/golang/protobuf/ptypes/timestamp"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -14,7 +15,7 @@ type ChatServer struct {
 	pb.UnimplementedChatServiceServer
 }
 
-func NewPostServer(UseCaseChat interfaces.ChatUseCase) pb.ChatServiceServer {
+func NewChatServer(UseCaseChat interfaces.ChatUseCase) pb.ChatServiceServer {
 	return &ChatServer{
 		chatUseCase: UseCaseChat,
 	}
@@ -27,8 +28,7 @@ func (c *ChatServer) GetAllChats(ctx context.Context, req *pb.GetAllChatsRequest
 		return nil, err
 	}
 
-	var pbChats []*pb.Chat
-	var pbUsers []*pb.UserData
+	var pbChatResponses []*pb.ChatResponse
 
 	for _, chatResponse := range data {
 		chat := chatResponse.Chat
@@ -43,26 +43,27 @@ func (c *ChatServer) GetAllChats(ctx context.Context, req *pb.GetAllChatsRequest
 			Id:              chat.ID.Hex(),
 			Users:           users,
 			Lastmessage:     chat.LastMessage,
-			Lastmessagetime: timestamppb.New(chat.LastMessageTime),
+			Lastmessagetime: &timestamp.Timestamp{Seconds: chat.LastMessageTime.Unix(), Nanos: int32(chat.LastMessageTime.Nanosecond())},
 		}
-		pbChats = append(pbChats, pbChat)
 
 		pbUser := &pb.UserData{
 			Userid:   int64(user.UserId),
 			Username: user.Username,
 			Profile:  user.Profile,
 		}
-		pbUsers = append(pbUsers, pbUser)
+
+		pbChatResponse := &pb.ChatResponse{
+			Chat: pbChat,
+			User: pbUser,
+		}
+
+		pbChatResponses = append(pbChatResponses, pbChatResponse)
 	}
 
 	response := &pb.GetAllChatsResponse{
-		Response: []*pb.ChatResponse{
-			{
-				Chat: pbChats,
-				User: pbUsers,
-			},
-		},
+		Response: pbChatResponses,
 	}
+
 	return response, nil
 }
 
@@ -81,9 +82,9 @@ func (c *ChatServer) GetMessages(ctx context.Context, req *pb.GetMessagesRequest
 
 	for _, message := range data {
 		pbMessage := &pb.Response{
-			Id:             message.ID.Hex(), 
+			Id:             message.ID.Hex(),
 			SenderId:       uint32(message.SenderID),
-			ChatId:         message.ChatID.Hex(), 
+			ChatId:         message.ChatID.Hex(),
 			Seen:           message.Seen,
 			Image:          message.Image,
 			MessageContent: message.MessageContent,
@@ -147,4 +148,12 @@ func (c *ChatServer) FetchRecipient(ctx context.Context, req *pb.FetchRecipientR
 		Id: int64(recipientID),
 	}
 	return response, nil
+}
+
+func (c *ChatServer) CreateChatRoom(ctx context.Context, createroom *pb.CreateChatRoomRequest) (*pb.CreateChatRoomResponse, error) {
+	err := c.chatUseCase.CreateChatRoom(createroom.Userid, createroom.Followingid)
+	if err != nil {
+		return &pb.CreateChatRoomResponse{}, err
+	}
+	return &pb.CreateChatRoomResponse{}, nil
 }

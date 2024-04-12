@@ -123,3 +123,11 @@ func (c *ChatUseCase) FetchRecipient(chatId primitive.ObjectID, userId uint) (ui
 	}
 	return res, nil
 }
+
+func (c *ChatUseCase) CreateChatRoom(user1, user2 int64) error {
+	create := c.chatRepository.CreateChatRoom(uint(user1), uint(user2))
+	if create != nil {
+		return create
+	}
+	return nil
+}

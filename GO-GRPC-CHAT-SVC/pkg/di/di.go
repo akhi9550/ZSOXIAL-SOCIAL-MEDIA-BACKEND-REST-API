@@ -20,7 +20,7 @@ func InitializeAPI(cfg config.Config) (*server.Server, error) {
 
 	chatUseCase := usecase.NewChatUseCase(chatRepository, authClient)
 
-	ServiceServer := service.NewPostServer(chatUseCase)
+	ServiceServer := service.NewChatServer(chatUseCase)
 	grpcServer, err := server.NewGRPCServer(cfg, ServiceServer)
 	if err != nil {
 		return &server.Server{}, err

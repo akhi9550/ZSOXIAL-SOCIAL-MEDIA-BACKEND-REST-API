@@ -30,6 +30,6 @@ func NewGRPCServer(cfg config.Config, server pb.ChatServiceServer) (*Server, err
 }
 
 func (c *Server) Start() error {
-	fmt.Println("grpc server listening on port :50051")
+	fmt.Println("grpc server listening on port :50053")
 	return c.server.Serve(c.listener)
 }
