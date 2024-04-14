@@ -21,6 +21,49 @@ func NewChatServer(UseCaseChat interfaces.ChatUseCase) pb.ChatServiceServer {
 	}
 }
 
+func (c *ChatServer) CreateChatRoom(ctx context.Context, req *pb.CreateChatRoomRequest) (*pb.CreateChatRoomResponse, error) {
+	err := c.chatUseCase.CreateChatRoom(req.Userid, req.Followingid)
+	if err != nil {
+		return &pb.CreateChatRoomResponse{}, err
+	}
+	return &pb.CreateChatRoomResponse{}, nil
+}
+
+func (c *ChatServer) SaveMessage(ctx context.Context, req *pb.SaveMessageRequest) (*pb.SaveMessageResponse, error) {
+	chatID := req.Chatid
+	senderID := req.Senderid
+	messageContent := req.Message
+	chatObjectID, err := primitive.ObjectIDFromHex(chatID)
+	if err != nil {
+		return nil, err
+	}
+	savedMessageID, err := c.chatUseCase.SaveMessage(chatObjectID, uint(senderID), messageContent)
+	if err != nil {
+		return nil, err
+	}
+	response := &pb.SaveMessageResponse{
+		Id: savedMessageID.Hex(),
+	}
+	return response, nil
+}
+
+func (c *ChatServer) FetchRecipient(ctx context.Context, req *pb.FetchRecipientRequest) (*pb.FetchRecipientResponse, error) {
+	chatIdToHex, err := primitive.ObjectIDFromHex(req.Chatid)
+	if err != nil {
+		return &pb.FetchRecipientResponse{}, err
+	}
+
+	res, err := c.chatUseCase.FetchRecipient(chatIdToHex, uint(req.Userid))
+
+	if err != nil {
+		return &pb.FetchRecipientResponse{}, err
+	}
+
+	return &pb.FetchRecipientResponse{
+		Id: int64(res),
+	}, nil
+
+}
 func (c *ChatServer) GetAllChats(ctx context.Context, req *pb.GetAllChatsRequest) (*pb.GetAllChatsResponse, error) {
 	userID := req.Userid
 	data, err := c.chatUseCase.GetAllChats(uint(userID))
@@ -97,63 +140,3 @@ func (c *ChatServer) GetMessages(ctx context.Context, req *pb.GetMessagesRequest
 	}, nil
 }
 
-func (c *ChatServer) SaveMessage(ctx context.Context, req *pb.SaveMessageRequest) (*pb.SaveMessageResponse, error) {
-	chatID := req.Chatid
-	senderID := req.Senderid
-	messageContent := req.Message
-	chatObjectID, err := primitive.ObjectIDFromHex(chatID)
-	if err != nil {
-		return nil, err
-	}
-	savedMessageID, err := c.chatUseCase.SaveMessage(chatObjectID, uint(senderID), messageContent)
-	if err != nil {
-		return nil, err
-	}
-	response := &pb.SaveMessageResponse{
-		Id: savedMessageID.Hex(),
-	}
-	return response, nil
-}
-
-func (c *ChatServer) ReadMessage(ctx context.Context, req *pb.ReadMessageRequest) (*pb.ReadMessageResponse, error) {
-	chatID := req.Chatid
-	userID := req.Userid
-	chatObjectID, err := primitive.ObjectIDFromHex(chatID)
-	if err != nil {
-		return nil, err
-	}
-	readMessageID, err := c.chatUseCase.ReadMessage(uint(userID), chatObjectID)
-	if err != nil {
-		return nil, err
-	}
-	response := &pb.ReadMessageResponse{
-		Id: int64(readMessageID),
-	}
-	return response, nil
-}
-
-func (c *ChatServer) FetchRecipient(ctx context.Context, req *pb.FetchRecipientRequest) (*pb.FetchRecipientResponse, error) {
-	chatID := req.Chatid
-	userID := req.Userid
-
-	chatObjectID, err := primitive.ObjectIDFromHex(chatID)
-	if err != nil {
-		return nil, err
-	}
-	recipientID, err := c.chatUseCase.FetchRecipient(chatObjectID, uint(userID))
-	if err != nil {
-		return nil, err
-	}
-	response := &pb.FetchRecipientResponse{
-		Id: int64(recipientID),
-	}
-	return response, nil
-}
-
-func (c *ChatServer) CreateChatRoom(ctx context.Context, createroom *pb.CreateChatRoomRequest) (*pb.CreateChatRoomResponse, error) {
-	err := c.chatUseCase.CreateChatRoom(createroom.Userid, createroom.Followingid)
-	if err != nil {
-		return &pb.CreateChatRoomResponse{}, err
-	}
-	return &pb.CreateChatRoomResponse{}, nil
-}

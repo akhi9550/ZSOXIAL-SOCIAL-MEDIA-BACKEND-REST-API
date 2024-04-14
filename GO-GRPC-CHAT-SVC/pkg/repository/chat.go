@@ -21,7 +21,7 @@ type ChatRepository struct {
 }
 
 func NewChatRepository(db *mongo.Database) interfaces.ChatRepository {
-	return &ChatRepository{ChatCollection: db.Collection("Chats"), MessageCollection: db.Collection("Messages")}
+	return &ChatRepository{ChatCollection: db.Collection("chats"), MessageCollection: db.Collection("messages")}
 }
 
 func (c *ChatRepository) CreateChatRoom(user1, user2 uint) error {
@@ -61,21 +61,19 @@ func (c *ChatRepository) IsValidChatId(chatId primitive.ObjectID) (bool, error) 
 	err := c.ChatCollection.FindOne(context.TODO(), filter).Decode(&chat)
 
 	if err == mongo.ErrNoDocuments {
-		return false, nil // ChatId does not exist
+		return false, nil 
 	} else if err != nil {
-		return false, err // Error occurred while querying the database
+		return false, err 
 	}
 
-	return true, nil // ChatId exists
+	return true, nil 
 
 }
 
 func (c *ChatRepository) GetAllChats(id uint) ([]models.Chat, error) {
-	// Define the filter and projection
 	filter := bson.M{"users": bson.M{"$in": []uint{id}}}
 	projection := bson.M{"_id": 1, "users": bson.M{"$elemMatch": bson.M{"$ne": id}}, "last_message": 1, "last_message_time": 1}
 
-	// Execute the find query
 	cursor, err := c.ChatCollection.Find(context.TODO(), filter, options.Find().SetProjection(projection))
 	if err != nil {
 		return nil, err
@@ -154,7 +152,6 @@ func (c *ChatRepository) FetchRecipient(chatId primitive.ObjectID, userId uint) 
 }
 
 func (c *ChatRepository) DeleteChatsAndMessagesByUserID(userID uint) error {
-	// Find chats associated with the user ID
 	var chatIDs []primitive.ObjectID
 	filter := bson.M{"users": userID}
 	cursor, err := c.ChatCollection.Find(context.Background(), filter)
@@ -171,13 +168,11 @@ func (c *ChatRepository) DeleteChatsAndMessagesByUserID(userID uint) error {
 		chatIDs = append(chatIDs, chat.ID)
 	}
 
-	// Delete messages in chats associated with the user ID
 	_, err = c.MessageCollection.DeleteMany(context.Background(), bson.M{"chat_id": bson.M{"$in": chatIDs}})
 	if err != nil {
 		return err
 	}
 
-	// Delete chats associated with the user ID
 	_, err = c.ChatCollection.DeleteMany(context.Background(), filter)
 	if err != nil {
 		return err

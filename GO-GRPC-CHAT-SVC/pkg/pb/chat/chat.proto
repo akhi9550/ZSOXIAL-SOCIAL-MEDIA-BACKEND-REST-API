@@ -7,12 +7,25 @@ import "google/protobuf/timestamp.proto";
 option go_package = "./pkg/pb/chat";
 
 service ChatService {
+    rpc Chat (SendMessageRequest) returns (SendMessageResponse) {}
+    rpc CreateChatRoom (CreateChatRoomRequest) returns (CreateChatRoomResponse){}
+    rpc SaveMessage (SaveMessageRequest) returns (SaveMessageResponse){}
+    rpc FetchRecipient (FetchRecipientRequest) returns (FetchRecipientResponse){}
     rpc GetAllChats  (GetAllChatsRequest) returns (GetAllChatsResponse){}
     rpc GetMessages (GetMessagesRequest) returns (GetMessagesResponse){}
-    rpc SaveMessage (SaveMessageRequest) returns (SaveMessageResponse){}
     rpc ReadMessage (ReadMessageRequest) returns (ReadMessageResponse){}
-    rpc FetchRecipient (FetchRecipientRequest) returns (FetchRecipientResponse){}
-    rpc CreateChatRoom (CreateChatRoomRequest) returns (CreateChatRoomResponse){}
+ 
+}
+
+
+message SendMessageRequest {
+    int64 userid = 1;
+    string chatid = 2;
+}
+
+message SendMessageResponse {
+    string status = 1;
+    string error = 2;
 }
 
 message GetAllChatsRequest {
