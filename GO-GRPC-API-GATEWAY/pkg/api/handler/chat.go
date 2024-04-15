@@ -66,6 +66,39 @@ func (ch *ChatHandler) FriendMessage(c *gin.Context) {
 	}
 }
 
+func (ch *ChatHandler) GetChat(c *gin.Context) {
+	var chatRequest models.ChatRequest
+	if err := c.ShouldBindJSON(&chatRequest); err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+		return
+	}
+
+	userIDInterface, exists := c.Get("user_id")
+	if !exists {
+		errs := response.ClientResponse(http.StatusBadRequest, "User ID not found in JWT claims", nil, "")
+		c.JSON(http.StatusBadRequest, errs)
+		return
+	}
+	userID := strconv.Itoa(userIDInterface.(int))
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+
+	result, err := ch.GRPC_Client.GetFriendChat(ctx, &pb.GetFriendChatRequest{
+		UserID:   userID,
+		FriendID: chatRequest.FriendID,
+		OffSet:   chatRequest.Offset,
+		Limit:    chatRequest.Limit,
+	})
+	if err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "Failed to get chat details", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+		return
+	}
+
+	errs := response.ClientResponse(http.StatusOK, "Successfully retrieved chat details", result, nil)
+	c.JSON(http.StatusOK, errs)
+}
 
 // var upgrader = websocket.Upgrader{
 // 	ReadBufferSize:  1024,
