@@ -25,5 +25,7 @@ func InitializeAPI(cfg config.Config) (*server.Server, error) {
 	if err != nil {
 		return &server.Server{}, err
 	}
+
+	go chatUseCase.MessageConsumer()
 	return grpcServer, nil
 }

@@ -14,6 +14,7 @@ service ChatService {
     rpc GetAllChats  (GetAllChatsRequest) returns (GetAllChatsResponse){}
     rpc GetMessages (GetMessagesRequest) returns (GetMessagesResponse){}
     rpc ReadMessage (ReadMessageRequest) returns (ReadMessageResponse){}
+    rpc GetFriendChat (GetFriendChatRequest) returns (GetFriendChatResponse);
  
 }
 
@@ -106,3 +107,23 @@ message CreateChatRoomRequest{
 }
 
 message CreateChatRoomResponse{}
+
+
+message GetFriendChatRequest {
+    string UserID =1;
+    string OffSet =2;
+    string Limit=3;
+    string FriendID =4;
+}
+
+message Message {
+    string MessageID = 1;
+    string sender_id = 2;
+    string recipient_id = 3;
+    string content = 4;
+    string timestamp = 5;
+}
+
+message GetFriendChatResponse {
+    repeated Message FriendChat =1;
+}

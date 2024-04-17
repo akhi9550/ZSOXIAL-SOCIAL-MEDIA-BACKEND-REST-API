@@ -9,11 +9,14 @@ type Config struct {
 	DBName string `mapstructure:"DB_NAME"`
 	Port   string `mapstructure:"PORT"`
 
+	KafkaPort  string `mapstructure:"KAFKA_PORT"`
+	KafkaTopic string `mapstructure:"KAFKA_TOPIC"`
+
 	AuthSvcUrl string `mapstructure:"AUTH_SVC_URL"`
 }
 
 var envs = []string{
-	"DB_URL", "DB_NAME", "AUTH_SVC_URL",
+	"DB_URL", "DB_NAME", "PORT", "AUTH_SVC_URL", "KAFKA_PORT", "KAFKA_TOPIC",
 }
 
 func LoadConfig() (Config, error) {
