@@ -20,6 +20,26 @@ func NewChatServer(UseCaseChat interfaces.ChatUseCase) pb.ChatServiceServer {
 	}
 }
 
+func (c *ChatServer) GetFriendChat(ctx context.Context, req *pb.GetFriendChatRequest) (*pb.GetFriendChatResponse, error) {
+	ind, _ := time.LoadLocation("Asia/Kolkata")
+	result, err := c.chatUseCase.GetFriendChat(req.UserID, req.FriendID, models.Pagination{Limit: req.Limit, OffSet: req.OffSet})
+	if err != nil {
+		return nil, err
+	}
+
+	var finalResult []*pb.Message
+	for _, val := range result {
+		finalResult = append(finalResult, &pb.Message{
+			MessageID:   val.ID,
+			SenderId:    val.SenderID,
+			RecipientId: val.RecipientID,
+			Content:     val.Content,
+			Timestamp:   val.Timestamp.In(ind).String(),
+		})
+	}
+	return &pb.GetFriendChatResponse{FriendChat: finalResult}, nil
+}
+
 // func (c *ChatServer) CreateChatRoom(ctx context.Context, req *pb.CreateChatRoomRequest) (*pb.CreateChatRoomResponse, error) {
 // 	err := c.chatUseCase.CreateChatRoom(req.Userid, req.Followingid)
 // 	if err != nil {
@@ -138,23 +158,3 @@ func NewChatServer(UseCaseChat interfaces.ChatUseCase) pb.ChatServiceServer {
 // 		Response: response,
 // 	}, nil
 // }
-
-func (c *ChatServer) GetFriendChat(ctx context.Context, req *pb.GetFriendChatRequest) (*pb.GetFriendChatResponse, error) {
-	ind, _ := time.LoadLocation("Asia/Kolkata")
-	result, err := c.chatUseCase.GetFriendChat(req.UserID, req.FriendID, models.Pagination{Limit: req.Limit, OffSet: req.OffSet})
-	if err != nil {
-		return nil, err
-	}
-
-	var finalResult []*pb.Message
-	for _, val := range result {
-		finalResult = append(finalResult, &pb.Message{
-			MessageID:   val.ID,
-			SenderId:    val.SenderID,
-			RecipientId: val.RecipientID,
-			Content:     val.Content,
-			Timestamp:   val.Timestamp.In(ind).String(),
-		})
-	}
-	return &pb.GetFriendChatResponse{FriendChat: finalResult}, nil
-}

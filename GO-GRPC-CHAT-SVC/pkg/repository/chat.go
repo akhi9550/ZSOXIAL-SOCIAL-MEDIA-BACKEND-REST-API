@@ -14,19 +14,16 @@ import (
 )
 
 type ChatRepository struct {
-	ChatCollection    *mongo.Collection
 	MessageCollection *mongo.Collection
 }
 
 func NewChatRepository(db *mongo.Database) interfaces.ChatRepository {
-	return &ChatRepository{ChatCollection: db.Collection("chats"), MessageCollection: db.Collection("messages")}
+	return &ChatRepository{MessageCollection: db.Collection("messages")}
 }
 
 func (c *ChatRepository) StoreFriendsChat(message models.MessageReq) error {
-	fmt.Println("==repo", message)
 	_, err := c.MessageCollection.InsertOne(context.TODO(), message)
 	if err != nil {
-		fmt.Println("data❤️", err)
 		return err
 	}
 	return nil
@@ -36,7 +33,6 @@ func (c *ChatRepository) GetLastMessage(userID, friendID string) (*models.Messag
 	var res = models.Message{}
 	filter := bson.M{"senderid": bson.M{"$in": bson.A{userID, friendID}}, "recipientid": bson.M{"$in": bson.A{friendID, userID}}}
 	option := options.FindOne().SetSort(bson.D{{"timestamp", -1}})
-
 	err := c.MessageCollection.FindOne(context.TODO(), filter, option).Decode(&res)
 	if err != nil {
 		return nil, err
@@ -45,11 +41,9 @@ func (c *ChatRepository) GetLastMessage(userID, friendID string) (*models.Messag
 }
 
 func (c *ChatRepository) GetMessageCount(userID, friendID string) (int, error) {
-
 	filter := bson.M{"senderid": friendID, "recipientid": userID, "status": "pending"}
 	count, err := c.MessageCollection.CountDocuments(context.TODO(), filter)
 	if err != nil {
-		fmt.Println("-", err)
 		return 0, err
 	}
 	fmt.Println("count", count)
@@ -57,7 +51,6 @@ func (c *ChatRepository) GetMessageCount(userID, friendID string) (int, error) {
 }
 
 func (c *ChatRepository) GetFriendChat(userID, friendID string, pagination models.Pagination) ([]models.Message, error) {
-
 	var messages []models.Message
 	filter := bson.M{"senderid": bson.M{"$in": bson.A{userID, friendID}}, "recipientid": bson.M{"$in": bson.A{friendID, userID}}}
 	limit, _ := strconv.Atoi(pagination.Limit)
@@ -81,7 +74,6 @@ func (c *ChatRepository) GetFriendChat(userID, friendID string, pagination model
 }
 
 func (c *ChatRepository) UpdateReadAsMessage(userID, friendID string) error {
-
 	_, err := c.MessageCollection.UpdateMany(context.TODO(), bson.M{"senderid": bson.M{"$in": bson.A{friendID}}, "recipientid": bson.M{"$in": bson.A{userID}}}, bson.D{{"$set", bson.D{{"status", "send"}}}})
 	if err != nil {
 		return err
