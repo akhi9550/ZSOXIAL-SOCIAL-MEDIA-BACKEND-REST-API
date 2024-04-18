@@ -113,17 +113,21 @@ func NewServerHTTP(authHandler *handler.AuthHandler, postHandler *handler.PostHa
 			story.PUT("/unlike", postHandler.UnLikeStory)
 			story.GET("/details", postHandler.StoryDetails)
 		}
-		
+
 		chat := r.Group("/chat")
 		{
-			chat.GET("", chatHandler.GetAllChats)
-			chat.GET("/:chatId/message", chatHandler.GetMessages)
-			chat.PATCH("/:chatId/message", chatHandler.MakeMessageRead)
-			chat.GET("/:chatId", chatHandler.ChatPage)
-			chat.GET("/ws/:chatId", chatHandler.Chat)
+			chat.GET("", chatHandler.FriendMessage)
+			chat.GET("/message", chatHandler.GetChat)
+			// chat.GET("/ws", chatHandler.Chat)
+			// chat.GET("", chatHandler.GetAllChats)
+			// chat.GET("/message/:chatId", chatHandler.GetMessages)
+			// chat.PATCH("/message/:chatId", chatHandler.MakeMessageRead)
+			// chat.GET("/:chatId", chatHandler.ChatPage)
+			// chat.GET("/page", chatHandler.ChatPage)
+			// chat.GET("/ws/:chatId", chatHandler.Chat)
 		}
-
 	}
+
 	return &ServerHTTP{engine: r}
 }
 func (s *ServerHTTP) Start() {

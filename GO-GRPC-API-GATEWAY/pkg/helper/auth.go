@@ -22,6 +22,7 @@ type AuthAdminClaims struct {
 }
 
 func GetTokenFromHeader(header string) string {
+	fmt.Println("haeader", header)
 	if len(header) > 7 && header[:7] == "Bearer " {
 		return header[7:]
 	}
@@ -37,7 +38,7 @@ func ExtractUserIDFromToken(tokenString string) (int, string, error) {
 	})
 
 	if err != nil {
-		fmt.Println("errors:-", err)
+		fmt.Println("🔗errors:-", err)
 		return 0, "", err
 	}
 

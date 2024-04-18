@@ -8,6 +8,9 @@ type Config struct {
 	PostSvcUrl string `mapstructure:"POST_SVC_URL"`
 	ChatSvcUrl string `mapstructure:"CHAT_SVC_URL"`
 
+	KafkaPort  string `mapstructure:"KAFKA_PORT"`
+	KafkaTopic string `mapstructure:"KAFKA_TOPIC"`
+
 	KEY       string `mapstructure:"KEY"`
 	KEY_ADMIN string `mapstructure:"KEY_ADMIN"`
 }

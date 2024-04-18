@@ -13,9 +13,9 @@ type Chat struct {
 	LastMessageTime time.Time          `json:"last_message_time" bson:"last_message_time"`
 }
 
-type Message struct {
-	Message string `json:"message"`
-}
+// type Message struct {
+// 	Message string `json:"message"`
+// }
 
 type ChatResponse struct {
 	Chat Chat
@@ -30,4 +30,28 @@ type Messages struct {
 	Image          string             `json:"image" bson:"image"`
 	MessageContent string             `json:"message_content" bson:"message_content"`
 	Timestamp      time.Time          `json:"timestamp" bson:"timestamp"`
+}
+
+type TempMessage struct {
+	SenderID    string
+	RecipientID string `json:"RecipientID" validate:"required"`
+	Content     string `json:"Content" validate:"required"`
+}
+
+type ChatRequest struct {
+	FriendID string `query:"FriendID" validate:"required"`
+	Offset   string `query:"Offset" validate:"required"`
+	Limit    string `query:"Limit" validate:"required"`
+}
+
+type Message struct {
+	SenderID    string    `json:"SenderID" validate:"required"`
+	RecipientID string    `json:"RecipientID" validate:"required"`
+	Content     string    `json:"Content" validate:"required"`
+	Timestamp   time.Time `json:"TimeStamp" validate:"required"`
+}
+
+type Pagination struct {
+	Limit  string
+	OffSet string
 }

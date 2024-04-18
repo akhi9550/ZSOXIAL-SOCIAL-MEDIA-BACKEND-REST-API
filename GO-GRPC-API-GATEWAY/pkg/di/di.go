@@ -5,6 +5,7 @@ import (
 	"github.com/akhi9550/api-gateway/pkg/api/handler"
 	"github.com/akhi9550/api-gateway/pkg/client"
 	"github.com/akhi9550/api-gateway/pkg/config"
+	"github.com/akhi9550/api-gateway/pkg/helper"
 )
 
 func InitializeAPI(cfg config.Config) (*server.ServerHTTP, error) {
@@ -14,8 +15,10 @@ func InitializeAPI(cfg config.Config) (*server.ServerHTTP, error) {
 	postClient := client.NewPostClient(cfg)
 	postHandler := handler.NewPostHandler(postClient)
 
+	helper := helper.NewHelper(&cfg)
+
 	chatClient := client.NewChatClient(cfg)
-	chatHandler := handler.NewChatHandler(chatClient)
+	chatHandler := handler.NewChatHandler(chatClient.Client, helper)
 
 	serverHTTP := server.NewServerHTTP(authHandler, postHandler, chatHandler)
 	return serverHTTP, nil

@@ -62,7 +62,7 @@
 </head>
 <body>
 <div>
-    <input type="text" id="chatId" placeholder="Type your chat id" value={{.}} hidden>
+    <input type="text" id="chatId" placeholder="Type your chat id" value={{.chatId}} hidden>
         
 </div>
     <div id="chat-container">
@@ -75,8 +75,8 @@
         const chatId=document.getElementById("chatId").value;
         console.log(String(chatId));
         let ws
-        if (window.location.host === "localhost:8000" || window.location.host === "localhost:8000") {
-             ws = new WebSocket("wss://" + window.location.host + "/ws/" + String(chatId));
+        if (window.location.host === "http://localhost:8000" || window.location.host === "http://localhost:8000") {
+             ws = new WebSocket("ws://" + window.location.host + "/ws/" + String(chatId));
         } else {
          ws = new WebSocket("ws://" + window.location.host + "/ws/" + String(chatId));
         }
