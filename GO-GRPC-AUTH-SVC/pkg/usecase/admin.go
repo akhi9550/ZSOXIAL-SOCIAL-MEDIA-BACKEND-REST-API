@@ -23,6 +23,7 @@ func NewAdminUseCase(repository interfaces.AdminRepository, postclient postclien
 		postClient:      postclient,
 	}
 }
+
 func (ad *adminUseCase) AdminLogin(admin models.AdminLoginRequest) (*models.AdminReponseWithToken, error) {
 	email, err := ad.adminRepository.CheckAdminExistsByEmail(admin.Email)
 	if err != nil {
