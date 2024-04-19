@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package post;
+
+option go_package = "./pkg/pb/post";
+
+service PostService {
+    rpc GetUserIDFromPost (GetUserIDRequest) returns (GetUserIDResponse){}
+}
+
+message GetUserIDRequest{
+    int64 postID = 1;
+}
+
+message GetUserIDResponse{
+    int64 userID = 1;
+}
+
