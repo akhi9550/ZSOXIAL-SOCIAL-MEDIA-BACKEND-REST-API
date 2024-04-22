@@ -22,7 +22,6 @@ type AuthAdminClaims struct {
 }
 
 func GetTokenFromHeader(header string) string {
-	fmt.Println("haeader", header)
 	if len(header) > 7 && header[:7] == "Bearer " {
 		return header[7:]
 	}

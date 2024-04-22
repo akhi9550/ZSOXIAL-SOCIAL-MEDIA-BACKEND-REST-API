@@ -57,6 +57,19 @@ func (p *PostHandler) CreatePost(c *gin.Context) {
 	c.JSON(http.StatusCreated, success)
 }
 
+func (p *PostHandler) GetUserPost(c *gin.Context) {
+	userID, _ := c.Get("user_id")
+	data, err := p.GRPC_Client.GetUserPost(userID.(int))
+	if err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+		return
+	}
+	success := response.ClientResponse(http.StatusOK, "Get a Post", data, nil)
+	c.JSON(http.StatusOK, success)
+}
+
+
 func (p *PostHandler) GetPost(c *gin.Context) {
 	userID, _ := c.Get("user_id")
 	postID := c.Query("post_id")

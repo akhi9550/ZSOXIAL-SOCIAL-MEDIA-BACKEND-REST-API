@@ -8,6 +8,7 @@ import (
 
 type PostClient interface {
 	CreatePost(userID int, data models.PostRequest, file *multipart.FileHeader, users []string) (models.PostResponse, error)
+	GetUserPost(userID int) ([]models.PostResponse, error)
 	GetPost(userID int, postID int) (models.PostResponse, error)
 	UpdatePost(userID int, data models.UpdatePostReq, user []string) (models.UpdateResponse, error)
 	DeletePost(userID int, postID int) error
@@ -31,5 +32,5 @@ type PostClient interface {
 	DeleteStory(userID, storyID int) error
 	LikeStory(userID, storyID int) error
 	UnLikeStory(userID, storyID int) error
-	StoryDetails(userID, storyID int) (models.StoryDetails,error)
+	StoryDetails(userID, storyID int) (models.StoryDetails, error)
 }

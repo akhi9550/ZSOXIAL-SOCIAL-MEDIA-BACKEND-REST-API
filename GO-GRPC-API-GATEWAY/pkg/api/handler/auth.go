@@ -162,6 +162,24 @@ func (au *AuthHandler) UserDetails(c *gin.Context) {
 	c.JSON(http.StatusOK, success)
 }
 
+func (au *AuthHandler) SpecificUserDetails(c *gin.Context) {
+	userID := c.Query("user_id")
+	UserID, err := strconv.Atoi(userID)
+	if err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "Post_id not in right format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+		return
+	}
+	UserDetails, err := au.GRPC_Client.SpecificUserDetails(UserID)
+	if err != nil {
+		errs := response.ClientResponse(http.StatusInternalServerError, "failed to retrieve details", nil, err.Error())
+		c.JSON(http.StatusInternalServerError, errs)
+		return
+	}
+	success := response.ClientResponse(http.StatusOK, "User Details", UserDetails, nil)
+	c.JSON(http.StatusOK, success)
+}
+
 func (au *AuthHandler) UpdateUserDetails(c *gin.Context) {
 	firstname := c.PostForm("firstname")
 	lastname := c.PostForm("lastname")

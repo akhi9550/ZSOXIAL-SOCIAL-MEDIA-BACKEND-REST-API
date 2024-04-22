@@ -76,6 +76,38 @@ func (p *PostClient) CreatePost(userID int, req models.PostRequest, file *multip
 	}, nil
 
 }
+
+func(p *PostClient) GetUserPost(userID int) ([]models.PostResponse, error){
+	data, err := p.Client.GetAllPost(context.Background(), &pb.GetAllPostRequest{
+		Userid: int64(userID),
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	var postResponses []models.PostResponse
+	for _, post := range data.Allpost {
+		user := models.UserData{
+			UserId:   uint(userID),
+			Username: post.User.Username,
+			Profile:  post.User.Imageurl,
+		}
+		postResponse := models.PostResponse{
+			ID:        uint(post.Id),
+			Author:    user,
+			Caption:   post.Caption,
+			Url:       post.Url,
+			Likes:     uint(post.Like),
+			Comments:  uint(post.Comment),
+			CreatedAt: post.CreatedAt.AsTime(),
+		}
+
+		postResponses = append(postResponses, postResponse)
+	}
+
+	return postResponses, nil
+}
+
 func (p *PostClient) GetPost(userID int, postID int) (models.PostResponse, error) {
 	data, err := p.Client.GetPost(context.Background(), &pb.GetPostRequest{
 		Userid: int64(userID),

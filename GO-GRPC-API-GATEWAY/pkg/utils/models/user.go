@@ -86,6 +86,20 @@ type UsersProfileDetails struct {
 	Imageurl  string `json:"imageurl" gorm:"validate:required"`
 }
 
+type UsersDetails struct {
+	Firstname string `json:"firstname"`
+	Lastname  string `json:"lastname"`
+	Username  string `json:"username"`
+	Dob       string `json:"dob"`
+	Gender    string `json:"gender"`
+	Phone     string `json:"phone"`
+	Email     string `json:"email"`
+	Bio       string `json:"bio"`
+	Imageurl  string `json:"imageurl"`
+	Following int    `json:"following"`
+	Follower  int    `json:"follower"`
+}
+
 type ChangePassword struct {
 	Oldpassword string `json:"old_password"`
 	Password    string `json:"password"`

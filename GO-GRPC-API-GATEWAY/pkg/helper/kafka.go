@@ -48,8 +48,6 @@ func KafkaProducer(message models.Message) error {
 }
 
 func (r *Helper) SendMessageToUser(User map[string]*websocket.Conn, msg []byte, userID string) {
-	fmt.Println("data from kafkad", User, string(msg))
-
 	var message models.Message
 	if err := json.Unmarshal([]byte(msg), &message); err != nil {
 		fmt.Println("error while unmarshel ", err)
@@ -63,6 +61,5 @@ func (r *Helper) SendMessageToUser(User map[string]*websocket.Conn, msg []byte, 
 		recipientConn.WriteMessage(websocket.TextMessage, msg)
 	}
 	err := KafkaProducer(message)
-	fmt.Println("==", err)
-	fmt.Println("==send succesfully")
+	fmt.Println("==send succesfully==", err)
 }

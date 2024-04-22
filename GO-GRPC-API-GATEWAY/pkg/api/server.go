@@ -13,7 +13,7 @@ type ServerHTTP struct {
 	engine *gin.Engine
 }
 
-func NewServerHTTP(authHandler *handler.AuthHandler, postHandler *handler.PostHandler, chatHandler *handler.ChatHandler) *ServerHTTP {
+func NewServerHTTP(authHandler *handler.AuthHandler, postHandler *handler.PostHandler, chatHandler *handler.ChatHandler, notificationHandler *handler.NotificationHandler) *ServerHTTP {
 	r := gin.New()
 
 	r.Use(gin.Logger())
@@ -44,6 +44,7 @@ func NewServerHTTP(authHandler *handler.AuthHandler, postHandler *handler.PostHa
 		{
 			user.GET("", authHandler.UserDetails)
 			user.PUT("", authHandler.UpdateUserDetails)
+			user.GET("/users", authHandler.SpecificUserDetails)
 			user.PUT("/changepassword", authHandler.ChangePassword)
 			user.GET("/search", authHandler.SearchUser)
 		}
@@ -67,9 +68,10 @@ func NewServerHTTP(authHandler *handler.AuthHandler, postHandler *handler.PostHa
 		post := r.Group("/post")
 		{
 			post.POST("", postHandler.CreatePost)
-			post.GET("", postHandler.GetPost)
+			post.GET("", postHandler.GetUserPost)
 			post.PUT("", postHandler.UpdatePost)
 			post.DELETE("", postHandler.DeletePost)
+			post.GET("posts", postHandler.GetPost)
 			post.GET("/getposts", postHandler.GetAllPost)
 		}
 
@@ -118,13 +120,14 @@ func NewServerHTTP(authHandler *handler.AuthHandler, postHandler *handler.PostHa
 		{
 			chat.GET("", chatHandler.FriendMessage)
 			chat.GET("/message", chatHandler.GetChat)
-			// chat.GET("/ws", chatHandler.Chat)
-			// chat.GET("", chatHandler.GetAllChats)
-			// chat.GET("/message/:chatId", chatHandler.GetMessages)
-			// chat.PATCH("/message/:chatId", chatHandler.MakeMessageRead)
-			// chat.GET("/:chatId", chatHandler.ChatPage)
-			// chat.GET("/page", chatHandler.ChatPage)
-			// chat.GET("/ws/:chatId", chatHandler.Chat)
+		}
+		notification := r.Group("/notification")
+		{
+			notification.POST("/comment", notificationHandler.SendCommentedNotification)
+			notification.POST("/like/:postid", notificationHandler.SendLikeNotification)
+			// notification.GET("/consume/like",notificationHandler.ConsumeKafkaMessages)
+			notification.GET("/consume/comment", notificationHandler.ConsumeKafkaCommentMessages)
+			notification.GET("/consume/like", notificationHandler.ConsumeKafkaLikeMessages)
 		}
 	}
 

@@ -25,6 +25,7 @@ const (
 	AuthService_VerifyOtp_FullMethodName                           = "/user.AuthService/VerifyOtp"
 	AuthService_ForgotPassword_FullMethodName                      = "/user.AuthService/ForgotPassword"
 	AuthService_ForgotPasswordVerifyAndChange_FullMethodName       = "/user.AuthService/ForgotPasswordVerifyAndChange"
+	AuthService_SpecificUserDetails_FullMethodName                 = "/user.AuthService/SpecificUserDetails"
 	AuthService_UserDetails_FullMethodName                         = "/user.AuthService/UserDetails"
 	AuthService_UpdateUserDetails_FullMethodName                   = "/user.AuthService/UpdateUserDetails"
 	AuthService_ChangePassword_FullMethodName                      = "/user.AuthService/ChangePassword"
@@ -60,7 +61,8 @@ type AuthServiceClient interface {
 	VerifyOtp(ctx context.Context, in *VerifyOtpRequest, opts ...grpc.CallOption) (*VerifyOtpResponse, error)
 	ForgotPassword(ctx context.Context, in *ForgotPasswordRequest, opts ...grpc.CallOption) (*ForgotPasswordResponse, error)
 	ForgotPasswordVerifyAndChange(ctx context.Context, in *ForgotPasswordVerifyAndChangeRequest, opts ...grpc.CallOption) (*ForgotPasswordVerifyAndChangeResponse, error)
-	UserDetails(ctx context.Context, in *UserDetailsRequest, opts ...grpc.CallOption) (*UserDetailsResponse, error)
+	SpecificUserDetails(ctx context.Context, in *UserDetailsRequest, opts ...grpc.CallOption) (*SpecificUserDetailsResponse, error)
+	UserDetails(ctx context.Context, in *UserDetailsRequest, opts ...grpc.CallOption) (*SpecificUserDetailsResponse, error)
 	UpdateUserDetails(ctx context.Context, in *UpdateUserDetailsRequest, opts ...grpc.CallOption) (*UpdateUserDetailsResponse, error)
 	ChangePassword(ctx context.Context, in *ChangePasswordRequest, opts ...grpc.CallOption) (*ChangePasswordResponse, error)
 	CheckUserAvalilabilityWithUserID(ctx context.Context, in *CheckUserAvalilabilityWithUserIDRequest, opts ...grpc.CallOption) (*CheckUserAvalilabilityWithUserIDResponse, error)
@@ -147,8 +149,17 @@ func (c *authServiceClient) ForgotPasswordVerifyAndChange(ctx context.Context, i
 	return out, nil
 }
 
-func (c *authServiceClient) UserDetails(ctx context.Context, in *UserDetailsRequest, opts ...grpc.CallOption) (*UserDetailsResponse, error) {
-	out := new(UserDetailsResponse)
+func (c *authServiceClient) SpecificUserDetails(ctx context.Context, in *UserDetailsRequest, opts ...grpc.CallOption) (*SpecificUserDetailsResponse, error) {
+	out := new(SpecificUserDetailsResponse)
+	err := c.cc.Invoke(ctx, AuthService_SpecificUserDetails_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) UserDetails(ctx context.Context, in *UserDetailsRequest, opts ...grpc.CallOption) (*SpecificUserDetailsResponse, error) {
+	out := new(SpecificUserDetailsResponse)
 	err := c.cc.Invoke(ctx, AuthService_UserDetails_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -364,7 +375,8 @@ type AuthServiceServer interface {
 	VerifyOtp(context.Context, *VerifyOtpRequest) (*VerifyOtpResponse, error)
 	ForgotPassword(context.Context, *ForgotPasswordRequest) (*ForgotPasswordResponse, error)
 	ForgotPasswordVerifyAndChange(context.Context, *ForgotPasswordVerifyAndChangeRequest) (*ForgotPasswordVerifyAndChangeResponse, error)
-	UserDetails(context.Context, *UserDetailsRequest) (*UserDetailsResponse, error)
+	SpecificUserDetails(context.Context, *UserDetailsRequest) (*SpecificUserDetailsResponse, error)
+	UserDetails(context.Context, *UserDetailsRequest) (*SpecificUserDetailsResponse, error)
 	UpdateUserDetails(context.Context, *UpdateUserDetailsRequest) (*UpdateUserDetailsResponse, error)
 	ChangePassword(context.Context, *ChangePasswordRequest) (*ChangePasswordResponse, error)
 	CheckUserAvalilabilityWithUserID(context.Context, *CheckUserAvalilabilityWithUserIDRequest) (*CheckUserAvalilabilityWithUserIDResponse, error)
@@ -412,7 +424,10 @@ func (UnimplementedAuthServiceServer) ForgotPassword(context.Context, *ForgotPas
 func (UnimplementedAuthServiceServer) ForgotPasswordVerifyAndChange(context.Context, *ForgotPasswordVerifyAndChangeRequest) (*ForgotPasswordVerifyAndChangeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ForgotPasswordVerifyAndChange not implemented")
 }
-func (UnimplementedAuthServiceServer) UserDetails(context.Context, *UserDetailsRequest) (*UserDetailsResponse, error) {
+func (UnimplementedAuthServiceServer) SpecificUserDetails(context.Context, *UserDetailsRequest) (*SpecificUserDetailsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SpecificUserDetails not implemented")
+}
+func (UnimplementedAuthServiceServer) UserDetails(context.Context, *UserDetailsRequest) (*SpecificUserDetailsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserDetails not implemented")
 }
 func (UnimplementedAuthServiceServer) UpdateUserDetails(context.Context, *UpdateUserDetailsRequest) (*UpdateUserDetailsResponse, error) {
@@ -598,6 +613,24 @@ func _AuthService_ForgotPasswordVerifyAndChange_Handler(srv interface{}, ctx con
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AuthServiceServer).ForgotPasswordVerifyAndChange(ctx, req.(*ForgotPasswordVerifyAndChangeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_SpecificUserDetails_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserDetailsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).SpecificUserDetails(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_SpecificUserDetails_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).SpecificUserDetails(ctx, req.(*UserDetailsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1046,6 +1079,10 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ForgotPasswordVerifyAndChange",
 			Handler:    _AuthService_ForgotPasswordVerifyAndChange_Handler,
+		},
+		{
+			MethodName: "SpecificUserDetails",
+			Handler:    _AuthService_SpecificUserDetails_Handler,
 		},
 		{
 			MethodName: "UserDetails",

@@ -101,14 +101,14 @@ func (au *AuthClient) ForgotPasswordVerifyAndChange(req models.ForgotVerify) err
 	return nil
 }
 
-func (au *AuthClient) UserDetails(userID int) (models.UsersProfileDetails, error) {
-	data, err := au.Client.UserDetails(context.Background(), &pb.UserDetailsRequest{
+func (au *AuthClient) SpecificUserDetails(userID int) (models.UsersDetails, error) {
+	data, err := au.Client.SpecificUserDetails(context.Background(), &pb.UserDetailsRequest{
 		Id: int64(userID),
 	})
 	if err != nil {
-		return models.UsersProfileDetails{}, err
+		return models.UsersDetails{}, err
 	}
-	return models.UsersProfileDetails{
+	return models.UsersDetails{
 		Firstname: data.Responsedata.Firstname,
 		Lastname:  data.Responsedata.Lastname,
 		Username:  data.Responsedata.Username,
@@ -118,6 +118,30 @@ func (au *AuthClient) UserDetails(userID int) (models.UsersProfileDetails, error
 		Email:     data.Responsedata.Email,
 		Bio:       data.Responsedata.Bio,
 		Imageurl:  data.Responsedata.ProfilePhoto,
+		Following: int(data.ResponseFollowigs.Following),
+		Follower:  int(data.ResponseFollowigs.Follower),
+	}, nil
+}
+
+func (au *AuthClient) UserDetails(userID int) (models.UsersDetails, error) {
+	data, err := au.Client.UserDetails(context.Background(), &pb.UserDetailsRequest{
+		Id: int64(userID),
+	})
+	if err != nil {
+		return models.UsersDetails{}, err
+	}
+	return models.UsersDetails{
+		Firstname: data.Responsedata.Firstname,
+		Lastname:  data.Responsedata.Lastname,
+		Username:  data.Responsedata.Username,
+		Dob:       data.Responsedata.Dob,
+		Gender:    data.Responsedata.Gender,
+		Phone:     data.Responsedata.Phone,
+		Email:     data.Responsedata.Email,
+		Bio:       data.Responsedata.Bio,
+		Imageurl:  data.Responsedata.ProfilePhoto,
+		Following: int(data.ResponseFollowigs.Following),
+		Follower:  int(data.ResponseFollowigs.Follower),
 	}, nil
 }
 

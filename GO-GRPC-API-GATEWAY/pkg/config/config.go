@@ -7,6 +7,8 @@ type Config struct {
 	AuthSvcUrl string `mapstructure:"AUTH_SVC_URL"`
 	PostSvcUrl string `mapstructure:"POST_SVC_URL"`
 	ChatSvcUrl string `mapstructure:"CHAT_SVC_URL"`
+	NotificationSvcUrl string `mapstructure:"NOTIFICATION_SVC_URL"`
+
 
 	KafkaPort  string `mapstructure:"KAFKA_PORT"`
 	KafkaTopic string `mapstructure:"KAFKA_TOPIC"`
@@ -16,7 +18,7 @@ type Config struct {
 }
 
 var envs = []string{
-	"PORT", "AUTH_SVC_URL", "POST_SVC_URL", "CHAT_SVC_URL", "KEY", "KEY_ADMIN",
+	"PORT", "AUTH_SVC_URL", "POST_SVC_URL", "CHAT_SVC_URL", "KEY", "KEY_ADMIN","NOTIFICATION_SVC_URL",
 }
 
 func LoadConfig() (Config, error) {
