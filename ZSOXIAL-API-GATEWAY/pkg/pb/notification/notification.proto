@@ -1,0 +1,87 @@
+syntax = "proto3";
+
+package notification;
+
+option go_package = "./pkg/pb/notification";
+
+service NotificationService {
+    rpc GetNotification (GetNotificationRequest) returns (GetNotificationResponse){}
+    rpc SendCommentedNotification (CommentedNotification) returns (NotificationResponse) {}
+    rpc SendFollowedNotification (FollowedNotification) returns (NotificationResponse) {}
+    rpc SendKafkaNotification (KafkaNotification) returns (NotificationResponse) {}
+    rpc SendLikeNotification (LikeNotification) returns (NotificationResponse) {}
+    rpc ConsumeKafkaMessages(Empty) returns (stream NotificationMessage){}
+    rpc ConsumeKafkaCommentMessages(ConsumeKafkaCommentMessagesRequest) returns ( ConsumeKafkaCommentMessagesResponse){}
+    rpc ConsumeKafkaLikeMessages(ConsumeKafkaLikeMessagesRequest) returns (ConsumeKafkaLikeMessagesResponse) {}
+}
+
+message GetNotificationRequest{
+    string userID = 1;
+    string limit = 2;
+    string offset = 3;
+}
+
+message Message {
+    string message = 1;
+    string time = 2;
+}
+
+message GetNotificationResponse{
+    repeated Message  notification= 1;
+}
+
+message CommentedNotification {
+    string postId = 1;
+    string commenterId = 2;
+    string comment = 3;
+}
+
+message NotificationResponse {
+    string message = 1;
+}
+
+message FollowedNotification {
+    string followerId = 1;
+    string followedUserId = 2;
+}
+
+message KafkaNotification {
+    string key = 1;
+    string value = 2;
+}
+
+message LikeNotification{
+    int64 post_id = 1;
+    int64 user_id = 2;
+}
+  
+message NotificationMessage {
+    int64 post_id = 1;
+    int64 user_id = 2;
+    string message = 3;
+}
+
+message Empty {}
+  
+message ConsumeKafkaCommentMessagesRequest{
+    int64 user_id = 1;
+}
+
+message ConsumeKafkaCommentMessagesResponse{
+    int64 user_id = 1;
+    int64 post_id = 2;
+    string message = 3;
+    string content = 4;
+}
+  
+message ConsumeKafkaLikeMessagesRequest{
+    int64 user_id = 1;
+}
+  
+message ConsumeKafkaLikeMessagesResponse{
+    int64 user_id = 1;
+    int64 post_id = 2;
+    string message = 3;
+    string content = 4;
+}
+  
