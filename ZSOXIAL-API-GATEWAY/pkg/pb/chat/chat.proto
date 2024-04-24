@@ -8,10 +8,6 @@ option go_package = "./pkg/pb/chat";
 
 service ChatService {
     rpc GetAllChats  (GetAllChatsRequest) returns (GetAllChatsResponse){}
-    rpc GetMessages (GetMessagesRequest) returns (GetMessagesResponse){}
-    rpc SaveMessage (SaveMessageRequest) returns (SaveMessageResponse){}
-    rpc ReadMessage (ReadMessageRequest) returns (ReadMessageResponse){}
-    rpc FetchRecipient (FetchRecipientRequest) returns (FetchRecipientResponse){}
     rpc GetFriendChat (GetFriendChatRequest) returns (GetFriendChatResponse){}
 }
 
@@ -39,52 +35,6 @@ message chatResponse {
 
 message GetAllChatsResponse {
     repeated chatResponse response = 1;
-}
-
-message GetMessagesRequest {
-    string chatid =1;
-}
-
-message Response {
-    string id = 1;
-    uint32 sender_id = 2;
-    string chat_id = 3;
-    bool seen = 4;
-    string image = 5;
-    string message_content = 6;
-    google.protobuf.Timestamp timestamp = 7;
-}
-
-message GetMessagesResponse{
-    repeated Response response = 1;
-}
-
-message SaveMessageRequest {
-    string chatid =1;
-    int64 senderid = 2;
-    string message = 3;
-}
-
-message SaveMessageResponse {
-    string id = 1;
-}
-
-message ReadMessageRequest {
-    string chatid =1;
-    int64 userid = 2;
-}
-
-message ReadMessageResponse{
-    int64 id = 1;
-}
-
-message FetchRecipientRequest {
-    string chatid =1;
-    int64 userid = 2;
-}
-
-message FetchRecipientResponse{
-    int64 id = 1;
 }
 
 message GetFriendChatRequest {
