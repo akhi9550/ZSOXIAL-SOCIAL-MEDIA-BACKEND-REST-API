@@ -24,6 +24,7 @@ type PostRepository interface {
 	GetAllArchivePost(userID int) ([]models.ArchivePostResponse, error)
 	CheckAlreadyLiked(userID, PostID int) bool
 	LikePost(userID, postID int) (models.LikesReponse, error)
+	GetPostedUserID(postID int)(int,error)
 	UnLikePost(userID, postID int) error
 	PostComment(userID int, data models.PostCommentReq) (models.PostComments, error)
 	CheckUserWithUserID(userID int) bool

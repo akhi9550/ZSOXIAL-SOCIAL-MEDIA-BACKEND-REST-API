@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"errors"
+	"fmt"
 
 	authclientinterfaces "github.com/akhi9550/post-svc/pkg/client/interface"
 	"github.com/akhi9550/post-svc/pkg/helper"
@@ -305,6 +306,17 @@ func (p *postUseCase) LikePost(userID int, postID int) (models.LikePostResponse,
 	if err != nil {
 		return models.LikePostResponse{}, err
 	}
+	postedUserID, err := p.postRepository.GetPostedUserID(postID)
+	if err != nil {
+		return models.LikePostResponse{}, err
+	}
+	msg := fmt.Sprintf("%s Liked PostID %d", userData.Username, postID)
+	helper.SendLikeNotification(models.Notification{
+		UserID:      postedUserID,
+		LikedUserID: userID,
+		PostID:      postID,
+	}, []byte(msg))
+
 	return models.LikePostResponse{
 		UserID:    data.UserID,
 		LikedUser: userData.Username,
@@ -351,6 +363,18 @@ func (p *postUseCase) PostComment(userID int, data models.PostCommentReq) (model
 	if err != nil {
 		return models.PostComment{}, err
 	}
+	postedUserID, err := p.postRepository.GetPostedUserID(int(data.PostID))
+	if err != nil {
+		return models.PostComment{}, err
+	}
+
+	msg := fmt.Sprintf("%s comment on post %d Comment %s", userData.Username, data.PostID, data.Comment)
+	helper.SendCommentNotification(models.Notification{
+		UserID:      postedUserID,
+		LikedUserID: userID,
+		PostID:      int(data.PostID),
+	}, []byte(msg))
+
 	return models.PostComment{
 		UserID:        result.UserID,
 		CommentedUser: userData.Username,
@@ -412,10 +436,10 @@ func (p *postUseCase) ReplyComment(userID int, req models.ReplyCommentReq) (mode
 	if !ok {
 		return models.ReplyReposne{}, errors.New("comment doesn't exist")
 	}
-	alreadyReplied := p.postRepository.AllReadyExistReply(userID, int(req.CommentID))
-	if alreadyReplied {
-		return models.ReplyReposne{}, errors.New("already replied the comment")
-	}
+	// alreadyReplied := p.postRepository.AllReadyExistReply(userID, int(req.CommentID))
+	// if alreadyReplied {
+	// 	return models.ReplyReposne{}, errors.New("already replied the comment")
+	// }
 	com, rep, err := p.postRepository.ReplyComment(userID, req)
 	if err != nil {
 		return models.ReplyReposne{}, err

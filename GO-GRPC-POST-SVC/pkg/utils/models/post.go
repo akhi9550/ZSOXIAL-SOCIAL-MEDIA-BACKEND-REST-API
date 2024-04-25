@@ -8,6 +8,7 @@ type PostRequest struct {
 	Caption string `json:"caption"`
 	TypeId  uint   `json:"TypeId"`
 }
+
 type UserData struct {
 	UserId   uint   `json:"user_id"`
 	Username string `json:"username"`

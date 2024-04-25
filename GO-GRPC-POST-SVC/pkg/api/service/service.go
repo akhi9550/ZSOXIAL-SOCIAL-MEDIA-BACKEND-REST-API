@@ -133,6 +133,7 @@ func (p *PostServer) DeletePost(ctx context.Context, req *pb.DeletePostRequest) 
 	}
 	return &pb.DeletePostResponse{}, nil
 }
+
 func (p *PostServer) GetAllPost(ctx context.Context, req *pb.GetAllPostRequest) (*pb.GetAllPostResponse, error) {
 	userID := req.Userid
 	posts, err := p.postUseCase.GetAllPost(int(userID))

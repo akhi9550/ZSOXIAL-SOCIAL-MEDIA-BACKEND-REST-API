@@ -224,6 +224,15 @@ func (p *postRepository) LikePost(userID, postID int) (models.LikesReponse, erro
 	return response, err
 }
 
+func (p *postRepository) GetPostedUserID(postID int) (int, error) {
+	var id int
+	err := p.DB.Raw(`SELECT user_id FROM posts WHERE id = ?`, postID).Scan(&id).Error
+	if err != nil {
+		return 0, err
+	}
+	return id, nil
+}
+
 func (p *postRepository) UnLikePost(userID, postID int) error {
 	err := p.DB.Exec(`UPDATE posts SET likes_count = likes_count - 1 WHERE id = ?`, postID).Error
 	if err != nil {
@@ -431,6 +440,10 @@ func (p *postRepository) CheckPostIDByID(postID int) bool {
 }
 func (p *postRepository) RemovePost(postID int) error {
 	err := p.DB.Exec(`DELETE FROM posts WHERE id = ?`, postID).Error
+	if err != nil {
+		return err
+	}
+	err = p.DB.Exec(`DELETE FROM post_reports WHERE post_id = ?`, postID).Error
 	if err != nil {
 		return err
 	}

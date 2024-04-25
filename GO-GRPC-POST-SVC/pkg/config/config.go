@@ -12,7 +12,11 @@ type Config struct {
 	DBPassword string `mapstructure:"DB_PASSWORD"`
 	Port       string `mapstructure:"PORT"`
 
-	AuthSvcUrl   string `mapstructure:"AUTH_SVC_URL"`
+	AuthSvcUrl string `mapstructure:"AUTH_SVC_URL"`
+
+	KafkaPort         string `mapstructure:"KAFKA_PORT"`
+	KafkaLikeTopic    string `mapstructure:"KAFKA_LIKE_TOPIC"`
+	KafkaCommentTopic string `mapstructure:"KAFKA_COMMENT_TOPIC"`
 
 	AWS_REGION            string `mapstructure:"AWS_REGION"`
 	AWS_ACCESS_KEY_ID     string `mapstructure:"AWS_ACCESS_KEY_ID"`
@@ -20,7 +24,7 @@ type Config struct {
 }
 
 var envs = []string{
-	"DB_HOST", "DB_NAME", "DB_USER", "DB_PORT", "DB_PASSWORD", "PORT","AUTH_SVC_URL", "AWS_REGION", "AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY",
+	"DB_HOST", "DB_NAME", "DB_USER", "DB_PORT", "DB_PASSWORD", "PORT", "KAFKA_PORT", "KAFKA_LIKE_TOPIC", "KAFKA_COMMENT_TOPIC", "AUTH_SVC_URL", "AWS_REGION", "AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY",
 }
 
 func LoadConfig() (Config, error) {

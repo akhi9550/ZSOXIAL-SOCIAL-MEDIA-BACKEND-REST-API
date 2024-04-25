@@ -108,7 +108,7 @@ func (s *storyRepository) UnLikeStory(userID, storyID int) error {
 
 func (s *storyRepository) ViewersDetails(storyID int) ([]models.Viewer, error) {
 	var response []models.Viewer
-	err := s.DB.Raw(`SELECT viewer_id FROM view_story WHERE story_id = ?`, storyID).Scan(&response).Error
+	err := s.DB.Raw(`SELECT viewer_id FROM view_stories WHERE story_id = ?`, storyID).Scan(&response).Error
 	if err != nil {
 		return []models.Viewer{}, err
 	}
