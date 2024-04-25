@@ -7,16 +7,16 @@ type NotificationRequest struct {
 	PostID uint `json:"post_id"`
 }
 
-type NotificationReq struct {
-	Offset string `query:"Offset" validate:"required"`
-	Limit  string `query:"Limit" validate:"required"`
+type NotificationPagination struct {
+	Limit  int `json:"limit"`
+	Offset int `json:"offset"`
 }
 
 type Notification struct {
-	LikedUser   string    `json:"liked_user"`
-	UserProfile string    `json:"user_profile"`
+	UserID      int       `json:"user_id"`
+	LikedUserID int       `json:"liked_user_id"`
 	PostID      int       `json:"post_id"`
-	Content     string    `json:"Content"`
+	Message     string    `json:"Message"`
 	Timestamp   time.Time `json:"TimeStamp"`
 }
 
