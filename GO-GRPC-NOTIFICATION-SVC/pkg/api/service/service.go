@@ -3,9 +3,10 @@ package service
 import (
 	"context"
 
-	interfaces"github.com/akhi9550/notification-svc/pkg/usecase/interface"
-	pb"github.com/akhi9550/notification-svc/pkg/pb/notification"
+	pb "github.com/akhi9550/notification-svc/pkg/pb/notification"
+	interfaces "github.com/akhi9550/notification-svc/pkg/usecase/interface"
 	"github.com/akhi9550/notification-svc/pkg/utils/models"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 type NotificationHandler struct {
@@ -18,52 +19,23 @@ func NewNotificationServer(UseCase interfaces.NotificationUsecaseInterface) pb.N
 		notificationUsecase: UseCase,
 	}
 }
-func (n *NotificationHandler) SendLikeNotification(ctx context.Context, notify *pb.LikeNotification) (*pb.NotificationResponse, error) {
-	_, err := n.notificationUsecase.AddLikeNotification(models.LikeNotification{
-		UserID: notify.UserId,
-		PostID: notify.PostId,
-	})
+
+func (n *NotificationHandler) GetNotification(ctx context.Context, req *pb.GetNotificationRequest) (*pb.GetNotificationResponse, error) {
+	result, err := n.notificationUsecase.GetNotification(int(req.UserID), models.Pagination{Limit: int(req.Limit), Offset: int(req.Offset)})
 	if err != nil {
 		return nil, err
 	}
 
-	response := &pb.NotificationResponse{
-		Message: "successfully got all notifications",
+	var finalResult []*pb.Message
+	for _, val := range result {
+		finalResult = append(finalResult, &pb.Message{
+			UserID:   int64(val.UserID),
+			Username: val.Username,
+			Profile:  val.Profile,
+			PostID:   int64(val.PostID),
+			Message:  val.Message,
+			Time:     timestamppb.New(val.CreatedAt),
+		})
 	}
-
-	return response, nil
-
-}
-
-func (n *NotificationHandler) ConsumeKafkaCommentMessages(ctx context.Context, p *pb.ConsumeKafkaCommentMessagesRequest) (*pb.ConsumeKafkaCommentMessagesResponse, error) {
-
-	res, err := n.notificationUsecase.ConsumeCommentMessage(p.UserId)
-
-	if err != nil {
-		return &pb.ConsumeKafkaCommentMessagesResponse{}, err
-	}
-
-	return &pb.ConsumeKafkaCommentMessagesResponse{
-		UserId:  res.UserID,
-		PostId:  res.PostID,
-		Message: res.Message,
-		Content: res.Content,
-	}, nil
-
-}
-
-func (n *NotificationHandler) ConsumeKafkaLikeMessages(ctx context.Context, p *pb.ConsumeKafkaLikeMessagesRequest) (*pb.ConsumeKafkaLikeMessagesResponse, error) {
-
-	response, err := n.notificationUsecase.ConsumeMessage(p.UserId)
-
-	if err != nil {
-		return &pb.ConsumeKafkaLikeMessagesResponse{}, err
-	}
-	return &pb.ConsumeKafkaLikeMessagesResponse{
-		UserId:  response.UserID,
-		PostId:  response.PostID,
-		Message: response.Message,
-		Content: response.Content,
-	}, nil
-
+	return &pb.GetNotificationResponse{Notification: finalResult}, nil
 }

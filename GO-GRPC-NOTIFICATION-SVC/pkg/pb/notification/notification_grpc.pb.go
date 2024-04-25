@@ -19,26 +19,14 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	NotificationService_SendCommentedNotification_FullMethodName   = "/notification.NotificationService/SendCommentedNotification"
-	NotificationService_SendFollowedNotification_FullMethodName    = "/notification.NotificationService/SendFollowedNotification"
-	NotificationService_SendKafkaNotification_FullMethodName       = "/notification.NotificationService/SendKafkaNotification"
-	NotificationService_SendLikeNotification_FullMethodName        = "/notification.NotificationService/SendLikeNotification"
-	NotificationService_ConsumeKafkaMessages_FullMethodName        = "/notification.NotificationService/ConsumeKafkaMessages"
-	NotificationService_ConsumeKafkaCommentMessages_FullMethodName = "/notification.NotificationService/ConsumeKafkaCommentMessages"
-	NotificationService_ConsumeKafkaLikeMessages_FullMethodName    = "/notification.NotificationService/ConsumeKafkaLikeMessages"
+	NotificationService_GetNotification_FullMethodName = "/notification.NotificationService/GetNotification"
 )
 
 // NotificationServiceClient is the client API for NotificationService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type NotificationServiceClient interface {
-	SendCommentedNotification(ctx context.Context, in *CommentedNotification, opts ...grpc.CallOption) (*NotificationResponse, error)
-	SendFollowedNotification(ctx context.Context, in *FollowedNotification, opts ...grpc.CallOption) (*NotificationResponse, error)
-	SendKafkaNotification(ctx context.Context, in *KafkaNotification, opts ...grpc.CallOption) (*NotificationResponse, error)
-	SendLikeNotification(ctx context.Context, in *LikeNotification, opts ...grpc.CallOption) (*NotificationResponse, error)
-	ConsumeKafkaMessages(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NotificationService_ConsumeKafkaMessagesClient, error)
-	ConsumeKafkaCommentMessages(ctx context.Context, in *ConsumeKafkaCommentMessagesRequest, opts ...grpc.CallOption) (*ConsumeKafkaCommentMessagesResponse, error)
-	ConsumeKafkaLikeMessages(ctx context.Context, in *ConsumeKafkaLikeMessagesRequest, opts ...grpc.CallOption) (*ConsumeKafkaLikeMessagesResponse, error)
+	GetNotification(ctx context.Context, in *GetNotificationRequest, opts ...grpc.CallOption) (*GetNotificationResponse, error)
 }
 
 type notificationServiceClient struct {
@@ -49,86 +37,9 @@ func NewNotificationServiceClient(cc grpc.ClientConnInterface) NotificationServi
 	return &notificationServiceClient{cc}
 }
 
-func (c *notificationServiceClient) SendCommentedNotification(ctx context.Context, in *CommentedNotification, opts ...grpc.CallOption) (*NotificationResponse, error) {
-	out := new(NotificationResponse)
-	err := c.cc.Invoke(ctx, NotificationService_SendCommentedNotification_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *notificationServiceClient) SendFollowedNotification(ctx context.Context, in *FollowedNotification, opts ...grpc.CallOption) (*NotificationResponse, error) {
-	out := new(NotificationResponse)
-	err := c.cc.Invoke(ctx, NotificationService_SendFollowedNotification_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *notificationServiceClient) SendKafkaNotification(ctx context.Context, in *KafkaNotification, opts ...grpc.CallOption) (*NotificationResponse, error) {
-	out := new(NotificationResponse)
-	err := c.cc.Invoke(ctx, NotificationService_SendKafkaNotification_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *notificationServiceClient) SendLikeNotification(ctx context.Context, in *LikeNotification, opts ...grpc.CallOption) (*NotificationResponse, error) {
-	out := new(NotificationResponse)
-	err := c.cc.Invoke(ctx, NotificationService_SendLikeNotification_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *notificationServiceClient) ConsumeKafkaMessages(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NotificationService_ConsumeKafkaMessagesClient, error) {
-	stream, err := c.cc.NewStream(ctx, &NotificationService_ServiceDesc.Streams[0], NotificationService_ConsumeKafkaMessages_FullMethodName, opts...)
-	if err != nil {
-		return nil, err
-	}
-	x := &notificationServiceConsumeKafkaMessagesClient{stream}
-	if err := x.ClientStream.SendMsg(in); err != nil {
-		return nil, err
-	}
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
-	return x, nil
-}
-
-type NotificationService_ConsumeKafkaMessagesClient interface {
-	Recv() (*NotificationMessage, error)
-	grpc.ClientStream
-}
-
-type notificationServiceConsumeKafkaMessagesClient struct {
-	grpc.ClientStream
-}
-
-func (x *notificationServiceConsumeKafkaMessagesClient) Recv() (*NotificationMessage, error) {
-	m := new(NotificationMessage)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
-}
-
-func (c *notificationServiceClient) ConsumeKafkaCommentMessages(ctx context.Context, in *ConsumeKafkaCommentMessagesRequest, opts ...grpc.CallOption) (*ConsumeKafkaCommentMessagesResponse, error) {
-	out := new(ConsumeKafkaCommentMessagesResponse)
-	err := c.cc.Invoke(ctx, NotificationService_ConsumeKafkaCommentMessages_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *notificationServiceClient) ConsumeKafkaLikeMessages(ctx context.Context, in *ConsumeKafkaLikeMessagesRequest, opts ...grpc.CallOption) (*ConsumeKafkaLikeMessagesResponse, error) {
-	out := new(ConsumeKafkaLikeMessagesResponse)
-	err := c.cc.Invoke(ctx, NotificationService_ConsumeKafkaLikeMessages_FullMethodName, in, out, opts...)
+func (c *notificationServiceClient) GetNotification(ctx context.Context, in *GetNotificationRequest, opts ...grpc.CallOption) (*GetNotificationResponse, error) {
+	out := new(GetNotificationResponse)
+	err := c.cc.Invoke(ctx, NotificationService_GetNotification_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -139,13 +50,7 @@ func (c *notificationServiceClient) ConsumeKafkaLikeMessages(ctx context.Context
 // All implementations must embed UnimplementedNotificationServiceServer
 // for forward compatibility
 type NotificationServiceServer interface {
-	SendCommentedNotification(context.Context, *CommentedNotification) (*NotificationResponse, error)
-	SendFollowedNotification(context.Context, *FollowedNotification) (*NotificationResponse, error)
-	SendKafkaNotification(context.Context, *KafkaNotification) (*NotificationResponse, error)
-	SendLikeNotification(context.Context, *LikeNotification) (*NotificationResponse, error)
-	ConsumeKafkaMessages(*Empty, NotificationService_ConsumeKafkaMessagesServer) error
-	ConsumeKafkaCommentMessages(context.Context, *ConsumeKafkaCommentMessagesRequest) (*ConsumeKafkaCommentMessagesResponse, error)
-	ConsumeKafkaLikeMessages(context.Context, *ConsumeKafkaLikeMessagesRequest) (*ConsumeKafkaLikeMessagesResponse, error)
+	GetNotification(context.Context, *GetNotificationRequest) (*GetNotificationResponse, error)
 	mustEmbedUnimplementedNotificationServiceServer()
 }
 
@@ -153,26 +58,8 @@ type NotificationServiceServer interface {
 type UnimplementedNotificationServiceServer struct {
 }
 
-func (UnimplementedNotificationServiceServer) SendCommentedNotification(context.Context, *CommentedNotification) (*NotificationResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SendCommentedNotification not implemented")
-}
-func (UnimplementedNotificationServiceServer) SendFollowedNotification(context.Context, *FollowedNotification) (*NotificationResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SendFollowedNotification not implemented")
-}
-func (UnimplementedNotificationServiceServer) SendKafkaNotification(context.Context, *KafkaNotification) (*NotificationResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SendKafkaNotification not implemented")
-}
-func (UnimplementedNotificationServiceServer) SendLikeNotification(context.Context, *LikeNotification) (*NotificationResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SendLikeNotification not implemented")
-}
-func (UnimplementedNotificationServiceServer) ConsumeKafkaMessages(*Empty, NotificationService_ConsumeKafkaMessagesServer) error {
-	return status.Errorf(codes.Unimplemented, "method ConsumeKafkaMessages not implemented")
-}
-func (UnimplementedNotificationServiceServer) ConsumeKafkaCommentMessages(context.Context, *ConsumeKafkaCommentMessagesRequest) (*ConsumeKafkaCommentMessagesResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ConsumeKafkaCommentMessages not implemented")
-}
-func (UnimplementedNotificationServiceServer) ConsumeKafkaLikeMessages(context.Context, *ConsumeKafkaLikeMessagesRequest) (*ConsumeKafkaLikeMessagesResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ConsumeKafkaLikeMessages not implemented")
+func (UnimplementedNotificationServiceServer) GetNotification(context.Context, *GetNotificationRequest) (*GetNotificationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetNotification not implemented")
 }
 func (UnimplementedNotificationServiceServer) mustEmbedUnimplementedNotificationServiceServer() {}
 
@@ -187,131 +74,20 @@ func RegisterNotificationServiceServer(s grpc.ServiceRegistrar, srv Notification
 	s.RegisterService(&NotificationService_ServiceDesc, srv)
 }
 
-func _NotificationService_SendCommentedNotification_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CommentedNotification)
+func _NotificationService_GetNotification_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetNotificationRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(NotificationServiceServer).SendCommentedNotification(ctx, in)
+		return srv.(NotificationServiceServer).GetNotification(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: NotificationService_SendCommentedNotification_FullMethodName,
+		FullMethod: NotificationService_GetNotification_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NotificationServiceServer).SendCommentedNotification(ctx, req.(*CommentedNotification))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _NotificationService_SendFollowedNotification_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(FollowedNotification)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(NotificationServiceServer).SendFollowedNotification(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: NotificationService_SendFollowedNotification_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NotificationServiceServer).SendFollowedNotification(ctx, req.(*FollowedNotification))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _NotificationService_SendKafkaNotification_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(KafkaNotification)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(NotificationServiceServer).SendKafkaNotification(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: NotificationService_SendKafkaNotification_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NotificationServiceServer).SendKafkaNotification(ctx, req.(*KafkaNotification))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _NotificationService_SendLikeNotification_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(LikeNotification)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(NotificationServiceServer).SendLikeNotification(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: NotificationService_SendLikeNotification_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NotificationServiceServer).SendLikeNotification(ctx, req.(*LikeNotification))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _NotificationService_ConsumeKafkaMessages_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(Empty)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
-	}
-	return srv.(NotificationServiceServer).ConsumeKafkaMessages(m, &notificationServiceConsumeKafkaMessagesServer{stream})
-}
-
-type NotificationService_ConsumeKafkaMessagesServer interface {
-	Send(*NotificationMessage) error
-	grpc.ServerStream
-}
-
-type notificationServiceConsumeKafkaMessagesServer struct {
-	grpc.ServerStream
-}
-
-func (x *notificationServiceConsumeKafkaMessagesServer) Send(m *NotificationMessage) error {
-	return x.ServerStream.SendMsg(m)
-}
-
-func _NotificationService_ConsumeKafkaCommentMessages_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ConsumeKafkaCommentMessagesRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(NotificationServiceServer).ConsumeKafkaCommentMessages(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: NotificationService_ConsumeKafkaCommentMessages_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NotificationServiceServer).ConsumeKafkaCommentMessages(ctx, req.(*ConsumeKafkaCommentMessagesRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _NotificationService_ConsumeKafkaLikeMessages_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ConsumeKafkaLikeMessagesRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(NotificationServiceServer).ConsumeKafkaLikeMessages(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: NotificationService_ConsumeKafkaLikeMessages_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NotificationServiceServer).ConsumeKafkaLikeMessages(ctx, req.(*ConsumeKafkaLikeMessagesRequest))
+		return srv.(NotificationServiceServer).GetNotification(ctx, req.(*GetNotificationRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -324,36 +100,10 @@ var NotificationService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*NotificationServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "SendCommentedNotification",
-			Handler:    _NotificationService_SendCommentedNotification_Handler,
-		},
-		{
-			MethodName: "SendFollowedNotification",
-			Handler:    _NotificationService_SendFollowedNotification_Handler,
-		},
-		{
-			MethodName: "SendKafkaNotification",
-			Handler:    _NotificationService_SendKafkaNotification_Handler,
-		},
-		{
-			MethodName: "SendLikeNotification",
-			Handler:    _NotificationService_SendLikeNotification_Handler,
-		},
-		{
-			MethodName: "ConsumeKafkaCommentMessages",
-			Handler:    _NotificationService_ConsumeKafkaCommentMessages_Handler,
-		},
-		{
-			MethodName: "ConsumeKafkaLikeMessages",
-			Handler:    _NotificationService_ConsumeKafkaLikeMessages_Handler,
+			MethodName: "GetNotification",
+			Handler:    _NotificationService_GetNotification_Handler,
 		},
 	},
-	Streams: []grpc.StreamDesc{
-		{
-			StreamName:    "ConsumeKafkaMessages",
-			Handler:       _NotificationService_ConsumeKafkaMessages_Handler,
-			ServerStreams: true,
-		},
-	},
+	Streams:  []grpc.StreamDesc{},
 	Metadata: "pkg/pb/notification/notification.proto",
 }

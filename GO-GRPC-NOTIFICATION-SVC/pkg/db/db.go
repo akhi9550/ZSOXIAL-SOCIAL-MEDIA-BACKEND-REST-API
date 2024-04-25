@@ -16,5 +16,6 @@ func ConnectDatabase(cfg config.Config) (*gorm.DB, error) {
 	})
 
 	db.AutoMigrate(&domain.Notification{})
+
 	return db, dbErr
 }

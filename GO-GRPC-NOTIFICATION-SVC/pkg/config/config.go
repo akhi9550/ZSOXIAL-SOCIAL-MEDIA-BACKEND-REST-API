@@ -10,15 +10,16 @@ type Config struct {
 	DBPassword string `mapstructure:"DB_PASSWORD"`
 	Port       string `mapstructure:"PORT"`
 
-	KafkaPort  string `mapstructure:"KAFKA_PORT"`
-	KafkaLikeTopic string `mapstructure:"KAFKA__LIKE_TOPIC"`
-	KafkaCommentTopic string `mapstructure:"KAFKA_COMMENT_TOPIC"`
-
+	AuthSvcUrl string `mapstructure:"AUTH_SVC_URL"`
 	PostSvcUrl string `mapstructure:"POST_SVC_URL"`
+
+	KafkaPort         string `mapstructure:"KAFKA_PORT"`
+	KafkaLikeTopic    string `mapstructure:"KAFKA_LIKE_TOPIC"`
+	KafkaCommentTopic string `mapstructure:"KAFKA_COMMENT_TOPIC"`
 }
 
 var envs = []string{
-	"DB_HOST", "DB_NAME", "DB_USER", "DB_PORT", "DB_PASSWORD", "PORT","KAFKA_PORT","KAFKA__LIKE_TOPIC","KAFKA_COMMENT_TOPIC", "POST_SVC_URL",
+	"DB_URL", "DB_NAME", "PORT", "KAFKA_PORT", "KAFKA_LIKE_TOPIC", "KAFKA_COMMENT_TOPIC", "POST_SVC_URL",
 }
 
 func LoadConfig() (Config, error) {

@@ -1,7 +1,10 @@
 package interfaces
 
-import "github.com/akhi9550/notification-svc/pkg/domain"
+import (
+	"github.com/akhi9550/notification-svc/pkg/utils/models"
+)
 
 type NotificationRepository interface {
-	AddNotification(notification domain.Notification) (int64, error)
+	StoreNotification(models.NotificationReq) error
+	GetNotification(userID int, req models.Pagination) ([]models.Notification, error)
 }

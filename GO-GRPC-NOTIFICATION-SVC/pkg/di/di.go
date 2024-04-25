@@ -1,6 +1,8 @@
 package di
 
 import (
+	"sync"
+
 	server "github.com/akhi9550/notification-svc/pkg/api"
 	"github.com/akhi9550/notification-svc/pkg/api/service"
 	"github.com/akhi9550/notification-svc/pkg/client"
@@ -10,18 +12,31 @@ import (
 	"github.com/akhi9550/notification-svc/pkg/usecase"
 )
 
+var configMutex sync.Mutex
+
 func InitializeAPI(cfg config.Config) (*server.Server, error) {
+	configMutex.Lock()
+	defer configMutex.Unlock()
+
 	gormDB, err := db.ConnectDatabase(cfg)
 	if err != nil {
 		return nil, err
 	}
 	notificationRepository := repository.NewNotificationRepository(gormDB)
-	postClient := client.NewPostClient(&cfg)
-	notificationUseCase := usecase.NewUserUserUseCase(notificationRepository, postClient)
+	authClient := client.NewAuthClient(&cfg)
+	notificationUseCase := usecase.NewUserUserUseCase(notificationRepository, authClient)
 	ServiceServer := service.NewNotificationServer(notificationUseCase)
 	grpcServer, err := server.NewGRPCServer(cfg, ServiceServer)
 	if err != nil {
 		return &server.Server{}, err
 	}
+	go func() {
+		notificationUseCase.ConsumeLikeMessage()
+	}()
+
+	go func() {
+		notificationUseCase.ConsumeCommentMessage()
+	}()
+
 	return grpcServer, nil
 }

@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package user;
+
+option go_package = "./pkg/pb/auth";
+
+service AuthService {
+    rpc UserData (UserDataRequest) returns (UserDataResponse){}
+}
+
+message UserDataRequest{
+    int64 id = 1;
+}
+
+message UserDataResponse {
+  int64 id = 1;
+  string username = 2;
+  string profile_photo = 3;
+}
