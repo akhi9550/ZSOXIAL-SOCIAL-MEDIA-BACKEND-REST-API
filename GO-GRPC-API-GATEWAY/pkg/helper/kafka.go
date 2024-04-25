@@ -53,8 +53,6 @@ func (r *Helper) SendMessageToUser(User map[string]*websocket.Conn, msg []byte, 
 		fmt.Println("error while unmarshel ", err)
 	}
 
-	fmt.Println("message ", message)
-
 	message.SenderID = userID
 	recipientConn, ok := User[message.RecipientID]
 	if ok {

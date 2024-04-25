@@ -61,7 +61,6 @@ func (ch *ChatHandler) FriendMessage(c *gin.Context) {
 			c.JSON(http.StatusBadRequest, errs)
 			return
 		}
-
 		ch.helper.SendMessageToUser(User, msg, user)
 	}
 }

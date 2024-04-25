@@ -5,6 +5,7 @@ package notification;
 option go_package = "./pkg/pb/notification";
 
 service NotificationService {
+    rpc GetNotification (GetNotificationRequest) returns (GetNotificationResponse){}
     rpc SendCommentedNotification (CommentedNotification) returns (NotificationResponse) {}
     rpc SendFollowedNotification (FollowedNotification) returns (NotificationResponse) {}
     rpc SendKafkaNotification (KafkaNotification) returns (NotificationResponse) {}
@@ -12,6 +13,21 @@ service NotificationService {
     rpc ConsumeKafkaMessages(Empty) returns (stream NotificationMessage){}
     rpc ConsumeKafkaCommentMessages(ConsumeKafkaCommentMessagesRequest) returns ( ConsumeKafkaCommentMessagesResponse){}
     rpc ConsumeKafkaLikeMessages(ConsumeKafkaLikeMessagesRequest) returns (ConsumeKafkaLikeMessagesResponse) {}
+}
+
+message GetNotificationRequest{
+    string userID = 1;
+    string limit = 2;
+    string offset = 3;
+}
+
+message Message {
+    string message = 1;
+    string time = 2;
+}
+
+message GetNotificationResponse{
+    repeated Message  notification= 1;
 }
 
 message CommentedNotification {

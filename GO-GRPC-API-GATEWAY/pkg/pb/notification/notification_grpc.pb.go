@@ -19,6 +19,7 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
+	NotificationService_GetNotification_FullMethodName             = "/notification.NotificationService/GetNotification"
 	NotificationService_SendCommentedNotification_FullMethodName   = "/notification.NotificationService/SendCommentedNotification"
 	NotificationService_SendFollowedNotification_FullMethodName    = "/notification.NotificationService/SendFollowedNotification"
 	NotificationService_SendKafkaNotification_FullMethodName       = "/notification.NotificationService/SendKafkaNotification"
@@ -32,6 +33,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type NotificationServiceClient interface {
+	GetNotification(ctx context.Context, in *GetNotificationRequest, opts ...grpc.CallOption) (*GetNotificationResponse, error)
 	SendCommentedNotification(ctx context.Context, in *CommentedNotification, opts ...grpc.CallOption) (*NotificationResponse, error)
 	SendFollowedNotification(ctx context.Context, in *FollowedNotification, opts ...grpc.CallOption) (*NotificationResponse, error)
 	SendKafkaNotification(ctx context.Context, in *KafkaNotification, opts ...grpc.CallOption) (*NotificationResponse, error)
@@ -47,6 +49,15 @@ type notificationServiceClient struct {
 
 func NewNotificationServiceClient(cc grpc.ClientConnInterface) NotificationServiceClient {
 	return &notificationServiceClient{cc}
+}
+
+func (c *notificationServiceClient) GetNotification(ctx context.Context, in *GetNotificationRequest, opts ...grpc.CallOption) (*GetNotificationResponse, error) {
+	out := new(GetNotificationResponse)
+	err := c.cc.Invoke(ctx, NotificationService_GetNotification_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *notificationServiceClient) SendCommentedNotification(ctx context.Context, in *CommentedNotification, opts ...grpc.CallOption) (*NotificationResponse, error) {
@@ -139,6 +150,7 @@ func (c *notificationServiceClient) ConsumeKafkaLikeMessages(ctx context.Context
 // All implementations must embed UnimplementedNotificationServiceServer
 // for forward compatibility
 type NotificationServiceServer interface {
+	GetNotification(context.Context, *GetNotificationRequest) (*GetNotificationResponse, error)
 	SendCommentedNotification(context.Context, *CommentedNotification) (*NotificationResponse, error)
 	SendFollowedNotification(context.Context, *FollowedNotification) (*NotificationResponse, error)
 	SendKafkaNotification(context.Context, *KafkaNotification) (*NotificationResponse, error)
@@ -153,6 +165,9 @@ type NotificationServiceServer interface {
 type UnimplementedNotificationServiceServer struct {
 }
 
+func (UnimplementedNotificationServiceServer) GetNotification(context.Context, *GetNotificationRequest) (*GetNotificationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetNotification not implemented")
+}
 func (UnimplementedNotificationServiceServer) SendCommentedNotification(context.Context, *CommentedNotification) (*NotificationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendCommentedNotification not implemented")
 }
@@ -185,6 +200,24 @@ type UnsafeNotificationServiceServer interface {
 
 func RegisterNotificationServiceServer(s grpc.ServiceRegistrar, srv NotificationServiceServer) {
 	s.RegisterService(&NotificationService_ServiceDesc, srv)
+}
+
+func _NotificationService_GetNotification_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetNotificationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NotificationServiceServer).GetNotification(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: NotificationService_GetNotification_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NotificationServiceServer).GetNotification(ctx, req.(*GetNotificationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _NotificationService_SendCommentedNotification_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -323,6 +356,10 @@ var NotificationService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "notification.NotificationService",
 	HandlerType: (*NotificationServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "GetNotification",
+			Handler:    _NotificationService_GetNotification_Handler,
+		},
 		{
 			MethodName: "SendCommentedNotification",
 			Handler:    _NotificationService_SendCommentedNotification_Handler,

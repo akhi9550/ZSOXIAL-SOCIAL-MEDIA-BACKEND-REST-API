@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	interfaces "github.com/akhi9550/api-gateway/pkg/client/interface"
+	"github.com/akhi9550/api-gateway/pkg/helper"
 	"github.com/akhi9550/api-gateway/pkg/utils/models"
 	"github.com/akhi9550/api-gateway/pkg/utils/response"
 	"github.com/gin-gonic/gin"
@@ -68,7 +69,6 @@ func (p *PostHandler) GetUserPost(c *gin.Context) {
 	success := response.ClientResponse(http.StatusOK, "Get a Post", data, nil)
 	c.JSON(http.StatusOK, success)
 }
-
 
 func (p *PostHandler) GetPost(c *gin.Context) {
 	userID, _ := c.Get("user_id")
@@ -223,6 +223,9 @@ func (p *PostHandler) LikePost(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errs)
 		return
 	}
+	msg := fmt.Sprintf("%s Liked PostID %d", data.LikedUser, PostID)
+	helper.SendLikeNotification(msg, data, PostID)
+
 	success := response.ClientResponse(http.StatusOK, "Successfully Liked Post", data, nil)
 	c.JSON(http.StatusOK, success)
 }

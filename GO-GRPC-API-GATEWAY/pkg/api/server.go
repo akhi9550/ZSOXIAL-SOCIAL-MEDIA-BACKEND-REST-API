@@ -80,7 +80,6 @@ func NewServerHTTP(authHandler *handler.AuthHandler, postHandler *handler.PostHa
 			savepost.POST("", postHandler.SavedPost)
 			savepost.GET("", postHandler.GetSavedPost)
 			savepost.POST("/unsaved", postHandler.UnSavedPost)
-
 		}
 
 		archive := r.Group("/archive")
@@ -123,16 +122,18 @@ func NewServerHTTP(authHandler *handler.AuthHandler, postHandler *handler.PostHa
 		}
 		notification := r.Group("/notification")
 		{
-			notification.POST("/comment", notificationHandler.SendCommentedNotification)
-			notification.POST("/like/:postid", notificationHandler.SendLikeNotification)
-			// notification.GET("/consume/like",notificationHandler.ConsumeKafkaMessages)
-			notification.GET("/consume/comment", notificationHandler.ConsumeKafkaCommentMessages)
-			notification.GET("/consume/like", notificationHandler.ConsumeKafkaLikeMessages)
+			// 	notification.POST("/comment", notificationHandler.SendCommentedNotification)
+			// 	notification.POST("/like", notificationHandler.SendLikeNotification)
+			// 	// notification.GET("/consume/like",notificationHandler.ConsumeKafkaMessages)
+			// 	notification.GET("/consume/comment", notificationHandler.ConsumeKafkaCommentMessages)
+			// 	notification.GET("/consume/like", notificationHandler.ConsumeKafkaLikeMessages)
+			notification.GET("", notificationHandler.GetNotification)
 		}
 	}
 
 	return &ServerHTTP{engine: r}
 }
+
 func (s *ServerHTTP) Start() {
 	log.Printf("Starting Server on 8000")
 	err := s.engine.Run(":8000")
