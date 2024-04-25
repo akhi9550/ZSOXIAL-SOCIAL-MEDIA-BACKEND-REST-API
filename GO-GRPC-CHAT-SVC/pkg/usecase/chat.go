@@ -28,7 +28,6 @@ func NewChatUseCase(repository interfaces.ChatRepository, authclient authclienti
 
 func (c *ChatUseCase) MessageConsumer() {
 	fmt.Println("Starting Kafka consumer")
-
 	cfg, err := config.LoadConfig()
 	if err != nil {
 		fmt.Println("Error loading config:", err)
@@ -42,16 +41,13 @@ func (c *ChatUseCase) MessageConsumer() {
 		return
 	}
 	defer consumer.Close()
-
 	partitionConsumer, err := consumer.ConsumePartition(cfg.KafkaTopic, 0, sarama.OffsetNewest)
 	if err != nil {
 		fmt.Println("Error creating partition consumer:", err)
 		return
 	}
 	defer partitionConsumer.Close()
-
 	fmt.Println("Kafka consumer started")
-
 	for {
 		select {
 		case message := <-partitionConsumer.Messages():

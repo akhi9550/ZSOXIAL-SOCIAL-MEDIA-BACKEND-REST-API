@@ -19,27 +19,15 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	ChatService_Chat_FullMethodName           = "/chat.ChatService/Chat"
-	ChatService_CreateChatRoom_FullMethodName = "/chat.ChatService/CreateChatRoom"
-	ChatService_SaveMessage_FullMethodName    = "/chat.ChatService/SaveMessage"
-	ChatService_FetchRecipient_FullMethodName = "/chat.ChatService/FetchRecipient"
-	ChatService_GetAllChats_FullMethodName    = "/chat.ChatService/GetAllChats"
-	ChatService_GetMessages_FullMethodName    = "/chat.ChatService/GetMessages"
-	ChatService_ReadMessage_FullMethodName    = "/chat.ChatService/ReadMessage"
-	ChatService_GetFriendChat_FullMethodName  = "/chat.ChatService/GetFriendChat"
+	ChatService_GetAllChats_FullMethodName   = "/chat.ChatService/GetAllChats"
+	ChatService_GetFriendChat_FullMethodName = "/chat.ChatService/GetFriendChat"
 )
 
 // ChatServiceClient is the client API for ChatService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ChatServiceClient interface {
-	Chat(ctx context.Context, in *SendMessageRequest, opts ...grpc.CallOption) (*SendMessageResponse, error)
-	CreateChatRoom(ctx context.Context, in *CreateChatRoomRequest, opts ...grpc.CallOption) (*CreateChatRoomResponse, error)
-	SaveMessage(ctx context.Context, in *SaveMessageRequest, opts ...grpc.CallOption) (*SaveMessageResponse, error)
-	FetchRecipient(ctx context.Context, in *FetchRecipientRequest, opts ...grpc.CallOption) (*FetchRecipientResponse, error)
 	GetAllChats(ctx context.Context, in *GetAllChatsRequest, opts ...grpc.CallOption) (*GetAllChatsResponse, error)
-	GetMessages(ctx context.Context, in *GetMessagesRequest, opts ...grpc.CallOption) (*GetMessagesResponse, error)
-	ReadMessage(ctx context.Context, in *ReadMessageRequest, opts ...grpc.CallOption) (*ReadMessageResponse, error)
 	GetFriendChat(ctx context.Context, in *GetFriendChatRequest, opts ...grpc.CallOption) (*GetFriendChatResponse, error)
 }
 
@@ -51,63 +39,9 @@ func NewChatServiceClient(cc grpc.ClientConnInterface) ChatServiceClient {
 	return &chatServiceClient{cc}
 }
 
-func (c *chatServiceClient) Chat(ctx context.Context, in *SendMessageRequest, opts ...grpc.CallOption) (*SendMessageResponse, error) {
-	out := new(SendMessageResponse)
-	err := c.cc.Invoke(ctx, ChatService_Chat_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *chatServiceClient) CreateChatRoom(ctx context.Context, in *CreateChatRoomRequest, opts ...grpc.CallOption) (*CreateChatRoomResponse, error) {
-	out := new(CreateChatRoomResponse)
-	err := c.cc.Invoke(ctx, ChatService_CreateChatRoom_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *chatServiceClient) SaveMessage(ctx context.Context, in *SaveMessageRequest, opts ...grpc.CallOption) (*SaveMessageResponse, error) {
-	out := new(SaveMessageResponse)
-	err := c.cc.Invoke(ctx, ChatService_SaveMessage_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *chatServiceClient) FetchRecipient(ctx context.Context, in *FetchRecipientRequest, opts ...grpc.CallOption) (*FetchRecipientResponse, error) {
-	out := new(FetchRecipientResponse)
-	err := c.cc.Invoke(ctx, ChatService_FetchRecipient_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *chatServiceClient) GetAllChats(ctx context.Context, in *GetAllChatsRequest, opts ...grpc.CallOption) (*GetAllChatsResponse, error) {
 	out := new(GetAllChatsResponse)
 	err := c.cc.Invoke(ctx, ChatService_GetAllChats_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *chatServiceClient) GetMessages(ctx context.Context, in *GetMessagesRequest, opts ...grpc.CallOption) (*GetMessagesResponse, error) {
-	out := new(GetMessagesResponse)
-	err := c.cc.Invoke(ctx, ChatService_GetMessages_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *chatServiceClient) ReadMessage(ctx context.Context, in *ReadMessageRequest, opts ...grpc.CallOption) (*ReadMessageResponse, error) {
-	out := new(ReadMessageResponse)
-	err := c.cc.Invoke(ctx, ChatService_ReadMessage_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -127,13 +61,7 @@ func (c *chatServiceClient) GetFriendChat(ctx context.Context, in *GetFriendChat
 // All implementations must embed UnimplementedChatServiceServer
 // for forward compatibility
 type ChatServiceServer interface {
-	Chat(context.Context, *SendMessageRequest) (*SendMessageResponse, error)
-	CreateChatRoom(context.Context, *CreateChatRoomRequest) (*CreateChatRoomResponse, error)
-	SaveMessage(context.Context, *SaveMessageRequest) (*SaveMessageResponse, error)
-	FetchRecipient(context.Context, *FetchRecipientRequest) (*FetchRecipientResponse, error)
 	GetAllChats(context.Context, *GetAllChatsRequest) (*GetAllChatsResponse, error)
-	GetMessages(context.Context, *GetMessagesRequest) (*GetMessagesResponse, error)
-	ReadMessage(context.Context, *ReadMessageRequest) (*ReadMessageResponse, error)
 	GetFriendChat(context.Context, *GetFriendChatRequest) (*GetFriendChatResponse, error)
 	mustEmbedUnimplementedChatServiceServer()
 }
@@ -142,26 +70,8 @@ type ChatServiceServer interface {
 type UnimplementedChatServiceServer struct {
 }
 
-func (UnimplementedChatServiceServer) Chat(context.Context, *SendMessageRequest) (*SendMessageResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Chat not implemented")
-}
-func (UnimplementedChatServiceServer) CreateChatRoom(context.Context, *CreateChatRoomRequest) (*CreateChatRoomResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateChatRoom not implemented")
-}
-func (UnimplementedChatServiceServer) SaveMessage(context.Context, *SaveMessageRequest) (*SaveMessageResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SaveMessage not implemented")
-}
-func (UnimplementedChatServiceServer) FetchRecipient(context.Context, *FetchRecipientRequest) (*FetchRecipientResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method FetchRecipient not implemented")
-}
 func (UnimplementedChatServiceServer) GetAllChats(context.Context, *GetAllChatsRequest) (*GetAllChatsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAllChats not implemented")
-}
-func (UnimplementedChatServiceServer) GetMessages(context.Context, *GetMessagesRequest) (*GetMessagesResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetMessages not implemented")
-}
-func (UnimplementedChatServiceServer) ReadMessage(context.Context, *ReadMessageRequest) (*ReadMessageResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ReadMessage not implemented")
 }
 func (UnimplementedChatServiceServer) GetFriendChat(context.Context, *GetFriendChatRequest) (*GetFriendChatResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetFriendChat not implemented")
@@ -179,78 +89,6 @@ func RegisterChatServiceServer(s grpc.ServiceRegistrar, srv ChatServiceServer) {
 	s.RegisterService(&ChatService_ServiceDesc, srv)
 }
 
-func _ChatService_Chat_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SendMessageRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ChatServiceServer).Chat(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: ChatService_Chat_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChatServiceServer).Chat(ctx, req.(*SendMessageRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ChatService_CreateChatRoom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateChatRoomRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ChatServiceServer).CreateChatRoom(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: ChatService_CreateChatRoom_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChatServiceServer).CreateChatRoom(ctx, req.(*CreateChatRoomRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ChatService_SaveMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SaveMessageRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ChatServiceServer).SaveMessage(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: ChatService_SaveMessage_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChatServiceServer).SaveMessage(ctx, req.(*SaveMessageRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ChatService_FetchRecipient_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(FetchRecipientRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ChatServiceServer).FetchRecipient(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: ChatService_FetchRecipient_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChatServiceServer).FetchRecipient(ctx, req.(*FetchRecipientRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _ChatService_GetAllChats_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetAllChatsRequest)
 	if err := dec(in); err != nil {
@@ -265,42 +103,6 @@ func _ChatService_GetAllChats_Handler(srv interface{}, ctx context.Context, dec 
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ChatServiceServer).GetAllChats(ctx, req.(*GetAllChatsRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ChatService_GetMessages_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetMessagesRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ChatServiceServer).GetMessages(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: ChatService_GetMessages_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChatServiceServer).GetMessages(ctx, req.(*GetMessagesRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ChatService_ReadMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ReadMessageRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ChatServiceServer).ReadMessage(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: ChatService_ReadMessage_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChatServiceServer).ReadMessage(ctx, req.(*ReadMessageRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -331,32 +133,8 @@ var ChatService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*ChatServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Chat",
-			Handler:    _ChatService_Chat_Handler,
-		},
-		{
-			MethodName: "CreateChatRoom",
-			Handler:    _ChatService_CreateChatRoom_Handler,
-		},
-		{
-			MethodName: "SaveMessage",
-			Handler:    _ChatService_SaveMessage_Handler,
-		},
-		{
-			MethodName: "FetchRecipient",
-			Handler:    _ChatService_FetchRecipient_Handler,
-		},
-		{
 			MethodName: "GetAllChats",
 			Handler:    _ChatService_GetAllChats_Handler,
-		},
-		{
-			MethodName: "GetMessages",
-			Handler:    _ChatService_GetMessages_Handler,
-		},
-		{
-			MethodName: "ReadMessage",
-			Handler:    _ChatService_ReadMessage_Handler,
 		},
 		{
 			MethodName: "GetFriendChat",
