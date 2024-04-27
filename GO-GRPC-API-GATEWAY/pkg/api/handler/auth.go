@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	interfaces "github.com/akhi9550/api-gateway/pkg/client/interface"
+	"github.com/akhi9550/api-gateway/pkg/helper"
 	"github.com/akhi9550/api-gateway/pkg/utils/models"
 	"github.com/akhi9550/api-gateway/pkg/utils/response"
 	"github.com/gin-gonic/gin"
@@ -15,11 +16,13 @@ import (
 
 type AuthHandler struct {
 	GRPC_Client interfaces.AuthClient
+	AuthCachig  *helper.RedisCaching
 }
 
-func NewAuthHandler(authClient interfaces.AuthClient) *AuthHandler {
+func NewAuthHandler(authClient interfaces.AuthClient, authCaching *helper.RedisCaching) *AuthHandler {
 	return &AuthHandler{
 		GRPC_Client: authClient,
+		AuthCachig:  authCaching,
 	}
 }
 
@@ -152,7 +155,7 @@ func (au *AuthHandler) ForgotPasswordVerifyAndChange(c *gin.Context) {
 
 func (au *AuthHandler) UserDetails(c *gin.Context) {
 	userID, _ := c.Get("user_id")
-	UserDetails, err := au.GRPC_Client.UserDetails(userID.(int))
+	UserDetails, err := au.AuthCachig.GetUserDetails(userID.(int))
 	if err != nil {
 		errs := response.ClientResponse(http.StatusInternalServerError, "failed to retrieve details", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errs)

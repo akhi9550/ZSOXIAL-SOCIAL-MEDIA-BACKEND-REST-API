@@ -9,8 +9,12 @@ type Config struct {
 	ChatSvcUrl         string `mapstructure:"CHAT_SVC_URL"`
 	NotificationSvcUrl string `mapstructure:"NOTIFICATION_SVC_URL"`
 
-	KafkaPort         string `mapstructure:"KAFKA_PORT"`
-	KafkaTopic        string `mapstructure:"KAFKA_TOPIC"`
+	KafkaPort  string `mapstructure:"KAFKA_PORT"`
+	KafkaTopic string `mapstructure:"KAFKA_TOPIC"`
+
+	RedisPort     string `mapstructure:"REDIS_PORT"`
+	RedisUrl      string `mapstructure:"REDIS_URL"`
+	RedisPassword string `mapstructure:"REDIS_PASSWORD"`
 
 	KEY       string `mapstructure:"KEY"`
 	KEY_ADMIN string `mapstructure:"KEY_ADMIN"`

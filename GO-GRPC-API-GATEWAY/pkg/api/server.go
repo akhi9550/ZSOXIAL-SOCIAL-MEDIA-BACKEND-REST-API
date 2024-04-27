@@ -20,7 +20,6 @@ func NewServerHTTP(authHandler *handler.AuthHandler, postHandler *handler.PostHa
 
 	r.POST("/login", authHandler.AdminLogin)
 
-	// r.Use(middleware.AdminAuthMiddleware())
 	r.GET("admin/users", middleware.AdminAuthMiddleware(), authHandler.ShowAllUsers)
 	r.PUT("admin/user/block", middleware.AdminAuthMiddleware(), authHandler.BlockUser)
 	r.PUT("admin/user/unblock", middleware.AdminAuthMiddleware(), authHandler.UnBlockUser)
@@ -122,11 +121,6 @@ func NewServerHTTP(authHandler *handler.AuthHandler, postHandler *handler.PostHa
 		}
 		notification := r.Group("/notification")
 		{
-			// 	notification.POST("/comment", notificationHandler.SendCommentedNotification)
-			// 	notification.POST("/like", notificationHandler.SendLikeNotification)
-			// 	// notification.GET("/consume/like",notificationHandler.ConsumeKafkaMessages)
-			// 	notification.GET("/consume/comment", notificationHandler.ConsumeKafkaCommentMessages)
-			// 	notification.GET("/consume/like", notificationHandler.ConsumeKafkaLikeMessages)
 			notification.GET("", notificationHandler.GetNotification)
 		}
 	}
