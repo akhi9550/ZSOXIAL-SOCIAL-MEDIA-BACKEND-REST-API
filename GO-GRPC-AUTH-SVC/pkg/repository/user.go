@@ -107,6 +107,29 @@ func (ur *userRepository) ChangePassword(phone string, password string) error {
 	return nil
 }
 
+func (ur *userRepository) SpecificUserDetails(userID int) (models.UsersDetails, error) {
+	var userDetails models.UsersDetails
+	err := ur.DB.Raw("SELECT firstname, lastname, username, dob, gender, phone, email, bio, imageurl FROM users WHERE id = ?", userID).Row().Scan(&userDetails.Firstname, &userDetails.Lastname, &userDetails.Username, &userDetails.Dob, &userDetails.Gender, &userDetails.Phone, &userDetails.Email, &userDetails.Bio, &userDetails.Imageurl)
+	if err != nil {
+		fmt.Println("Error retrieving user details:", err)
+		return models.UsersDetails{}, err
+	}
+	var followerCount int
+	result := ur.DB.Raw("SELECT COUNT(*) FROM followers WHERE user_id = ?", userID).Scan(&followerCount)
+	if result.Error != nil {
+		return models.UsersDetails{}, result.Error
+	}
+	userDetails.Follower = followerCount
+
+	var followingCount int
+	result = ur.DB.Raw("SELECT COUNT(*) FROM followings WHERE user_id = ?", userID).Scan(&followingCount)
+	if result.Error != nil {
+		return models.UsersDetails{}, result.Error
+	}
+	userDetails.Following = followingCount
+	return userDetails, nil
+}
+
 func (ur *userRepository) UserDetails(userID int) (models.UsersProfileDetails, error) {
 	var userDetails models.UsersProfileDetails
 	err := ur.DB.Raw("SELECT firstname, lastname, username, dob, gender, phone, email, bio, imageurl FROM users WHERE id = ?", userID).Row().Scan(&userDetails.Firstname, &userDetails.Lastname, &userDetails.Username, &userDetails.Dob, &userDetails.Gender, &userDetails.Phone, &userDetails.Email, &userDetails.Bio, &userDetails.Imageurl)
@@ -308,7 +331,7 @@ func (ur *userRepository) FollowREQ(userID, FollowingUserID int) error {
 
 func (ur *userRepository) ExistFollowreq(userID, FollowingUserID int) bool {
 	var count int
-	err := ur.DB.Raw(`SELECT COUNT(*) FROM following_requests WHERE following_user = ? AND user_id = ?`, FollowingUserID, userID).Scan(&count).Error
+	err := ur.DB.Raw(`SELECT COUNT(*) FROM following_requests WHERE following_user = ? AND user_id = ?`, userID, FollowingUserID).Scan(&count).Error
 	if err != nil {
 		return false
 	}
@@ -317,7 +340,7 @@ func (ur *userRepository) ExistFollowreq(userID, FollowingUserID int) bool {
 
 func (ur *userRepository) ShowFollowREQ(userID int) ([]models.FollowReqs, error) {
 	var response []models.FollowReqs
-	err := ur.DB.Raw(`SELECT following_user,created_at FROM following_requests WHERE user_id = ?`, userID).Scan(&response).Error
+	err := ur.DB.Raw(`SELECT user_id,created_at FROM following_requests WHERE following_user = ?`, userID).Scan(&response).Error
 	if err != nil {
 		return []models.FollowReqs{}, err
 	}
@@ -325,13 +348,12 @@ func (ur *userRepository) ShowFollowREQ(userID int) ([]models.FollowReqs, error)
 }
 
 func (ur *userRepository) CheckRequest(userID, FollowingUserID int) bool {
-	var count int
-	err := ur.DB.Raw(`SELECT following_user,user_id FROM following_requests WHERE following_user = ? AND user_id = ?`, FollowingUserID, userID).Scan(&count).Error
+	var request models.FollowingRequest
+	err := ur.DB.Raw(`SELECT following_user, user_id FROM following_requests WHERE following_user = ? AND user_id = ?`, userID, FollowingUserID).Scan(&request).Error
 	if err != nil {
 		return false
 	}
-	return count > 0
-
+	return request.UserID != 0
 }
 
 func (ur *userRepository) AcceptFollowREQ(userID, FollowingUserID int) error {
@@ -339,14 +361,10 @@ func (ur *userRepository) AcceptFollowREQ(userID, FollowingUserID int) error {
 	if err != nil {
 		return err
 	}
-	err = ur.DB.Exec(`DELETE FROM following_requests WHERE user_id = ? AND following_user = ?`, userID, FollowingUserID).Error
+	err = ur.DB.Exec(`DELETE FROM following_requests WHERE user_id = ? AND following_user = ?`, FollowingUserID, userID).Error
 	if err != nil {
 		return err
 	}
-	// err = ur.DB.Exec(`INSERT INTO followings (user_id,following_user,created_at) VALUES(?,?,NOW())`, userID, FollowingUserID).Error
-	// if err != nil {
-	// 	return err
-	// }
 	return nil
 }
 
@@ -378,8 +396,8 @@ func (ur *userRepository) Follower(userID int) ([]models.FollowResp, error) {
 
 func (ur *userRepository) SearchUser(req models.SearchUser) ([]models.Users, error) {
 	var response []models.Users
-	username := "%" + req.Username + "%"
-	err := ur.DB.Raw(`SELECT username,imageurl FROM users WHERE username ILIKE ? LIMIT ? OFFSET ?`, username, req.Limit, req.Offset).Scan(&response).Error
+	// username := "%" + req.Username + "%"
+	err := ur.DB.Raw(`SELECT username,imageurl FROM users WHERE username ILIKE '%' || $1 || '%' LIMIT $2 OFFSET $3`, req.Username, req.Limit, req.Offset).Scan(&response).Error
 	if err != nil {
 		return []models.Users{}, err
 	}

@@ -13,7 +13,8 @@ service AuthService {
     rpc VerifyOtp (VerifyOtpRequest) returns (VerifyOtpResponse){}
     rpc ForgotPassword (ForgotPasswordRequest) returns (ForgotPasswordResponse){}
     rpc ForgotPasswordVerifyAndChange (ForgotPasswordVerifyAndChangeRequest) returns (ForgotPasswordVerifyAndChangeResponse){}
-    rpc UserDetails (UserDetailsRequest) returns (UserDetailsResponse){}
+    rpc SpecificUserDetails (UserDetailsRequest) returns (SpecificUserDetailsResponse){}
+    rpc UserDetails (UserDetailsRequest) returns (SpecificUserDetailsResponse){}
     rpc UpdateUserDetails (UpdateUserDetailsRequest) returns (UpdateUserDetailsResponse){}
     rpc ChangePassword (ChangePasswordRequest) returns (ChangePasswordResponse){}
     rpc CheckUserAvalilabilityWithUserID (CheckUserAvalilabilityWithUserIDRequest) returns (CheckUserAvalilabilityWithUserIDResponse){}
@@ -144,9 +145,14 @@ message UserData {
     string profile_photo = 9; 
 }
 
-message UserDetailsResponse {
+message FollowingDetails {
+    int64 follower = 1;
+    int64 following = 2;
+}
+
+message SpecificUserDetailsResponse {
     UserData responsedata = 1;
-    string error = 2;
+    FollowingDetails responseFollowigs = 2;
 }
 
 message UserDataUpdate {

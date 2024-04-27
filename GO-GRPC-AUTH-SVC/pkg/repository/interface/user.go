@@ -15,6 +15,7 @@ type UserRepository interface {
 	FindUserByMobileNumber(phone string) bool
 	FindIdFromPhone(phone string) (string, error)
 	ChangePassword(phone string, password string) error
+	SpecificUserDetails(userID int) (models.UsersDetails, error)
 	UserDetails(userID int) (models.UsersProfileDetails, error)
 	CheckUserAvailabilityWithUserID(userID int) bool
 	UserData(userID int) (models.UserData, error)

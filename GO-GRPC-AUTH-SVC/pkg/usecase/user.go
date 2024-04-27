@@ -2,8 +2,8 @@ package usecase
 
 import (
 	"errors"
+	"fmt"
 
-	chatclientinterfaces "github.com/akhi9550/auth-svc/pkg/client/interface"
 	"github.com/akhi9550/auth-svc/pkg/config"
 	"github.com/akhi9550/auth-svc/pkg/helper"
 	interfaces "github.com/akhi9550/auth-svc/pkg/repository/interface"
@@ -17,13 +17,11 @@ import (
 
 type userUseCase struct {
 	userRepository interfaces.UserRepository
-	chatClient     chatclientinterfaces.NewChatClient
 }
 
-func NewUserUseCase(repository interfaces.UserRepository, chatClient chatclientinterfaces.NewChatClient) services.UserUseCase {
+func NewUserUseCase(repository interfaces.UserRepository) services.UserUseCase {
 	return &userUseCase{
 		userRepository: repository,
-		chatClient:     chatClient,
 	}
 }
 func (ur *userUseCase) UserSignUp(user models.UserSignUpRequest) (*models.ReponseWithToken, error) {
@@ -155,8 +153,12 @@ func (ur *userUseCase) ForgotPasswordVerifyAndChange(model models.ForgotVerify) 
 	return nil
 }
 
-func (ur *userUseCase) UserDetails(userID int) (models.UsersProfileDetails, error) {
-	return ur.userRepository.UserDetails(userID)
+func (ur *userUseCase) SpecificUserDetails(userID int) (models.UsersDetails, error) {
+	return ur.userRepository.SpecificUserDetails(userID)
+}
+
+func (ur *userUseCase) UserDetails(userID int) (models.UsersDetails, error) {
+	return ur.userRepository.SpecificUserDetails(userID)
 }
 
 func (ur *userUseCase) UpdateUserDetails(userDetails models.UsersProfileDetail, file []byte, userID int) (models.UsersProfileDetails, error) {
@@ -296,10 +298,16 @@ func (ur *userUseCase) FollowREQ(userID, FollowingUserID int) error {
 	if err != nil {
 		return err
 	}
-	err = ur.chatClient.CreateChatRoom(userID, FollowingUserID)
+	UserName, err := ur.UserData(userID)
 	if err != nil {
-		return errors.New("error creating chat room")
+		return err
 	}
+
+	msg := fmt.Sprintf("%s Requested to Follow You", UserName.Username)
+	helper.SendFollowReqNotification(models.Notification{
+		UserID:   FollowingUserID,
+		SenderID: userID,
+	}, []byte(msg))
 
 	return nil
 }
@@ -347,6 +355,18 @@ func (ur *userUseCase) AcceptFollowREQ(userID, FollowingUserID int) error {
 	if err != nil {
 		return err
 	}
+
+	UserName, err := ur.UserData(userID)
+	if err != nil {
+		return err
+	}
+
+	msg := fmt.Sprintf("%s Started Follow You", UserName.Username)
+	helper.SendAcceptReqNotification(models.Notification{
+		UserID:   FollowingUserID,
+		SenderID: userID,
+	}, []byte(msg))
+
 	return nil
 }
 

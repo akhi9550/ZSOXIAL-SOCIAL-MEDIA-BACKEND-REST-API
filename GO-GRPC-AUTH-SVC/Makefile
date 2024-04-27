@@ -4,4 +4,3 @@ run:
 proto:
 	protoc --go_out=. --go-grpc_out=. ./pkg/pb/auth/auth.proto
 	protoc --go_out=. --go-grpc_out=. ./pkg/pb/post/post.proto
-	protoc --go_out=. --go-grpc_out=. ./pkg/pb/chat/chat.proto

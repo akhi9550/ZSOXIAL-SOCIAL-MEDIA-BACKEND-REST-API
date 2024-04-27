@@ -25,10 +25,14 @@ type Config struct {
 	AWS_REGION            string `mapstructure:"AWS_REGION"`
 	AWS_ACCESS_KEY_ID     string `mapstructure:"AWS_ACCESS_KEY_ID"`
 	AWS_SECRET_ACCESS_KEY string `mapstructure:"AWS_SECRET_ACCESS_KEY"`
+
+	KafkaPort           string `mapstructure:"KAFKA_PORT"`
+	KafkaFollowReqTopic string `mapstructure:"KAFKA_FOLLOWREQ_TOPIC"`
+	KafkaAcceptReqTopic string `mapstructure:"KAFKA_ACCEPTREQ_TOPIC"`
 }
 
 var envs = []string{
-	"DB_HOST", "DB_NAME", "DB_USER", "DB_PORT", "DB_PASSWORD", "PORT", "POST_SVC_URL", "CHAT_SVC_URL", "KEY", "KEY_ADMIN", "TWILIO_AUTHTOKEN", "TWILIO_ACCOUNTSID", "TWILIO_SERVICESID", "AWS_REGION", "AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY",
+	"DB_HOST", "DB_NAME", "DB_USER", "DB_PORT", "DB_PASSWORD", "PORT", "POST_SVC_URL", "CHAT_SVC_URL", "KEY", "KEY_ADMIN", "TWILIO_AUTHTOKEN", "TWILIO_ACCOUNTSID", "TWILIO_SERVICESID", "AWS_REGION", "AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY","KAFKA_PORT","KAFKA_FOLLOWREQ_TOPIC","KAFKA_ACCEPTREQ_TOPIC",
 }
 
 func LoadConfig() (Config, error) {

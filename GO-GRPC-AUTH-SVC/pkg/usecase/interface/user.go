@@ -9,7 +9,8 @@ type UserUseCase interface {
 	UserLogin(user models.UserLoginRequest) (*models.ReponseWithToken, error)
 	ForgotPassword(phone string) error
 	ForgotPasswordVerifyAndChange(model models.ForgotVerify) error
-	UserDetails(userID int) (models.UsersProfileDetails, error)
+	SpecificUserDetails(userID int) (models.UsersDetails, error)
+	UserDetails(userID int) (models.UsersDetails, error)
 	UpdateUserDetails(userDetails models.UsersProfileDetail, file []byte, userID int) (models.UsersProfileDetails, error)
 	ChangePassword(id int, change models.ChangePassword) error
 	CheckUserAvalilabilityWithUserID(userID int) (bool, error)

@@ -91,6 +91,20 @@ type UsersProfileDetails struct {
 	Imageurl  string `json:"imageurl"`
 }
 
+type UsersDetails struct {
+	Firstname string `json:"firstname"`
+	Lastname  string `json:"lastname"`
+	Username  string `json:"username"`
+	Dob       string `json:"dob"`
+	Gender    string `json:"gender"`
+	Phone     string `json:"phone"`
+	Email     string `json:"email"`
+	Bio       string `json:"bio"`
+	Imageurl  string `json:"imageurl"`
+	Following int    `json:"following"`
+	Follower  int    `json:"follower"`
+}
+
 type ChangePassword struct {
 	Oldpassword string `json:"old_password"`
 	Password    string `json:"password"`
@@ -123,7 +137,7 @@ type ReportRequest struct {
 }
 
 type FollowReqs struct {
-	FollowingUserID uint      `json:"following_user_id"  gorm:"column:following_user"`
+	FollowingUserID uint      `json:"following_user_id"  gorm:"column:user_id"`
 	CreatedAt       time.Time `json:"created_at"`
 }
 
@@ -152,4 +166,9 @@ type SearchUser struct {
 type Users struct {
 	Username string `json:"username"`
 	Profile  string `json:"profile" gorm:"column:imageurl"`
+}
+
+type FollowingRequest struct {
+	FollowingUser int `json:"following_user"`
+	UserID        int `json:"user_id"`
 }

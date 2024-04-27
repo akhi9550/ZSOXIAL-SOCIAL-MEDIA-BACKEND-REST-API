@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 
 	pb "github.com/akhi9550/auth-svc/pkg/pb/auth"
 	interfaces "github.com/akhi9550/auth-svc/pkg/usecase/interface"
@@ -111,15 +112,32 @@ func (au *AuthSever) ForgotPasswordVerifyAndChange(ctx context.Context, req *pb.
 	return &pb.ForgotPasswordVerifyAndChangeResponse{}, nil
 }
 
-func (au *AuthSever) UserDetails(ctx context.Context, req *pb.UserDetailsRequest) (*pb.UserDetailsResponse, error) {
+func (au *AuthSever) SpecificUserDetails(ctx context.Context, req *pb.UserDetailsRequest) (*pb.SpecificUserDetailsResponse, error) {
+	userID := req.Id
+	data, err := au.userUseCase.SpecificUserDetails(int(userID))
+	if err != nil {
+		return &pb.SpecificUserDetailsResponse{}, err
+	}
+	userData := &pb.UserData{Firstname: data.Firstname, Lastname: data.Lastname, Username: data.Username, Dob: data.Dob, Gender: data.Gender, Phone: data.Phone, Email: data.Email, Bio: data.Bio, ProfilePhoto: data.Imageurl}
+	followData := &pb.FollowingDetails{Follower: int64(data.Follower), Following: int64(data.Following)}
+	return &pb.SpecificUserDetailsResponse{
+		Responsedata:      userData,
+		ResponseFollowigs: followData,
+	}, nil
+}
+
+func (au *AuthSever) UserDetails(ctx context.Context, req *pb.UserDetailsRequest) (*pb.SpecificUserDetailsResponse, error) {
+	fmt.Println("hh", req.Id)
 	userID := req.Id
 	data, err := au.userUseCase.UserDetails(int(userID))
 	if err != nil {
-		return &pb.UserDetailsResponse{}, err
+		return &pb.SpecificUserDetailsResponse{}, err
 	}
 	userData := &pb.UserData{Firstname: data.Firstname, Lastname: data.Lastname, Username: data.Username, Dob: data.Dob, Gender: data.Gender, Phone: data.Phone, Email: data.Email, Bio: data.Bio, ProfilePhoto: data.Imageurl}
-	return &pb.UserDetailsResponse{
-		Responsedata: userData,
+	followData := &pb.FollowingDetails{Follower: int64(data.Follower), Following: int64(data.Following)}
+	return &pb.SpecificUserDetailsResponse{
+		Responsedata:      userData,
+		ResponseFollowigs: followData,
 	}, nil
 }
 
