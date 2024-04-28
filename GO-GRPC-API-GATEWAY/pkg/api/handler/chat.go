@@ -1,11 +1,9 @@
 package handler
 
 import (
-	"context"
 	"fmt"
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/akhi9550/api-gateway/pkg/helper"
 	pb "github.com/akhi9550/api-gateway/pkg/pb/chat"
@@ -25,12 +23,14 @@ var User = make(map[string]*websocket.Conn)
 type ChatHandler struct {
 	GRPC_Client pb.ChatServiceClient
 	helper      *helper.Helper
+	ChatCachig  *helper.RedisChatCaching
 }
 
-func NewChatHandler(chatClient pb.ChatServiceClient, helper *helper.Helper) *ChatHandler {
+func NewChatHandler(chatClient pb.ChatServiceClient, helper *helper.Helper, chatCache *helper.RedisChatCaching) *ChatHandler {
 	return &ChatHandler{
 		GRPC_Client: chatClient,
 		helper:      helper,
+		ChatCachig:  chatCache,
 	}
 }
 
@@ -80,15 +80,10 @@ func (ch *ChatHandler) GetChat(c *gin.Context) {
 		return
 	}
 	userID := strconv.Itoa(userIDInterface.(int))
-	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
-	defer cancel()
+	// ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	// defer cancel()
 
-	result, err := ch.GRPC_Client.GetFriendChat(ctx, &pb.GetFriendChatRequest{
-		UserID:   userID,
-		FriendID: chatRequest.FriendID,
-		OffSet:   chatRequest.Offset,
-		Limit:    chatRequest.Limit,
-	})
+	result, err := ch.ChatCachig.GetChat(userID, chatRequest)
 	if err != nil {
 		errs := response.ClientResponse(http.StatusBadRequest, "Failed to get chat details", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
@@ -120,8 +115,6 @@ func (ch *ChatHandler) GetChat(c *gin.Context) {
 // var (
 // videoCall  = make(map[string]*VideoCall)
 // )
-
-
 
 // func (t *ChatHandler) VideoCall(c *gin.Context) {
 // 	peerConnectionConfig := webrtc.Configuration{

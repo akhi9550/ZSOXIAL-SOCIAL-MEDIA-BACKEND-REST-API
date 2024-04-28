@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	interfaces "github.com/akhi9550/api-gateway/pkg/client/interface"
+	"github.com/akhi9550/api-gateway/pkg/helper"
 	"github.com/akhi9550/api-gateway/pkg/utils/models"
 	"github.com/akhi9550/api-gateway/pkg/utils/response"
 	"github.com/gin-gonic/gin"
@@ -13,11 +14,13 @@ import (
 
 type PostHandler struct {
 	GRPC_Client interfaces.PostClient
+	PostCachig  *helper.RedisPostCaching
 }
 
-func NewPostHandler(postClient interfaces.PostClient) *PostHandler {
+func NewPostHandler(postClient interfaces.PostClient, postCaching *helper.RedisPostCaching) *PostHandler {
 	return &PostHandler{
 		GRPC_Client: postClient,
+		PostCachig:  postCaching,
 	}
 }
 
@@ -59,7 +62,7 @@ func (p *PostHandler) CreatePost(c *gin.Context) {
 
 func (p *PostHandler) GetUserPost(c *gin.Context) {
 	userID, _ := c.Get("user_id")
-	data, err := p.GRPC_Client.GetUserPost(userID.(int))
+	data, err := p.PostCachig.GetUserPost(userID.(int))
 	if err != nil {
 		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
@@ -78,7 +81,7 @@ func (p *PostHandler) GetPost(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errs)
 		return
 	}
-	data, err := p.GRPC_Client.GetPost(userID.(int), int(PostID))
+	data, err := p.PostCachig.GetPost(userID.(int), int(PostID))
 	if err != nil {
 		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
@@ -147,7 +150,7 @@ func (p *PostHandler) GetAllPost(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errs)
 		return
 	}
-	data, err := p.GRPC_Client.GetAllPost(UserID)
+	data, err := p.PostCachig.GetAllPost(UserID)
 	if err != nil {
 		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
@@ -197,7 +200,7 @@ func (p *PostHandler) UnArchivePost(c *gin.Context) {
 
 func (p *PostHandler) GetAllArchivePost(c *gin.Context) {
 	userID, _ := c.Get("user_id")
-	data, err := p.GRPC_Client.GetAllArchivePost(userID.(int))
+	data, err := p.PostCachig.GetAllArchivePost(userID.(int))
 	if err != nil {
 		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
@@ -271,7 +274,7 @@ func (p *PostHandler) GetAllPostComments(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errs)
 		return
 	}
-	data, err := p.GRPC_Client.GetAllPostComments(PostID)
+	data, err := p.PostCachig.GetAllPostComments(PostID)
 	if err != nil {
 		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
@@ -357,7 +360,7 @@ func (p *PostHandler) UnSavedPost(c *gin.Context) {
 
 func (p *PostHandler) GetSavedPost(c *gin.Context) {
 	userID, _ := c.Get("user_id")
-	data, err := p.GRPC_Client.GetSavedPost(userID.(int))
+	data, err := p.PostCachig.GetSavedPost(userID.(int))
 	if err != nil {
 		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
@@ -395,7 +398,7 @@ func (p *PostHandler) GetStory(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errs)
 		return
 	}
-	data, err := p.GRPC_Client.GetStory(userID, viewUser.(int))
+	data, err := p.PostCachig.GetStory(userID, viewUser.(int))
 	if err != nil {
 		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
@@ -471,7 +474,7 @@ func (p *PostHandler) StoryDetails(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errs)
 		return
 	}
-	data, err := p.GRPC_Client.StoryDetails(userID.(int), storyID)
+	data, err := p.PostCachig.StoryDetails(userID.(int), storyID)
 	if err != nil {
 		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)

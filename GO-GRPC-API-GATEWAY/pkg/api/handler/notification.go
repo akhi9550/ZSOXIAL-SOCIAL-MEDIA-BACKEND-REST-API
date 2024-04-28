@@ -1,10 +1,9 @@
 package handler
 
 import (
-	"context"
 	"net/http"
-	"time"
 
+	"github.com/akhi9550/api-gateway/pkg/helper"
 	pb "github.com/akhi9550/api-gateway/pkg/pb/notification"
 	"github.com/akhi9550/api-gateway/pkg/utils/models"
 	"github.com/akhi9550/api-gateway/pkg/utils/response"
@@ -12,10 +11,11 @@ import (
 )
 
 type NotificationHandler struct {
-	GRPC_Client pb.NotificationServiceClient
+	GRPC_Client        pb.NotificationServiceClient
+	NotificationCachig *helper.RedisNotificationCaching
 }
 
-func NewNotificationHandler(notificationClient pb.NotificationServiceClient) *NotificationHandler {
+func NewNotificationHandler(notificationClient pb.NotificationServiceClient, notificationCache *helper.RedisNotificationCaching) *NotificationHandler {
 	return &NotificationHandler{
 		GRPC_Client: notificationClient,
 	}
@@ -35,14 +35,10 @@ func (n *NotificationHandler) GetNotification(c *gin.Context) {
 		return
 	}
 	UserID, _ := userID.(int)
-	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
-	defer cancel()
+	// ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	// defer cancel()
 
-	result, err := n.GRPC_Client.GetNotification(ctx, &pb.GetNotificationRequest{
-		UserID: int64(UserID),
-		Offset: int64(notificationRequest.Offset),
-		Limit:  int64(notificationRequest.Limit),
-	})
+	result, err := n.NotificationCachig.GetNotification(UserID, notificationRequest)
 	if err != nil {
 		errs := response.ClientResponse(http.StatusBadRequest, "Failed to get notification details", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)

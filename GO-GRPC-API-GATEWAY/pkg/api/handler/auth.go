@@ -16,10 +16,10 @@ import (
 
 type AuthHandler struct {
 	GRPC_Client interfaces.AuthClient
-	AuthCachig  *helper.RedisCaching
+	AuthCachig  *helper.RedisAuthCaching
 }
 
-func NewAuthHandler(authClient interfaces.AuthClient, authCaching *helper.RedisCaching) *AuthHandler {
+func NewAuthHandler(authClient interfaces.AuthClient, authCaching *helper.RedisAuthCaching) *AuthHandler {
 	return &AuthHandler{
 		GRPC_Client: authClient,
 		AuthCachig:  authCaching,
@@ -28,7 +28,6 @@ func NewAuthHandler(authClient interfaces.AuthClient, authCaching *helper.RedisC
 
 func (au *AuthHandler) UserSignup(c *gin.Context) {
 	var UserSignupDetail models.UserSignUpRequest
-
 	if err := c.ShouldBindJSON(&UserSignupDetail); err != nil {
 		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
@@ -173,7 +172,7 @@ func (au *AuthHandler) SpecificUserDetails(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errs)
 		return
 	}
-	UserDetails, err := au.GRPC_Client.SpecificUserDetails(UserID)
+	UserDetails, err := au.AuthCachig.GetSpecificUserDetails(UserID)
 	if err != nil {
 		errs := response.ClientResponse(http.StatusInternalServerError, "failed to retrieve details", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errs)
@@ -301,7 +300,7 @@ func (au *AuthHandler) FollowREQ(c *gin.Context) {
 
 func (au *AuthHandler) ShowFollowREQ(c *gin.Context) {
 	userID, _ := c.Get("user_id")
-	data, err := au.GRPC_Client.ShowFollowREQ(userID.(int))
+	data, err := au.AuthCachig.ShowFollowREQ(userID.(int))
 	if err != nil {
 		errs := response.ClientResponse(http.StatusInternalServerError, "user could not be unblocked", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errs)
@@ -345,13 +344,13 @@ func (au *AuthHandler) UnFollow(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, errs)
 		return
 	}
-	sucess := response.ClientResponse(http.StatusOK, "Successfully Accepted Following", nil, nil)
+	sucess := response.ClientResponse(http.StatusOK, "Successfully UnFollowed", nil, nil)
 	c.JSON(http.StatusOK, sucess)
 }
 
 func (au *AuthHandler) Following(c *gin.Context) {
 	userID, _ := c.Get("user_id")
-	data, err := au.GRPC_Client.Following(userID.(int))
+	data, err := au.AuthCachig.Following(userID.(int))
 	if err != nil {
 		errs := response.ClientResponse(http.StatusInternalServerError, "user could not be unblocked", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errs)
@@ -363,7 +362,7 @@ func (au *AuthHandler) Following(c *gin.Context) {
 
 func (au *AuthHandler) Follower(c *gin.Context) {
 	userID, _ := c.Get("user_id")
-	data, err := au.GRPC_Client.Follower(userID.(int))
+	data, err := au.AuthCachig.Follower(userID.(int))
 	if err != nil {
 		errs := response.ClientResponse(http.StatusInternalServerError, "user could not be unblocked", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errs)
@@ -426,7 +425,7 @@ func (au *AuthHandler) ShowAllUsers(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
-	users, err := au.GRPC_Client.ShowAllUsers(page, pageSize)
+	users, err := au.AuthCachig.ShowAllUsers(page, pageSize)
 	if err != nil {
 		errs := response.ClientResponse(http.StatusInternalServerError, "couldn't retrieve users", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errs)
@@ -477,7 +476,7 @@ func (au *AuthHandler) ShowUserReports(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
-	users, err := au.GRPC_Client.ShowUserReports(page, pageSize)
+	users, err := au.AuthCachig.ShowUserReports(page, pageSize)
 	if err != nil {
 		errs := response.ClientResponse(http.StatusInternalServerError, "couldn't retrieve users", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errs)
@@ -502,7 +501,7 @@ func (au *AuthHandler) ShowPostReports(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
-	users, err := au.GRPC_Client.ShowPostReports(page, pageSize)
+	users, err := au.AuthCachig.ShowPostReports(page, pageSize)
 	if err != nil {
 		errs := response.ClientResponse(http.StatusInternalServerError, "couldn't retrieve users", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errs)
