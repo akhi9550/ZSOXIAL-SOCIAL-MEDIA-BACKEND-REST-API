@@ -120,6 +120,92 @@ func (c *NotificationUseCase) ConsumeCommentMessage() {
 	}
 }
 
+func (c *NotificationUseCase) ConsumeFollowReqMessage() {
+	cfg, err := config.LoadConfig()
+	if err != nil {
+		fmt.Println("Error loading config:", err)
+		return
+	}
+
+	configs := sarama.NewConfig()
+	configs.Consumer.Return.Errors = true
+	consumer, err := sarama.NewConsumer([]string{cfg.KafkaPort}, configs)
+	if err != nil {
+		fmt.Println("Error creating Kafka consumer:", err)
+		return
+	}
+
+	defer consumer.Close()
+	partitionConsumer, err := consumer.ConsumePartition(cfg.KafkaFollowReqTopic, 0, sarama.OffsetNewest)
+	if err != nil {
+		fmt.Println("Error creating partition consumer:", err)
+		return
+	}
+	defer partitionConsumer.Close()
+	fmt.Println("Kafka FollowReqconsumer started")
+	for {
+		select {
+		case message := <-partitionConsumer.Messages():
+			msg, err := c.UnmarshelNotification(message.Value)
+			if err != nil {
+				fmt.Println("Error unmarshalling message:", err)
+				continue
+			}
+			fmt.Println("Received message:", msg)
+			err = c.notificationRepository.StoreNotification(*msg)
+			if err != nil {
+				fmt.Println("Error storing message in repository:", err)
+				continue
+			}
+		case err := <-partitionConsumer.Errors():
+			fmt.Println("Kafka consumer error:", err)
+		}
+	}
+}
+
+func (c *NotificationUseCase) ConsumeAcceptFollowReqMessage() {
+	cfg, err := config.LoadConfig()
+	if err != nil {
+		fmt.Println("Error loading config:", err)
+		return
+	}
+
+	configs := sarama.NewConfig()
+	configs.Consumer.Return.Errors = true
+	consumer, err := sarama.NewConsumer([]string{cfg.KafkaPort}, configs)
+	if err != nil {
+		fmt.Println("Error creating Kafka consumer:", err)
+		return
+	}
+
+	defer consumer.Close()
+	partitionConsumer, err := consumer.ConsumePartition(cfg.KafkaAcceptReqTopic, 0, sarama.OffsetNewest)
+	if err != nil {
+		fmt.Println("Error creating partition consumer:", err)
+		return
+	}
+	defer partitionConsumer.Close()
+	fmt.Println("Kafka AcceptReqconsumer started")
+	for {
+		select {
+		case message := <-partitionConsumer.Messages():
+			msg, err := c.UnmarshelNotification(message.Value)
+			if err != nil {
+				fmt.Println("Error unmarshalling message:", err)
+				continue
+			}
+			fmt.Println("Received message:", msg)
+			err = c.notificationRepository.StoreNotification(*msg)
+			if err != nil {
+				fmt.Println("Error storing message in repository:", err)
+				continue
+			}
+		case err := <-partitionConsumer.Errors():
+			fmt.Println("Kafka consumer error:", err)
+		}
+	}
+}
+
 func (n *NotificationUseCase) GetNotification(userID int, pagination models.Pagination) ([]models.NotificationResponse, error) {
 	var err error
 	data, err := n.notificationRepository.GetNotification(userID, pagination)

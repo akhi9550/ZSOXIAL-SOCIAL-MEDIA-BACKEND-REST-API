@@ -6,7 +6,6 @@ import (
 	pb "github.com/akhi9550/notification-svc/pkg/pb/notification"
 	interfaces "github.com/akhi9550/notification-svc/pkg/usecase/interface"
 	"github.com/akhi9550/notification-svc/pkg/utils/models"
-	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 type NotificationHandler struct {
@@ -34,7 +33,7 @@ func (n *NotificationHandler) GetNotification(ctx context.Context, req *pb.GetNo
 			Profile:  val.Profile,
 			PostID:   int64(val.PostID),
 			Message:  val.Message,
-			Time:     timestamppb.New(val.CreatedAt),
+			Time:     val.CreatedAt,
 		})
 	}
 	return &pb.GetNotificationResponse{Notification: finalResult}, nil

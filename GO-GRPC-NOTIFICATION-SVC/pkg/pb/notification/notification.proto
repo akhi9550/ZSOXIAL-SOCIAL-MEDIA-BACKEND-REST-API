@@ -2,8 +2,6 @@ syntax = "proto3";
 
 package notification;
 
-import "google/protobuf/timestamp.proto";
-
 option go_package = "./pkg/pb/notification";
 
 service NotificationService {
@@ -22,7 +20,7 @@ message Message {
     string profile = 3;
     int64 postID = 4;
     string message = 5;
-    google.protobuf.Timestamp time = 6;
+    string time = 6;
 }
 
 message GetNotificationResponse{

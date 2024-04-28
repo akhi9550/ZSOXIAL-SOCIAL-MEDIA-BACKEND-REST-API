@@ -38,5 +38,12 @@ func InitializeAPI(cfg config.Config) (*server.Server, error) {
 		notificationUseCase.ConsumeCommentMessage()
 	}()
 
+	go func() {
+		notificationUseCase.ConsumeFollowReqMessage()
+	}()
+
+	go func() {
+		notificationUseCase.ConsumeAcceptFollowReqMessage()
+	}()
 	return grpcServer, nil
 }
