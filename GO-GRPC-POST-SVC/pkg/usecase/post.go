@@ -310,11 +310,11 @@ func (p *postUseCase) LikePost(userID int, postID int) (models.LikePostResponse,
 	if err != nil {
 		return models.LikePostResponse{}, err
 	}
-	msg := fmt.Sprintf("%s Liked PostID %d", userData.Username, postID)
+	msg := fmt.Sprintf("%s Liked Your PostID %d", userData.Username, postID)
 	helper.SendLikeNotification(models.Notification{
-		UserID:      postedUserID,
-		LikedUserID: userID,
-		PostID:      postID,
+		UserID:   postedUserID,
+		SenderID: userID,
+		PostID:   postID,
 	}, []byte(msg))
 
 	return models.LikePostResponse{
@@ -368,11 +368,11 @@ func (p *postUseCase) PostComment(userID int, data models.PostCommentReq) (model
 		return models.PostComment{}, err
 	}
 
-	msg := fmt.Sprintf("%s comment on post %d Comment %s", userData.Username, data.PostID, data.Comment)
+	msg := fmt.Sprintf("%s comment on post %d Comment:- %s", userData.Username, data.PostID, data.Comment)
 	helper.SendCommentNotification(models.Notification{
-		UserID:      postedUserID,
-		LikedUserID: userID,
-		PostID:      int(data.PostID),
+		UserID:   postedUserID,
+		SenderID: userID,
+		PostID:   int(data.PostID),
 	}, []byte(msg))
 
 	return models.PostComment{

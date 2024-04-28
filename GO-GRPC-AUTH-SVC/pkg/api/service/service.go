@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"fmt"
 
 	pb "github.com/akhi9550/auth-svc/pkg/pb/auth"
 	interfaces "github.com/akhi9550/auth-svc/pkg/usecase/interface"
@@ -127,7 +126,6 @@ func (au *AuthSever) SpecificUserDetails(ctx context.Context, req *pb.UserDetail
 }
 
 func (au *AuthSever) UserDetails(ctx context.Context, req *pb.UserDetailsRequest) (*pb.SpecificUserDetailsResponse, error) {
-	fmt.Println("hh", req.Id)
 	userID := req.Id
 	data, err := au.userUseCase.UserDetails(int(userID))
 	if err != nil {
