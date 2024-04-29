@@ -5,8 +5,6 @@ import (
 	"github.com/akhi9550/api-gateway/pkg/api/handler"
 	"github.com/akhi9550/api-gateway/pkg/client"
 	interfaces "github.com/akhi9550/api-gateway/pkg/client/interface"
-	pbnotification "github.com/akhi9550/api-gateway/pkg/pb/notification"
-	pbchat "github.com/akhi9550/api-gateway/pkg/pb/chat"
 	"github.com/akhi9550/api-gateway/pkg/config"
 	"github.com/akhi9550/api-gateway/pkg/helper"
 	"github.com/redis/go-redis/v9"
@@ -23,12 +21,12 @@ func InitializeAPI(cfg config.Config) (*server.ServerHTTP, error) {
 
 	helper := helper.NewHelper(&cfg)
 	chatClient := client.NewChatClient(cfg)
-	chatCaching:=ChatCache(cfg)
-	chatHandler := handler.NewChatHandler(chatClient.Client, helper,chatCaching)
+	chatCaching := ChatCache(cfg, chatClient)
+	chatHandler := handler.NewChatHandler(chatClient, helper, chatCaching)
 
 	notificationClient := client.NewNotificationClient(cfg)
-	notificationCaching:= NotificationCache(cfg)
-	notificationHandler := handler.NewNotificationHandler(notificationClient.Client,notificationCaching)
+	notificationCaching := NotificationCache(cfg, notificationClient)
+	notificationHandler := handler.NewNotificationHandler(notificationClient, notificationCaching)
 
 	serverHTTP := server.NewServerHTTP(authHandler, postHandler, chatHandler, notificationHandler)
 	return serverHTTP, nil
@@ -42,13 +40,11 @@ func PostCache(cfg config.Config, postClient interfaces.PostClient) *helper.Redi
 	return helper.NewRedisPostCaching(InitRedisDB(cfg), postClient)
 }
 
-var notificationClient pbnotification.NotificationServiceClient
-func NotificationCache(cfg config.Config) *helper.RedisNotificationCaching {
+func NotificationCache(cfg config.Config, notificationClient interfaces.NotificationClient) *helper.RedisNotificationCaching {
 	return helper.NewRedisNotificationCaching(InitRedisDB(cfg), notificationClient)
 }
 
-var chatClient pbchat.ChatServiceClient
-func ChatCache(cfg config.Config) *helper.RedisChatCaching {
+func ChatCache(cfg config.Config, chatClient interfaces.ChatClient) *helper.RedisChatCaching {
 	return helper.NewRedisChatCaching(InitRedisDB(cfg), chatClient)
 }
 

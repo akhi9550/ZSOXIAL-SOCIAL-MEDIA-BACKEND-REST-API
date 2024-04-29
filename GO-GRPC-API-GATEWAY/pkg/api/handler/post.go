@@ -492,7 +492,7 @@ func (p *PostHandler) ShowAllPostComments(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errs)
 		return
 	}
-	data, err := p.GRPC_Client.ShowAllPostComments(postID)
+	data, err := p.PostCachig.ShowAllPostComments(postID)
 	if err != nil {
 		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)

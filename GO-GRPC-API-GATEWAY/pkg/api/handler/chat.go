@@ -6,7 +6,7 @@ import (
 	"strconv"
 
 	"github.com/akhi9550/api-gateway/pkg/helper"
-	pb "github.com/akhi9550/api-gateway/pkg/pb/chat"
+	interfaces "github.com/akhi9550/api-gateway/pkg/client/interface"
 	"github.com/akhi9550/api-gateway/pkg/utils/models"
 	"github.com/akhi9550/api-gateway/pkg/utils/response"
 	"github.com/gin-gonic/gin"
@@ -21,12 +21,12 @@ var upgrade = websocket.Upgrader{
 var User = make(map[string]*websocket.Conn)
 
 type ChatHandler struct {
-	GRPC_Client pb.ChatServiceClient
+	GRPC_Client interfaces.ChatClient
 	helper      *helper.Helper
 	ChatCachig  *helper.RedisChatCaching
 }
 
-func NewChatHandler(chatClient pb.ChatServiceClient, helper *helper.Helper, chatCache *helper.RedisChatCaching) *ChatHandler {
+func NewChatHandler(chatClient interfaces.ChatClient, helper *helper.Helper, chatCache *helper.RedisChatCaching) *ChatHandler {
 	return &ChatHandler{
 		GRPC_Client: chatClient,
 		helper:      helper,

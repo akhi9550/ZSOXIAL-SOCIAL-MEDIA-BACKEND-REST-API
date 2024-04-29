@@ -1,10 +1,12 @@
 package client
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/akhi9550/api-gateway/pkg/config"
 	pb "github.com/akhi9550/api-gateway/pkg/pb/chat"
+	"github.com/akhi9550/api-gateway/pkg/utils/models"
 	"google.golang.org/grpc"
 )
 
@@ -23,4 +25,28 @@ func NewChatClient(cfg config.Config) *ChatClient {
 	return &ChatClient{
 		Client: grpcClient,
 	}
+}
+
+func (c *ChatClient) GetChat(userID string, req models.ChatRequest) ([]models.Message, error) {
+	data, err := c.Client.GetFriendChat(context.Background(), &pb.GetFriendChatRequest{
+		UserID:   userID,
+		FriendID: req.FriendID,
+		OffSet:   req.Offset,
+		Limit:    req.Limit,
+	})
+	if err != nil {
+		return []models.Message{}, err
+	}
+	var response []models.Message
+	for _, v := range data.FriendChat {
+		chatResponse := models.Message{
+			SenderID:    v.SenderId,
+			RecipientID: v.RecipientId,
+			Content:     v.Content,
+			Timestamp:   v.Timestamp,
+		}
+		response = append(response, chatResponse)
+
+	}
+	return response, nil
 }

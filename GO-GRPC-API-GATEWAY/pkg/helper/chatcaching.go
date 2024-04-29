@@ -5,17 +5,17 @@ import (
 	"encoding/json"
 	"time"
 
-	pb "github.com/akhi9550/api-gateway/pkg/pb/chat"
+	interfaces "github.com/akhi9550/api-gateway/pkg/client/interface"
 	"github.com/akhi9550/api-gateway/pkg/utils/models"
 	"github.com/redis/go-redis/v9"
 )
 
 type RedisChatCaching struct {
 	redis      *redis.Client
-	chatClient pb.ChatServiceClient
+	chatClient interfaces.ChatClient
 }
 
-func NewRedisChatCaching(redis *redis.Client, chatClient pb.ChatServiceClient) *RedisChatCaching {
+func NewRedisChatCaching(redis *redis.Client, chatClient interfaces.ChatClient) *RedisChatCaching {
 	return &RedisChatCaching{
 		redis:      redis,
 		chatClient: chatClient,
@@ -31,7 +31,7 @@ func (r *RedisChatCaching) jsonUnmarshel(model interface{}, data []byte) error {
 }
 
 func (r *RedisChatCaching) GetChat(userID string, req models.ChatRequest) ([]models.Message, error) {
-	res := r.redis.Get(context.Background(), "chat:"+userID)
+	res := r.redis.Get(context.Background(), "chat:"+userID+":"+req.FriendID)
 	var data []models.Message
 
 	if res.Val() == "" {
@@ -41,7 +41,7 @@ func (r *RedisChatCaching) GetChat(userID string, req models.ChatRequest) ([]mod
 			return []models.Message{}, err
 		}
 	} else {
-		err := r.jsonUnmarshel(&data, []byte(res.Val()))
+		err := r.jsonUnmarshel(&res, []byte(res.Val()))
 		if err != nil {
 			return []models.Message{}, err
 		}
@@ -50,14 +50,7 @@ func (r *RedisChatCaching) GetChat(userID string, req models.ChatRequest) ([]mod
 }
 
 func (r *RedisChatCaching) SetGetChat(userID string, req models.ChatRequest) ([]models.Message, error) {
-	contextTimeout, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-	data, err := r.chatClient.GetFriendChat(contextTimeout, &pb.GetFriendChatRequest{
-		UserID:   userID,
-		FriendID: req.FriendID,
-		OffSet:   req.Offset,
-		Limit:    req.Limit,
-	})
+	data, err := r.chatClient.GetChat(userID, req)
 	if err != nil {
 		return []models.Message{}, err
 	}
@@ -67,20 +60,10 @@ func (r *RedisChatCaching) SetGetChat(userID string, req models.ChatRequest) ([]
 		return []models.Message{}, err
 	}
 
-	result := r.redis.Set(context.Background(), "chat:"+userID, profileByte, time.Hour)
+	result := r.redis.Set(context.Background(), "chat:"+userID+":"+req.FriendID, profileByte, time.Hour)
 	if result.Err() != nil {
 		return []models.Message{}, err
 	}
-	var response []models.Message
-	for _, v := range data.FriendChat {
-		chatResponse := models.Message{
-			SenderID:    v.SenderId,
-			RecipientID: v.RecipientId,
-			Content:     v.Content,
-			Timestamp:   v.Timestamp,
-		}
-		response = append(response, chatResponse)
 
-	}
-	return response, nil
+	return data, nil
 }

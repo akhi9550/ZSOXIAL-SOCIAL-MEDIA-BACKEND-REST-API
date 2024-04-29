@@ -222,7 +222,7 @@ func (r *RedisPostCaching) SetGetAllArchivePost(userID int) ([]models.ArchivePos
 }
 
 func (r *RedisPostCaching) GetAllPostComments(postID int) ([]models.PostCommentResponse, error) {
-	res := r.redis.Get(context.Background(), "allpost:"+strconv.Itoa(postID))
+	res := r.redis.Get(context.Background(), "allcommentsforpost:"+strconv.Itoa(postID))
 	var data []models.PostCommentResponse
 
 	if res.Val() == "" {
@@ -251,7 +251,7 @@ func (r *RedisPostCaching) SetGetAllPostComments(postID int) ([]models.PostComme
 		return []models.PostCommentResponse{}, err
 	}
 
-	result := r.redis.Set(context.Background(), "allpost:"+strconv.Itoa(postID), profileByte, time.Hour)
+	result := r.redis.Set(context.Background(), "allcommentsforpost:"+strconv.Itoa(postID), profileByte, time.Hour)
 	if result.Err() != nil {
 		return []models.PostCommentResponse{}, err
 	}
@@ -260,7 +260,7 @@ func (r *RedisPostCaching) SetGetAllPostComments(postID int) ([]models.PostComme
 }
 
 func (r *RedisPostCaching) ShowAllPostComments(postID int) ([]models.AllCommentsAndReplies, error) {
-	res := r.redis.Get(context.Background(), "showallpost:"+strconv.Itoa(postID))
+	res := r.redis.Get(context.Background(), "showallcommentsforpost:"+strconv.Itoa(postID))
 	var data []models.AllCommentsAndReplies
 
 	if res.Val() == "" {
@@ -289,7 +289,7 @@ func (r *RedisPostCaching) SetShowAllPostComments(postID int) ([]models.AllComme
 		return []models.AllCommentsAndReplies{}, err
 	}
 
-	result := r.redis.Set(context.Background(), "showallpost:"+strconv.Itoa(postID), profileByte, time.Hour)
+	result := r.redis.Set(context.Background(), "showallcommentsforpost:"+strconv.Itoa(postID), profileByte, time.Hour)
 	if result.Err() != nil {
 		return []models.AllCommentsAndReplies{}, err
 	}

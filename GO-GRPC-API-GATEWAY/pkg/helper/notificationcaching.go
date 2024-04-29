@@ -6,17 +6,17 @@ import (
 	"strconv"
 	"time"
 
-	pb "github.com/akhi9550/api-gateway/pkg/pb/notification"
+	interfaces "github.com/akhi9550/api-gateway/pkg/client/interface"
 	"github.com/akhi9550/api-gateway/pkg/utils/models"
 	"github.com/redis/go-redis/v9"
 )
 
 type RedisNotificationCaching struct {
 	redis              *redis.Client
-	notificationClient pb.NotificationServiceClient
+	notificationClient interfaces.NotificationClient
 }
 
-func NewRedisNotificationCaching(redis *redis.Client, notificationClient pb.NotificationServiceClient) *RedisNotificationCaching {
+func NewRedisNotificationCaching(redis *redis.Client, notificationClient interfaces.NotificationClient) *RedisNotificationCaching {
 	return &RedisNotificationCaching{
 		redis:              redis,
 		notificationClient: notificationClient,
@@ -42,7 +42,7 @@ func (r *RedisNotificationCaching) GetNotification(userID int, req models.Notifi
 			return []models.NotificationResponse{}, err
 		}
 	} else {
-		err := r.jsonUnmarshel(&data, []byte(res.Val()))
+		err := r.jsonUnmarshel(&res, []byte(res.Val()))
 		if err != nil {
 			return []models.NotificationResponse{}, err
 		}
@@ -51,13 +51,7 @@ func (r *RedisNotificationCaching) GetNotification(userID int, req models.Notifi
 }
 
 func (r *RedisNotificationCaching) SetGetNotification(userID int, req models.NotificationPagination) ([]models.NotificationResponse, error) {
-	contextTimeout, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-	data, err := r.notificationClient.GetNotification(contextTimeout, &pb.GetNotificationRequest{
-		UserID: int64(userID),
-		Offset: int64(req.Offset),
-		Limit:  int64(req.Limit),
-	})
+	data, err := r.notificationClient.GetNotification(userID, req)
 	if err != nil {
 		return []models.NotificationResponse{}, err
 	}
@@ -67,22 +61,10 @@ func (r *RedisNotificationCaching) SetGetNotification(userID int, req models.Not
 		return []models.NotificationResponse{}, err
 	}
 
-	result := r.redis.Set(context.Background(), "notification:"+strconv.Itoa(userID), profileByte, time.Hour)
+	result := r.redis.Set(context.Background(),  "notification:"+strconv.Itoa(userID), profileByte, time.Hour)
 	if result.Err() != nil {
 		return []models.NotificationResponse{}, err
 	}
 
-	var response []models.NotificationResponse
-	for _, v := range data.Notification {
-		notificationResponse := models.NotificationResponse{
-			UserID:    int(v.UserID),
-			Username:  v.Username,
-			Profile:   v.Profile,
-			PostID:    int(v.PostID),
-			Message:   v.Message,
-			CreatedAt: v.Time,
-		}
-		response = append(response, notificationResponse)
-	}
-	return response, nil
+	return data, nil
 }

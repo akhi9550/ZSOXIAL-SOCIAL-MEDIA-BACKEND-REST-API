@@ -333,7 +333,7 @@ func (r *RedisAuthCaching) SetShowPostReports(page, pageSize int) ([]models.Post
 
 
 func (r *RedisAuthCaching) GetAllPosts(page, pageSize int) ([]models.PostResponse, error) {
-	res := r.redis.Get(context.Background(), "adminshowpostreports")
+	res := r.redis.Get(context.Background(), "adminshowallposts")
 	var data []models.PostResponse
 
 	if res.Val() == "" {
@@ -362,7 +362,7 @@ func (r *RedisAuthCaching) SetGetAllPosts(page, pageSize int) ([]models.PostResp
 		return []models.PostResponse{}, err
 	}
 
-	result := r.redis.Set(context.Background(), "adminshowpostreports", profileByte, time.Hour)
+	result := r.redis.Set(context.Background(), "adminshowallposts", profileByte, time.Hour)
 	if result.Err() != nil {
 		return []models.PostResponse{}, err
 	}

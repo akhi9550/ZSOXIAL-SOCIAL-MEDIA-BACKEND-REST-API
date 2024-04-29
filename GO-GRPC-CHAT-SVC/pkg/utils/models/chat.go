@@ -4,7 +4,6 @@ import (
 	"time"
 )
 
-
 type Message struct {
 	ID          string    `bson:"_id"`
 	SenderID    string    `bson:"senderid"`

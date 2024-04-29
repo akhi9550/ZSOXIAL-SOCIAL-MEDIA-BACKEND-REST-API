@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/akhi9550/api-gateway/pkg/helper"
@@ -13,7 +12,6 @@ func UserAuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authHeader := c.GetHeader("Authorization")
 		tokenString := helper.GetTokenFromHeader(authHeader)
-		fmt.Println("token:-", tokenString)
 		if tokenString == "" {
 			var err error
 			tokenString, err = c.Cookie("Authorization")

@@ -1,0 +1,19 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Zsoxial is an Social media platform to interact with peoples",
+        "title": "Zsoxial_Microservice_CleanArchitecture",
+        "contact": {
+            "name": "github.com/akhi9550"
+        },
+        "version": "1.0.0"
+    },
+    "paths": {},
+    "securityDefinitions": {
+        "Bearer": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}

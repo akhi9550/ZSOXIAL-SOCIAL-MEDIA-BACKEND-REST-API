@@ -4,20 +4,21 @@ import (
 	"net/http"
 
 	"github.com/akhi9550/api-gateway/pkg/helper"
-	pb "github.com/akhi9550/api-gateway/pkg/pb/notification"
+	interfaces "github.com/akhi9550/api-gateway/pkg/client/interface"
 	"github.com/akhi9550/api-gateway/pkg/utils/models"
 	"github.com/akhi9550/api-gateway/pkg/utils/response"
 	"github.com/gin-gonic/gin"
 )
 
 type NotificationHandler struct {
-	GRPC_Client        pb.NotificationServiceClient
+	GRPC_Client       interfaces.NotificationClient
 	NotificationCachig *helper.RedisNotificationCaching
 }
 
-func NewNotificationHandler(notificationClient pb.NotificationServiceClient, notificationCache *helper.RedisNotificationCaching) *NotificationHandler {
+func NewNotificationHandler(notificationClient interfaces.NotificationClient, notificationCache *helper.RedisNotificationCaching) *NotificationHandler {
 	return &NotificationHandler{
 		GRPC_Client: notificationClient,
+		NotificationCachig: notificationCache,
 	}
 }
 
