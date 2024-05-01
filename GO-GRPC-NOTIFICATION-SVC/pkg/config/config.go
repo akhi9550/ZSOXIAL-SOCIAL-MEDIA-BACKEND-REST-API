@@ -14,14 +14,11 @@ type Config struct {
 	PostSvcUrl string `mapstructure:"POST_SVC_URL"`
 
 	KafkaPort           string `mapstructure:"KAFKA_PORT"`
-	KafkaLikeTopic      string `mapstructure:"KAFKA_LIKE_TOPIC"`
-	KafkaCommentTopic   string `mapstructure:"KAFKA_COMMENT_TOPIC"`
-	KafkaFollowReqTopic string `mapstructure:"KAFKA_FOLLOWREQ_TOPIC"`
-	KafkaAcceptReqTopic string `mapstructure:"KAFKA_ACCEPTREQ_TOPIC"`
+	KafkaTopic      string `mapstructure:"KAFKA_TOPIC"`
 }
 
 var envs = []string{
-	"DB_URL", "DB_NAME", "PORT", "KAFKA_PORT", "KAFKA_LIKE_TOPIC", "KAFKA_COMMENT_TOPIC", "KAFKA_FOLLOWREQ_TOPIC", "KAFKA_ACCEPTREQ_TOPIC", "POST_SVC_URL",
+	"DB_URL", "DB_NAME", "PORT", "KAFKA_PORT", "KAFKA_TOPIC","POST_SVC_URL",
 }
 
 func LoadConfig() (Config, error) {

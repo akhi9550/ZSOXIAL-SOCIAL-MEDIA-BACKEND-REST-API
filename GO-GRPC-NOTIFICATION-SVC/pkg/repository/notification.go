@@ -29,7 +29,7 @@ func (n *notificationRepository) GetNotification(userID int, pagination models.P
 		pagination.Offset = 1
 	}
 	offset := (pagination.Offset - 1) * pagination.Limit
-	err := n.DB.Raw(`SELECT sender_id, message, created_at FROM notifications WHERE user_id = ? ORDER BY created_at DESC LIMIT ? OFFSET ?`, userID, pagination.Limit, offset).Scan(&data).Error
+	err := n.DB.Raw(`SELECT sender_id,message, created_at FROM notifications WHERE user_id = ? ORDER BY created_at DESC LIMIT ? OFFSET ?`, userID, pagination.Limit, offset).Scan(&data).Error
 	if err != nil {
 		return nil, err
 	}

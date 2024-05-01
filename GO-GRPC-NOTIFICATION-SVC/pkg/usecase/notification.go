@@ -25,7 +25,7 @@ func NewUserUserUseCase(repository interfaces.NotificationRepository, authClient
 	}
 }
 
-func (c *NotificationUseCase) ConsumeLikeMessage() {
+func (c *NotificationUseCase) ConsumeNotification() {
 	cfg, err := config.LoadConfig()
 	if err != nil {
 		fmt.Println("Error loading config:", err)
@@ -41,13 +41,13 @@ func (c *NotificationUseCase) ConsumeLikeMessage() {
 	}
 
 	defer consumer.Close()
-	partitionConsumer, err := consumer.ConsumePartition(cfg.KafkaLikeTopic, 0, sarama.OffsetNewest)
+	partitionConsumer, err := consumer.ConsumePartition(cfg.KafkaTopic, 0, sarama.OffsetNewest)
 	if err != nil {
 		fmt.Println("Error creating partition consumer:", err)
 		return
 	}
 	defer partitionConsumer.Close()
-	fmt.Println("Kafka Likeconsumer started")
+	fmt.Println("Kafka consumer started")
 	for {
 		select {
 		case message := <-partitionConsumer.Messages():
@@ -79,133 +79,6 @@ func (c *NotificationUseCase) UnmarshelNotification(data []byte) (*models.Notifi
 	return &message, nil
 }
 
-func (c *NotificationUseCase) ConsumeCommentMessage() {
-	cfg, err := config.LoadConfig()
-	if err != nil {
-		fmt.Println("Error loading config:", err)
-		return
-	}
-
-	configs := sarama.NewConfig()
-	consumer, err := sarama.NewConsumer([]string{cfg.KafkaPort}, configs)
-	if err != nil {
-		fmt.Println("Error creating Kafka consumer:", err)
-		return
-	}
-	defer consumer.Close()
-	partitionConsumer, err := consumer.ConsumePartition(cfg.KafkaCommentTopic, 0, sarama.OffsetNewest)
-	if err != nil {
-		fmt.Println("Error creating partition consumer for topic:-", cfg.KafkaCommentTopic, ":", err)
-		return
-	}
-	defer partitionConsumer.Close()
-	fmt.Println("Kafka Commentconsumer started")
-	for {
-		select {
-		case message := <-partitionConsumer.Messages():
-			msg, err := c.UnmarshelNotification(message.Value)
-			if err != nil {
-				fmt.Println("Error unmarshalling message:", err)
-				continue
-			}
-			fmt.Println("Received message:", msg)
-			err = c.notificationRepository.StoreNotification(*msg)
-			if err != nil {
-				fmt.Println("Error storing message in repository:", err)
-				continue
-			}
-		case err := <-partitionConsumer.Errors():
-			fmt.Println("Kafka consumer error:", err)
-		}
-	}
-}
-
-func (c *NotificationUseCase) ConsumeFollowReqMessage() {
-	cfg, err := config.LoadConfig()
-	if err != nil {
-		fmt.Println("Error loading config:", err)
-		return
-	}
-
-	configs := sarama.NewConfig()
-	configs.Consumer.Return.Errors = true
-	consumer, err := sarama.NewConsumer([]string{cfg.KafkaPort}, configs)
-	if err != nil {
-		fmt.Println("Error creating Kafka consumer:", err)
-		return
-	}
-
-	defer consumer.Close()
-	partitionConsumer, err := consumer.ConsumePartition(cfg.KafkaFollowReqTopic, 0, sarama.OffsetNewest)
-	if err != nil {
-		fmt.Println("Error creating partition consumer:", err)
-		return
-	}
-	defer partitionConsumer.Close()
-	fmt.Println("Kafka FollowReqconsumer started")
-	for {
-		select {
-		case message := <-partitionConsumer.Messages():
-			msg, err := c.UnmarshelNotification(message.Value)
-			if err != nil {
-				fmt.Println("Error unmarshalling message:", err)
-				continue
-			}
-			fmt.Println("Received message:", msg)
-			err = c.notificationRepository.StoreNotification(*msg)
-			if err != nil {
-				fmt.Println("Error storing message in repository:", err)
-				continue
-			}
-		case err := <-partitionConsumer.Errors():
-			fmt.Println("Kafka consumer error:", err)
-		}
-	}
-}
-
-func (c *NotificationUseCase) ConsumeAcceptFollowReqMessage() {
-	cfg, err := config.LoadConfig()
-	if err != nil {
-		fmt.Println("Error loading config:", err)
-		return
-	}
-
-	configs := sarama.NewConfig()
-	configs.Consumer.Return.Errors = true
-	consumer, err := sarama.NewConsumer([]string{cfg.KafkaPort}, configs)
-	if err != nil {
-		fmt.Println("Error creating Kafka consumer:", err)
-		return
-	}
-
-	defer consumer.Close()
-	partitionConsumer, err := consumer.ConsumePartition(cfg.KafkaAcceptReqTopic, 0, sarama.OffsetNewest)
-	if err != nil {
-		fmt.Println("Error creating partition consumer:", err)
-		return
-	}
-	defer partitionConsumer.Close()
-	fmt.Println("Kafka AcceptReqconsumer started")
-	for {
-		select {
-		case message := <-partitionConsumer.Messages():
-			msg, err := c.UnmarshelNotification(message.Value)
-			if err != nil {
-				fmt.Println("Error unmarshalling message:", err)
-				continue
-			}
-			fmt.Println("Received message:", msg)
-			err = c.notificationRepository.StoreNotification(*msg)
-			if err != nil {
-				fmt.Println("Error storing message in repository:", err)
-				continue
-			}
-		case err := <-partitionConsumer.Errors():
-			fmt.Println("Kafka consumer error:", err)
-		}
-	}
-}
-
 func (n *NotificationUseCase) GetNotification(userID int, pagination models.Pagination) ([]models.NotificationResponse, error) {
 	var err error
 	data, err := n.notificationRepository.GetNotification(userID, pagination)
@@ -222,7 +95,6 @@ func (n *NotificationUseCase) GetNotification(userID int, pagination models.Pagi
 			UserID:    int(userData.UserId),
 			Username:  userData.Username,
 			Profile:   userData.Profile,
-			PostID:    res.PostID,
 			Message:   res.Message,
 			CreatedAt: res.CreatedAt,
 		})

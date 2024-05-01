@@ -18,9 +18,8 @@ message Message {
     int64 userID = 1;
     string username= 2;
     string profile = 3;
-    int64 postID = 4;
-    string message = 5;
-    string time = 6;
+    string message = 4;
+    string time = 5;
 }
 
 message GetNotificationResponse{

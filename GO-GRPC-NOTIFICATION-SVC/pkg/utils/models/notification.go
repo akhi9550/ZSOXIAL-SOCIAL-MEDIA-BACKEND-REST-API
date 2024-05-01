@@ -11,14 +11,12 @@ type NotificationResponse struct {
 	UserID    int    `json:"user_id" gorm:"column:sender_id"`
 	Username  string `json:"username"`
 	Profile   string `json:"profile"`
-	PostID    int    `json:"post_id"`
 	Message   string `json:"message"`
 	CreatedAt string `json:"created_at"`
 }
 
 type Notification struct {
 	UserID    int    `json:"user_id" gorm:"column:sender_id"`
-	PostID    int    `json:"post_id"`
 	Message   string `json:"message"`
 	CreatedAt string `json:"created_at"`
 }

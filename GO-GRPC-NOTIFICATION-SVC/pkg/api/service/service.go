@@ -31,7 +31,6 @@ func (n *NotificationHandler) GetNotification(ctx context.Context, req *pb.GetNo
 			UserID:   int64(val.UserID),
 			Username: val.Username,
 			Profile:  val.Profile,
-			PostID:   int64(val.PostID),
 			Message:  val.Message,
 			Time:     val.CreatedAt,
 		})
