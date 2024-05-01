@@ -30,39 +30,39 @@ func (r *RedisChatCaching) jsonUnmarshel(model interface{}, data []byte) error {
 	return json.Unmarshal(data, model)
 }
 
-func (r *RedisChatCaching) GetChat(userID string, req models.ChatRequest) ([]models.Message, error) {
+func (r *RedisChatCaching) GetChat(userID string, req models.ChatRequest) ([]models.TempMessage, error) {
 	res := r.redis.Get(context.Background(), "chat:"+userID+":"+req.FriendID)
-	var data []models.Message
+	var data []models.TempMessage
 
 	if res.Val() == "" {
 		var err error
 		data, err = r.SetGetChat(userID, req)
 		if err != nil {
-			return []models.Message{}, err
+			return []models.TempMessage{}, err
 		}
 	} else {
-		err := r.jsonUnmarshel(&res, []byte(res.Val()))
+		err := r.jsonUnmarshel(&data, []byte(res.Val()))
 		if err != nil {
-			return []models.Message{}, err
+			return []models.TempMessage{}, err
 		}
 	}
 	return data, nil
 }
 
-func (r *RedisChatCaching) SetGetChat(userID string, req models.ChatRequest) ([]models.Message, error) {
+func (r *RedisChatCaching) SetGetChat(userID string, req models.ChatRequest) ([]models.TempMessage, error) {
 	data, err := r.chatClient.GetChat(userID, req)
 	if err != nil {
-		return []models.Message{}, err
+		return []models.TempMessage{}, err
 	}
 
 	profileByte, err := r.structMarshel(data)
 	if err != nil {
-		return []models.Message{}, err
+		return []models.TempMessage{}, err
 	}
 
-	result := r.redis.Set(context.Background(), "chat:"+userID+":"+req.FriendID, profileByte, time.Hour)
+	result := r.redis.Set(context.Background(), "chat:"+userID+":"+req.FriendID, profileByte, time.Second)
 	if result.Err() != nil {
-		return []models.Message{}, err
+		return []models.TempMessage{}, err
 	}
 
 	return data, nil

@@ -3,28 +3,21 @@ package main
 import (
 	"log"
 
+	"github.com/akhi9550/api-gateway/cmd/docs"
 	_ "github.com/akhi9550/api-gateway/cmd/docs"
 	"github.com/akhi9550/api-gateway/pkg/config"
 	"github.com/akhi9550/api-gateway/pkg/di"
-	"github.com/gin-gonic/gin"
-	swaggerFiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
+	_ "github.com/swaggo/files"
+	_ "github.com/swaggo/gin-swagger"
 )
 
-// @title Zsoxial_Microservice_CleanArchitecture
-// @version 1.0.0
-// @description Zsoxial is an Social media platform to interact with peoples
-// @contact.name github.com/akhi9550
-// @securityDefinitions.apikey Bearer
-// @in header
-// @name Authorization
-// @host localhost:8000
-// @BasePath /
-// @query.collection.format multi
-
 func main() {
-	u := gin.Default()
-	u.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	docs.SwaggerInfo.Title = "Zsoxial_Microservice_CleanArchitecture"
+	docs.SwaggerInfo.Description = "Zsoxial is an Social media platform to interact with peoples"
+	docs.SwaggerInfo.Version = "1.0"
+	docs.SwaggerInfo.Host = "localhost:8000"
+	docs.SwaggerInfo.BasePath = ""
+	docs.SwaggerInfo.Schemes = []string{"http", "https"}
 
 	config, configErr := config.LoadConfig()
 	if configErr != nil {

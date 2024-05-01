@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/akhi9550/api-gateway/pkg/helper"
 	interfaces "github.com/akhi9550/api-gateway/pkg/client/interface"
+	"github.com/akhi9550/api-gateway/pkg/helper"
 	"github.com/akhi9550/api-gateway/pkg/utils/models"
 	"github.com/akhi9550/api-gateway/pkg/utils/response"
 	"github.com/gin-gonic/gin"
@@ -38,7 +38,7 @@ func (ch *ChatHandler) FriendMessage(c *gin.Context) {
 	fmt.Println("message called")
 	conn, err := upgrade.Upgrade(c.Writer, c.Request, nil)
 	if err != nil {
-		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
+		errs := response.ClientResponse(http.StatusBadRequest, "Websocket Connection Issue", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
 		return
 	}
@@ -83,7 +83,7 @@ func (ch *ChatHandler) GetChat(c *gin.Context) {
 	// ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	// defer cancel()
 
-	result, err := ch.ChatCachig.GetChat(userID, chatRequest)
+	result, err := ch.GRPC_Client.GetChat(userID, chatRequest)
 	if err != nil {
 		errs := response.ClientResponse(http.StatusBadRequest, "Failed to get chat details", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)

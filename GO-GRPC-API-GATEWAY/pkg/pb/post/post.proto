@@ -32,6 +32,7 @@ service PostService {
     rpc LikeStory (LikeStoryRequest) returns (LikeStoryResponse){}
     rpc UnLikeStory (LikeStoryRequest) returns (LikeStoryResponse){}
     rpc StoryDetails (StoryDetailsRequest) returns (StoryDetailsResponse){}
+    rpc Home (HomeRequest) returns (HomeResponse){}
 }
 
 message CreatePostRequest {
@@ -335,4 +336,12 @@ message StoryDetailsResponse {
     int64 storyID = 1;
     repeated likeduser likedUser = 2;
     repeated viewer Viewer = 3;
+}
+
+message HomeRequest{
+    int64 userID = 1;
+}
+
+message HomeResponse{
+    repeated CreatePostResponse allpost = 1;
 }

@@ -5,6 +5,8 @@ import (
 
 	"github.com/akhi9550/api-gateway/pkg/api/handler"
 	"github.com/akhi9550/api-gateway/pkg/api/middleware"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 
 	"github.com/gin-gonic/gin"
 )
@@ -17,6 +19,8 @@ func NewServerHTTP(authHandler *handler.AuthHandler, postHandler *handler.PostHa
 	r := gin.New()
 
 	r.Use(gin.Logger())
+
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	r.POST("/login", authHandler.AdminLogin)
 
@@ -72,6 +76,7 @@ func NewServerHTTP(authHandler *handler.AuthHandler, postHandler *handler.PostHa
 			post.DELETE("", postHandler.DeletePost)
 			post.GET("posts", postHandler.GetPost)
 			post.GET("/getposts", postHandler.GetAllPost)
+			post.GET("/home", postHandler.Home)
 		}
 
 		savepost := r.Group("/saved")

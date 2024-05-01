@@ -1,13 +1,4 @@
 info:
-  contact:
-    name: github.com/akhi9550
-  description: Zsoxial is an Social media platform to interact with peoples
-  title: Zsoxial_Microservice_CleanArchitecture
-  version: 1.0.0
+  contact: {}
 paths: {}
-securityDefinitions:
-  Bearer:
-    in: header
-    name: Authorization
-    type: apiKey
 swagger: "2.0"

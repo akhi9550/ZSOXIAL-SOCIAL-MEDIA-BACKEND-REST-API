@@ -21,6 +21,21 @@ func NewHelper(config *config.Config) *Helper {
 	}
 }
 
+func (r *Helper) SendMessageToUser(User map[string]*websocket.Conn, msg []byte, userID string) {
+	var message models.Message
+	if err := json.Unmarshal([]byte(msg), &message); err != nil {
+		fmt.Println("error while unmarshel ", err)
+	}
+
+	message.SenderID = userID
+	recipientConn, ok := User[message.RecipientID]
+	if ok {
+		recipientConn.WriteMessage(websocket.TextMessage, msg)
+	}
+	err := KafkaProducer(message)
+	fmt.Println("==send succesfully==", err)
+}
+
 func KafkaProducer(message models.Message) error {
 	fmt.Println("from kafka ", message)
 	cfg, _ := config.LoadConfig()
@@ -47,17 +62,3 @@ func KafkaProducer(message models.Message) error {
 	return nil
 }
 
-func (r *Helper) SendMessageToUser(User map[string]*websocket.Conn, msg []byte, userID string) {
-	var message models.Message
-	if err := json.Unmarshal([]byte(msg), &message); err != nil {
-		fmt.Println("error while unmarshel ", err)
-	}
-
-	message.SenderID = userID
-	recipientConn, ok := User[message.RecipientID]
-	if ok {
-		recipientConn.WriteMessage(websocket.TextMessage, msg)
-	}
-	err := KafkaProducer(message)
-	fmt.Println("==send succesfully==", err)
-}

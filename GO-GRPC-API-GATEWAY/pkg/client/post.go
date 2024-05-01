@@ -587,3 +587,34 @@ func (p *PostClient) StoryDetails(userID, storyID int) (models.StoryDetails, err
 		LikedUser: LikeUsers,
 	}, nil
 }
+
+func(p *PostClient)Home(userID int) ([]models.PostResponse, error){
+	data, err := p.Client.Home(context.Background(), &pb.HomeRequest{
+		UserID: int64(userID),
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	var postResponses []models.PostResponse
+	for _, post := range data.Allpost {
+		user := models.UserData{
+			UserId:   uint(post.User.Userid),
+			Username: post.User.Username,
+			Profile:  post.User.Imageurl,
+		}
+		postResponse := models.PostResponse{
+			ID:        uint(post.Id),
+			Author:    user,
+			Caption:   post.Caption,
+			Url:       post.Url,
+			Likes:     uint(post.Like),
+			Comments:  uint(post.Comment),
+			CreatedAt: post.CreatedAt.AsTime(),
+		}
+
+		postResponses = append(postResponses, postResponse)
+	}
+
+	return postResponses, nil
+}

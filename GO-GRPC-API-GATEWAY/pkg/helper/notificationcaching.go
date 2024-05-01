@@ -42,7 +42,7 @@ func (r *RedisNotificationCaching) GetNotification(userID int, req models.Notifi
 			return []models.NotificationResponse{}, err
 		}
 	} else {
-		err := r.jsonUnmarshel(&res, []byte(res.Val()))
+		err := r.jsonUnmarshel(&data, []byte(res.Val()))
 		if err != nil {
 			return []models.NotificationResponse{}, err
 		}
@@ -61,7 +61,7 @@ func (r *RedisNotificationCaching) SetGetNotification(userID int, req models.Not
 		return []models.NotificationResponse{}, err
 	}
 
-	result := r.redis.Set(context.Background(),  "notification:"+strconv.Itoa(userID), profileByte, time.Hour)
+	result := r.redis.Set(context.Background(),  "notification:"+strconv.Itoa(userID), profileByte, time.Second)
 	if result.Err() != nil {
 		return []models.NotificationResponse{}, err
 	}

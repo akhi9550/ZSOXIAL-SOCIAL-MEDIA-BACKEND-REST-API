@@ -44,6 +44,7 @@ const (
 	PostService_LikeStory_FullMethodName           = "/post.PostService/LikeStory"
 	PostService_UnLikeStory_FullMethodName         = "/post.PostService/UnLikeStory"
 	PostService_StoryDetails_FullMethodName        = "/post.PostService/StoryDetails"
+	PostService_Home_FullMethodName                = "/post.PostService/Home"
 )
 
 // PostServiceClient is the client API for PostService service.
@@ -75,6 +76,7 @@ type PostServiceClient interface {
 	LikeStory(ctx context.Context, in *LikeStoryRequest, opts ...grpc.CallOption) (*LikeStoryResponse, error)
 	UnLikeStory(ctx context.Context, in *LikeStoryRequest, opts ...grpc.CallOption) (*LikeStoryResponse, error)
 	StoryDetails(ctx context.Context, in *StoryDetailsRequest, opts ...grpc.CallOption) (*StoryDetailsResponse, error)
+	Home(ctx context.Context, in *HomeRequest, opts ...grpc.CallOption) (*HomeResponse, error)
 }
 
 type postServiceClient struct {
@@ -310,6 +312,15 @@ func (c *postServiceClient) StoryDetails(ctx context.Context, in *StoryDetailsRe
 	return out, nil
 }
 
+func (c *postServiceClient) Home(ctx context.Context, in *HomeRequest, opts ...grpc.CallOption) (*HomeResponse, error) {
+	out := new(HomeResponse)
+	err := c.cc.Invoke(ctx, PostService_Home_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PostServiceServer is the server API for PostService service.
 // All implementations must embed UnimplementedPostServiceServer
 // for forward compatibility
@@ -339,6 +350,7 @@ type PostServiceServer interface {
 	LikeStory(context.Context, *LikeStoryRequest) (*LikeStoryResponse, error)
 	UnLikeStory(context.Context, *LikeStoryRequest) (*LikeStoryResponse, error)
 	StoryDetails(context.Context, *StoryDetailsRequest) (*StoryDetailsResponse, error)
+	Home(context.Context, *HomeRequest) (*HomeResponse, error)
 	mustEmbedUnimplementedPostServiceServer()
 }
 
@@ -420,6 +432,9 @@ func (UnimplementedPostServiceServer) UnLikeStory(context.Context, *LikeStoryReq
 }
 func (UnimplementedPostServiceServer) StoryDetails(context.Context, *StoryDetailsRequest) (*StoryDetailsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method StoryDetails not implemented")
+}
+func (UnimplementedPostServiceServer) Home(context.Context, *HomeRequest) (*HomeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Home not implemented")
 }
 func (UnimplementedPostServiceServer) mustEmbedUnimplementedPostServiceServer() {}
 
@@ -884,6 +899,24 @@ func _PostService_StoryDetails_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _PostService_Home_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(HomeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PostServiceServer).Home(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PostService_Home_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PostServiceServer).Home(ctx, req.(*HomeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // PostService_ServiceDesc is the grpc.ServiceDesc for PostService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -990,6 +1023,10 @@ var PostService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "StoryDetails",
 			Handler:    _PostService_StoryDetails_Handler,
+		},
+		{
+			MethodName: "Home",
+			Handler:    _PostService_Home_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -20,6 +20,7 @@ type TempMessage struct {
 	SenderID    string
 	RecipientID string `json:"RecipientID" validate:"required"`
 	Content     string `json:"Content" validate:"required"`
+	Timestamp   string `json:"TimeStamp" validate:"required"`
 }
 
 type ChatRequest struct {
@@ -32,7 +33,7 @@ type Message struct {
 	SenderID    string    `json:"SenderID" validate:"required"`
 	RecipientID string    `json:"RecipientID" validate:"required"`
 	Content     string    `json:"Content" validate:"required"`
-	Timestamp   string `json:"TimeStamp" validate:"required"`
+	Timestamp   time.Time `json:"TimeStamp" validate:"required"`
 }
 
 type Pagination struct {

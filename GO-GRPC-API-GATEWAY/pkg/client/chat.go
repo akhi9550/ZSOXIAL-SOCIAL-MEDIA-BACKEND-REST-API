@@ -27,7 +27,7 @@ func NewChatClient(cfg config.Config) *ChatClient {
 	}
 }
 
-func (c *ChatClient) GetChat(userID string, req models.ChatRequest) ([]models.Message, error) {
+func (c *ChatClient) GetChat(userID string, req models.ChatRequest) ([]models.TempMessage, error) {
 	data, err := c.Client.GetFriendChat(context.Background(), &pb.GetFriendChatRequest{
 		UserID:   userID,
 		FriendID: req.FriendID,
@@ -35,11 +35,11 @@ func (c *ChatClient) GetChat(userID string, req models.ChatRequest) ([]models.Me
 		Limit:    req.Limit,
 	})
 	if err != nil {
-		return []models.Message{}, err
+		return []models.TempMessage{}, err
 	}
-	var response []models.Message
+	var response []models.TempMessage
 	for _, v := range data.FriendChat {
-		chatResponse := models.Message{
+		chatResponse := models.TempMessage{
 			SenderID:    v.SenderId,
 			RecipientID: v.RecipientId,
 			Content:     v.Content,

@@ -62,7 +62,7 @@ func (p *PostHandler) CreatePost(c *gin.Context) {
 
 func (p *PostHandler) GetUserPost(c *gin.Context) {
 	userID, _ := c.Get("user_id")
-	data, err := p.PostCachig.GetUserPost(userID.(int))
+	data, err := p.GRPC_Client.GetUserPost(userID.(int))
 	if err != nil {
 		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
@@ -150,7 +150,7 @@ func (p *PostHandler) GetAllPost(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errs)
 		return
 	}
-	data, err := p.PostCachig.GetAllPost(UserID)
+	data, err := p.GRPC_Client.GetAllPost(UserID)
 	if err != nil {
 		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
@@ -274,7 +274,7 @@ func (p *PostHandler) GetAllPostComments(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errs)
 		return
 	}
-	data, err := p.PostCachig.GetAllPostComments(PostID)
+	data, err := p.GRPC_Client.GetAllPostComments(PostID)
 	if err != nil {
 		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
@@ -398,7 +398,7 @@ func (p *PostHandler) GetStory(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errs)
 		return
 	}
-	data, err := p.PostCachig.GetStory(userID, viewUser.(int))
+	data, err := p.GRPC_Client.GetStory(userID, viewUser.(int))
 	if err != nil {
 		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
@@ -492,7 +492,7 @@ func (p *PostHandler) ShowAllPostComments(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errs)
 		return
 	}
-	data, err := p.PostCachig.ShowAllPostComments(postID)
+	data, err := p.GRPC_Client.ShowAllPostComments(postID)
 	if err != nil {
 		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
@@ -516,5 +516,17 @@ func (p *PostHandler) ReportPost(c *gin.Context) {
 		return
 	}
 	success := response.ClientResponse(http.StatusOK, "Successfully Reported", nil, nil)
+	c.JSON(http.StatusOK, success)
+}
+
+func (p *PostHandler) Home(c *gin.Context) {
+	userID, _ := c.Get("user_id")
+	data,err := p.GRPC_Client.Home(userID.(int))
+	if err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "Couldn't Get HomePage", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+		return
+	}
+	success := response.ClientResponse(http.StatusOK, "Successfully Get HomePage", data, nil)
 	c.JSON(http.StatusOK, success)
 }

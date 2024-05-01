@@ -42,7 +42,6 @@ var response []models.NotificationResponse
 			UserID:    int(v.UserID),
 			Username:  v.Username,
 			Profile:   v.Profile,
-			PostID:    int(v.PostID),
 			Message:   v.Message,
 			CreatedAt: v.Time,
 		}
