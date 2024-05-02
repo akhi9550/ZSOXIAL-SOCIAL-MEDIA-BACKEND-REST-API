@@ -27,7 +27,6 @@ func NewChatUseCase(repository interfaces.ChatRepository, authclient authclienti
 }
 
 func (c *ChatUseCase) MessageConsumer() {
-	fmt.Println("Starting Kafka consumer")
 	cfg, err := config.LoadConfig()
 	if err != nil {
 		fmt.Println("Error loading config:", err)
@@ -72,8 +71,10 @@ func (c *ChatUseCase) UnmarshelChatMessage(data []byte) (*models.MessageReq, err
 	var message models.MessageReq
 	err := json.Unmarshal(data, &message)
 	if err != nil {
+		fmt.Println("error", err)
 		return nil, err
 	}
+
 	message.Timestamp = time.Now()
 	return &message, nil
 }

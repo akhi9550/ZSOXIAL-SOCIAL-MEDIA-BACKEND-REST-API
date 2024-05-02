@@ -1,6 +1,10 @@
 package repository
 
 import (
+	"math/rand"
+	"sort"
+	"time"
+
 	interfaces "github.com/akhi9550/post-svc/pkg/repository/interface"
 	"github.com/akhi9550/post-svc/pkg/utils/models"
 	"gorm.io/gorm"
@@ -42,6 +46,16 @@ func (p *postRepository) CheckPostAvalilabilityWithID(postID int) bool {
 	}
 	return count > 0
 }
+
+func(p *postRepository) CheckPostedUserID(userID, PostID int)bool{
+	var count int
+	err := p.DB.Raw(`SELECT COUNT(*) FROM posts WHERE id = ? AND user_id = ?`, PostID,userID).Scan(&count).Error
+	if err != nil {
+		return false
+	}
+	return count > 0
+}
+
 
 func (p *postRepository) CreatePost(userID int, Caption string, TypeId int, file string, users []models.Tag) (models.Response, []models.Tag, error) {
 	var post models.Response
@@ -430,6 +444,7 @@ func (p *postRepository) GetAllPosts(page, count int) ([]models.Responses, error
 	}
 	return response, nil
 }
+
 func (p *postRepository) CheckPostIDByID(postID int) bool {
 	var count int
 	err := p.DB.Raw(`SELECT COUNT(*) FROM posts WHERE id = ?`, postID).Scan(&count).Error
@@ -438,6 +453,7 @@ func (p *postRepository) CheckPostIDByID(postID int) bool {
 	}
 	return count > 0
 }
+
 func (p *postRepository) RemovePost(postID int) error {
 	err := p.DB.Exec(`DELETE FROM posts WHERE id = ?`, postID).Error
 	if err != nil {
@@ -448,4 +464,39 @@ func (p *postRepository) RemovePost(postID int) error {
 		return err
 	}
 	return nil
+}
+
+func (p *postRepository) Home(users []models.Users) ([]models.Responses, error) {
+	var allPosts []models.Responses
+	for _, user := range users {
+		var userPosts []models.Responses
+		err := p.DB.Raw(`SELECT id, url, caption, user_id, likes_count, comments_count, created_at 
+						FROM posts 
+						WHERE is_archive = 'false' AND user_id = ? AND created_at IS NOT NULL
+						ORDER BY created_at DESC`, user.FollowingUser).Scan(&userPosts).Error
+		if err != nil {
+			return nil, err
+		}
+		allPosts = append(allPosts, userPosts...)
+	}
+
+	sort.SliceStable(allPosts, func(i, j int) bool {
+		return allPosts[i].CreatedAt.After(allPosts[j].CreatedAt)
+	})
+
+	rand.Seed(time.Now().UnixNano())
+	rand.Shuffle(len(users), func(i, j int) {
+		users[i], users[j] = users[j], users[i]
+	})
+
+	var responses []models.Responses
+	for _, user := range users {
+		for _, post := range allPosts {
+			if post.UserID == uint(user.FollowingUser) {
+				responses = append(responses, post)
+			}
+		}
+	}
+
+	return responses, nil
 }

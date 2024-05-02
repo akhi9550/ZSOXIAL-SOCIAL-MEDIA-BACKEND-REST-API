@@ -9,6 +9,7 @@ service AuthService {
     rpc UserData (UserDataRequest) returns (UserDataResponse){}
     rpc CheckUserAvalilabilityWithTagUserID (CheckUserAvalilabilityWithTagUserIDRequest) returns (CheckUserAvalilabilityWithTagUserIDResponse){}
     rpc GetUserNameWithTagUserID (GetUserNameWithTagUserIDRequest) returns (GetUserNameWithTagUserIDResponse){}
+    rpc GetFollowingUsers (GetFollowingUsersRequest) returns (GetFollowingUsersResponse){}
 }
 
 message CheckUserAvalilabilityWithUserIDRequest {
@@ -51,4 +52,16 @@ message TagUsernames{
 
 message GetUserNameWithTagUserIDResponse{
     repeated TagUsernames name = 1;
+}
+
+message GetFollowingUsersRequest{
+    int64 userID = 1;
+}
+
+message Followuser{
+    int64 followinguser = 1;
+}
+
+message GetFollowingUsersResponse{
+    repeated Followuser user = 1;
 }

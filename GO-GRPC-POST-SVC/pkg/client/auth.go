@@ -84,3 +84,21 @@ func (c *clientAuth) GetUserNameWithTagUserID(users []models.Tag) ([]models.Tag,
 
 	return tagUsers, nil
 }
+
+func (c *clientAuth) GetFollowingUsers(userID int) ([]models.Users, error) {
+	data, err := c.Client.GetFollowingUsers(context.Background(), &pb.GetFollowingUsersRequest{
+		UserID: int64(userID),
+	})
+	if err != nil {
+		return []models.Users{}, err
+	}
+	var followUsers []models.Users
+	for _, pbUser := range data.User {
+		followUser := models.Users{
+			FollowingUser: int(pbUser.Followinguser),
+		}
+		followUsers = append(followUsers, followUser)
+	}
+
+	return followUsers, nil
+}

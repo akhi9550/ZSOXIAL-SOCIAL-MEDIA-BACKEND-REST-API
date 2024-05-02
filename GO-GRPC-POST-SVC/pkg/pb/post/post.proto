@@ -36,6 +36,7 @@ service PostService {
     rpc GetAllPosts (GetAllpostsRequest) returns (GetAllpostsResponse){}
     rpc CheckPostIDByID (CheckPostIDByIDRequest) returns (CheckPostIDByIDResponse){}
     rpc RemovePost (RemovePostRequest) returns (RemovePostResponse){}
+    rpc Home (HomeRequest) returns (HomeResponse){}
 }
 
 message CreatePostRequest {
@@ -389,4 +390,12 @@ message StoryDetailsResponse {
     int64 storyID = 1;
     repeated likeduser likedUser = 2;
     repeated viewer Viewer = 3;
+}
+
+message HomeRequest{
+    int64 userID = 1;
+}
+
+message HomeResponse{
+    repeated CreatePostResponse allpost = 1;
 }

@@ -132,6 +132,10 @@ func (p *postUseCase) UpdatePost(userID int, data models.UpdatePostReq, tag []mo
 	if !ok {
 		return models.UpdateResponse{}, errors.New("post doesn't exist")
 	}
+	ok = p.postRepository.CheckPostedUserID(userID, int(data.PostID))
+	if !ok {
+		return models.UpdateResponse{}, errors.New("couldn't not update this is not a userpost")
+	}
 	err := p.postRepository.UpdateCaption(userID, int(data.PostID), data.Caption)
 	if err != nil {
 		return models.UpdateResponse{}, err
@@ -311,7 +315,7 @@ func (p *postUseCase) LikePost(userID int, postID int) (models.LikePostResponse,
 		return models.LikePostResponse{}, err
 	}
 	msg := fmt.Sprintf("%s Liked Your PostID %d", userData.Username, postID)
-	helper.SendLikeNotification(models.Notification{
+	helper.SendNotification(models.Notification{
 		UserID:   postedUserID,
 		SenderID: userID,
 		PostID:   postID,
@@ -369,7 +373,7 @@ func (p *postUseCase) PostComment(userID int, data models.PostCommentReq) (model
 	}
 
 	msg := fmt.Sprintf("%s comment on post %d Comment:- %s", userData.Username, data.PostID, data.Comment)
-	helper.SendCommentNotification(models.Notification{
+	helper.SendNotification(models.Notification{
 		UserID:   postedUserID,
 		SenderID: userID,
 		PostID:   int(data.PostID),
@@ -653,4 +657,33 @@ func (p *postUseCase) RemovePost(postID int) error {
 		return err
 	}
 	return nil
+}
+
+func (p *postUseCase) Home(userID int) ([]models.PostResponse, error) {
+	followingUsers, err := p.authClient.GetFollowingUsers(userID)
+	if err != nil {
+		return []models.PostResponse{}, err
+	}
+	posts, err := p.postRepository.Home(followingUsers)
+	if err != nil {
+		return []models.PostResponse{}, err
+	}
+	var AllPosts []models.PostResponse
+	for _, v := range posts {
+		userData, err := p.authClient.UserData(int(v.UserID))
+		if err != nil {
+			return []models.PostResponse{}, err
+		}
+		detaiils := models.PostResponse{
+			ID:        v.ID,
+			Author:    userData,
+			Caption:   v.Caption,
+			Url:       v.Url,
+			Likes:     v.Likes,
+			Comments:  v.Comments,
+			CreatedAt: v.CreatedAt,
+		}
+		AllPosts = append(AllPosts, detaiils)
+	}
+	return AllPosts, nil
 }

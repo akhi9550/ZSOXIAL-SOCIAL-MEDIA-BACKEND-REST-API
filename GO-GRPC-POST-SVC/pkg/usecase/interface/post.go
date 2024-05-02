@@ -28,4 +28,5 @@ type PostUseCase interface {
 	GetAllPosts(page, count int) ([]models.PostResponse, error)
 	CheckPostIDByID(postID int) bool
 	RemovePost(postID int) error
+	Home(userID int) ([]models.PostResponse, error)
 }

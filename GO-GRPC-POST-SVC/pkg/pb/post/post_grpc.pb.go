@@ -48,6 +48,7 @@ const (
 	PostService_GetAllPosts_FullMethodName         = "/post.PostService/GetAllPosts"
 	PostService_CheckPostIDByID_FullMethodName     = "/post.PostService/CheckPostIDByID"
 	PostService_RemovePost_FullMethodName          = "/post.PostService/RemovePost"
+	PostService_Home_FullMethodName                = "/post.PostService/Home"
 )
 
 // PostServiceClient is the client API for PostService service.
@@ -83,6 +84,7 @@ type PostServiceClient interface {
 	GetAllPosts(ctx context.Context, in *GetAllpostsRequest, opts ...grpc.CallOption) (*GetAllpostsResponse, error)
 	CheckPostIDByID(ctx context.Context, in *CheckPostIDByIDRequest, opts ...grpc.CallOption) (*CheckPostIDByIDResponse, error)
 	RemovePost(ctx context.Context, in *RemovePostRequest, opts ...grpc.CallOption) (*RemovePostResponse, error)
+	Home(ctx context.Context, in *HomeRequest, opts ...grpc.CallOption) (*HomeResponse, error)
 }
 
 type postServiceClient struct {
@@ -354,6 +356,15 @@ func (c *postServiceClient) RemovePost(ctx context.Context, in *RemovePostReques
 	return out, nil
 }
 
+func (c *postServiceClient) Home(ctx context.Context, in *HomeRequest, opts ...grpc.CallOption) (*HomeResponse, error) {
+	out := new(HomeResponse)
+	err := c.cc.Invoke(ctx, PostService_Home_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PostServiceServer is the server API for PostService service.
 // All implementations must embed UnimplementedPostServiceServer
 // for forward compatibility
@@ -387,6 +398,7 @@ type PostServiceServer interface {
 	GetAllPosts(context.Context, *GetAllpostsRequest) (*GetAllpostsResponse, error)
 	CheckPostIDByID(context.Context, *CheckPostIDByIDRequest) (*CheckPostIDByIDResponse, error)
 	RemovePost(context.Context, *RemovePostRequest) (*RemovePostResponse, error)
+	Home(context.Context, *HomeRequest) (*HomeResponse, error)
 	mustEmbedUnimplementedPostServiceServer()
 }
 
@@ -480,6 +492,9 @@ func (UnimplementedPostServiceServer) CheckPostIDByID(context.Context, *CheckPos
 }
 func (UnimplementedPostServiceServer) RemovePost(context.Context, *RemovePostRequest) (*RemovePostResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RemovePost not implemented")
+}
+func (UnimplementedPostServiceServer) Home(context.Context, *HomeRequest) (*HomeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Home not implemented")
 }
 func (UnimplementedPostServiceServer) mustEmbedUnimplementedPostServiceServer() {}
 
@@ -1016,6 +1031,24 @@ func _PostService_RemovePost_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _PostService_Home_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(HomeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PostServiceServer).Home(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PostService_Home_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PostServiceServer).Home(ctx, req.(*HomeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // PostService_ServiceDesc is the grpc.ServiceDesc for PostService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1138,6 +1171,10 @@ var PostService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RemovePost",
 			Handler:    _PostService_RemovePost_Handler,
+		},
+		{
+			MethodName: "Home",
+			Handler:    _PostService_Home_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

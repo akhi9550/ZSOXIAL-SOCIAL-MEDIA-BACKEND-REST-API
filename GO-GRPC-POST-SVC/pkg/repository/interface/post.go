@@ -8,6 +8,7 @@ type PostRepository interface {
 	CheckUserAvalilabilityWithUserID(userID int) bool
 	CheckMediaAvalilabilityWithID(typeID int) bool
 	CheckPostAvalilabilityWithID(postID int) bool
+	CheckPostedUserID(userID, PostID int)bool
 	UserData(userID int) (models.UserData, error)
 	CreatePost(userID int, Caption string, TypeId int, file string, users []models.Tag) (models.Response, []models.Tag, error)
 	GetPost(postID int) (models.Responses, error)
@@ -24,7 +25,7 @@ type PostRepository interface {
 	GetAllArchivePost(userID int) ([]models.ArchivePostResponse, error)
 	CheckAlreadyLiked(userID, PostID int) bool
 	LikePost(userID, postID int) (models.LikesReponse, error)
-	GetPostedUserID(postID int)(int,error)
+	GetPostedUserID(postID int) (int, error)
 	UnLikePost(userID, postID int) error
 	PostComment(userID int, data models.PostCommentReq) (models.PostComments, error)
 	CheckUserWithUserID(userID int) bool
@@ -45,4 +46,5 @@ type PostRepository interface {
 	GetAllPosts(page, count int) ([]models.Responses, error)
 	CheckPostIDByID(postID int) bool
 	RemovePost(postID int) error
+	Home(users []models.Users) ([]models.Responses, error)
 }

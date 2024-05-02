@@ -236,3 +236,7 @@ type PostReports struct {
 	PostID       uint   `json:"post_id"`
 	Report       string `json:"report"`
 }
+
+type Users struct{
+	FollowingUser int  `json:"following_user"`
+}

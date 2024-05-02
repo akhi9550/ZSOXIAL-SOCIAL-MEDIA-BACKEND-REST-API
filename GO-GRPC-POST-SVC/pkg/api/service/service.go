@@ -577,3 +577,34 @@ func (p *PostServer) RemovePost(ctx context.Context, req *pb.RemovePostRequest) 
 	}
 	return &pb.RemovePostResponse{}, nil
 }
+
+func (p *PostServer) Home(ctx context.Context, req *pb.HomeRequest) (*pb.HomeResponse, error) {
+	data, err := p.postUseCase.Home(int(req.UserID))
+	if err != nil {
+		return &pb.HomeResponse{}, err
+	}
+	var allPostResponses []*pb.CreatePostResponse
+	for _, post := range data {
+		userData := &pb.UserData{
+			Userid:   int64(post.Author.UserId),
+			Username: post.Author.Username,
+			Imageurl: post.Author.Profile,
+		}
+
+		details := &pb.CreatePostResponse{
+			Id:        int64(post.ID),
+			User:      userData,
+			Caption:   post.Caption,
+			Url:       post.Url,
+			Like:      int64(post.Likes),
+			Comment:   int64(post.Comments),
+			CreatedAt: timestamppb.New(post.CreatedAt),
+		}
+
+		allPostResponses = append(allPostResponses, details)
+	}
+
+	return &pb.HomeResponse{
+		Allpost: allPostResponses,
+	}, nil
+}
