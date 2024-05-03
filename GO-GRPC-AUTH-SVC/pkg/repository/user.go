@@ -279,6 +279,7 @@ func (ur *userRepository) Changepassword(id int, password string) error {
 }
 
 func (ur *userRepository) CheckUserAvalilabilityWithTagUserID(users []models.Tag) (bool, error) {
+	fmt.Println("dat", users)
 	var count int
 	for _, i := range users {
 		if err := ur.DB.Raw("SELECT COUNT(*) FROM users WHERE id = ?", i.User).Scan(&count).Error; err != nil {
@@ -298,6 +299,15 @@ func (ur *userRepository) GetUserNameWithTagUserID(users []models.Tag) ([]models
 		data = append(data, userDetails)
 	}
 	return data, nil
+}
+
+func (ur *userRepository) GetFollowingUsers(userID int) ([]models.FollowUsers, error) {
+	var users []models.FollowUsers
+	err := ur.DB.Raw(`SELECT following_user FROM followings WHERE user_id = ?`, userID).Scan(&users).Error
+	if err != nil {
+		return []models.FollowUsers{}, err
+	}
+	return users, nil
 }
 
 func (ur *userRepository) AlreadyReported(RuserID, userID int) bool {
@@ -356,15 +366,35 @@ func (ur *userRepository) CheckRequest(userID, FollowingUserID int) bool {
 	return request.UserID != 0
 }
 
+func (ur *userRepository) AlreadyAccepted(userID, FollowingUserID int) bool {
+	var count int
+	err := ur.DB.Raw(`SELECT COUNT(*) FROM followers WHERE user_id = ? AND following_user = ?`, userID, FollowingUserID).Scan(&count).Error
+	if err != nil {
+		return false
+	}
+	if count > 0 {
+		return true
+	}
+
+	err = ur.DB.Raw(`SELECT COUNT(*) FROM followings WHERE user_id = ? AND following_user = ?`, userID, FollowingUserID).Scan(&count).Error
+	if err != nil {
+		return false
+	}
+
+	return count > 0
+}
+
 func (ur *userRepository) AcceptFollowREQ(userID, FollowingUserID int) error {
 	err := ur.DB.Exec(`INSERT INTO followers (user_id,following_user,created_at) VALUES(?,?,NOW())`, userID, FollowingUserID).Error
 	if err != nil {
 		return err
 	}
+
 	err = ur.DB.Exec(`DELETE FROM following_requests WHERE user_id = ? AND following_user = ?`, FollowingUserID, userID).Error
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 

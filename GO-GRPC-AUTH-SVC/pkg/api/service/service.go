@@ -247,6 +247,22 @@ func (au *AuthSever) GetUserNameWithTagUserID(ctx context.Context, req *pb.GetUs
 	}, nil
 }
 
+func (au *AuthSever) GetFollowingUsers(ctx context.Context, req *pb.GetFollowingUsersRequest) (*pb.GetFollowingUsersResponse, error) {
+	data, err := au.userUseCase.GetFollowingUsers(int(req.UserID))
+	if err != nil {
+		return &pb.GetFollowingUsersResponse{}, err
+	}
+	var followUsers []*pb.Followuser
+	for _, user := range data {
+		followUsers = append(followUsers, &pb.Followuser{
+			Followinguser: int64(user.FollowingUser),
+		})
+	}
+	return &pb.GetFollowingUsersResponse{
+		User: followUsers,
+	}, nil
+}
+
 func (au *AuthSever) ReportUser(ctx context.Context, req *pb.ReportUserRequest) (*pb.ReportUserResponse, error) {
 	ReportUser := req.RepostedUserid
 	reportReq := models.ReportRequest{

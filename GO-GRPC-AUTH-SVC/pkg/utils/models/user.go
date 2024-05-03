@@ -172,3 +172,7 @@ type FollowingRequest struct {
 	FollowingUser int `json:"following_user"`
 	UserID        int `json:"user_id"`
 }
+
+type FollowUsers struct{
+	FollowingUser int  `json:"following_user"`
+}

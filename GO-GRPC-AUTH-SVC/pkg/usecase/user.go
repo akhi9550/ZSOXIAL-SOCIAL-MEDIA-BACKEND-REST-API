@@ -261,6 +261,15 @@ func (ur *userUseCase) GetUserNameWithTagUserID(users []models.Tag) ([]models.Us
 	}
 	return data, nil
 }
+
+func (ur *userUseCase) GetFollowingUsers(userID int) ([]models.FollowUsers, error) {
+	data, err := ur.userRepository.GetFollowingUsers(userID)
+	if err != nil {
+		return []models.FollowUsers{}, err
+	}
+	return data, nil
+}
+
 func (ur *userUseCase) ReportUser(userID int, req models.ReportRequest) error {
 	ReportuserExist := ur.userRepository.CheckUserAvailabilityWithUserID(userID)
 	if !ReportuserExist {
@@ -304,7 +313,7 @@ func (ur *userUseCase) FollowREQ(userID, FollowingUserID int) error {
 	}
 
 	msg := fmt.Sprintf("%s Requested to Follow You", UserName.Username)
-	helper.SendFollowReqNotification(models.Notification{
+	helper.SendNotification(models.Notification{
 		UserID:   FollowingUserID,
 		SenderID: userID,
 	}, []byte(msg))
@@ -351,6 +360,10 @@ func (ur *userUseCase) AcceptFollowREQ(userID, FollowingUserID int) error {
 	if !req {
 		return errors.New("no req available")
 	}
+	alreadyfollow := ur.userRepository.AlreadyAccepted(userID, FollowingUserID)
+	if alreadyfollow {
+		return errors.New("already exist")
+	}
 	err := ur.userRepository.AcceptFollowREQ(userID, FollowingUserID)
 	if err != nil {
 		return err
@@ -362,7 +375,7 @@ func (ur *userUseCase) AcceptFollowREQ(userID, FollowingUserID int) error {
 	}
 
 	msg := fmt.Sprintf("%s Started Follow You", UserName.Username)
-	helper.SendAcceptReqNotification(models.Notification{
+	helper.SendNotification(models.Notification{
 		UserID:   FollowingUserID,
 		SenderID: userID,
 	}, []byte(msg))

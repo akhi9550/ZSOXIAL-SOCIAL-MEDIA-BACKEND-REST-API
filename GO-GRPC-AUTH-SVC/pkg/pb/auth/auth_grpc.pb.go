@@ -33,6 +33,7 @@ const (
 	AuthService_UserData_FullMethodName                            = "/user.AuthService/UserData"
 	AuthService_CheckUserAvalilabilityWithTagUserID_FullMethodName = "/user.AuthService/CheckUserAvalilabilityWithTagUserID"
 	AuthService_GetUserNameWithTagUserID_FullMethodName            = "/user.AuthService/GetUserNameWithTagUserID"
+	AuthService_GetFollowingUsers_FullMethodName                   = "/user.AuthService/GetFollowingUsers"
 	AuthService_ReportUser_FullMethodName                          = "/user.AuthService/ReportUser"
 	AuthService_FollowREQ_FullMethodName                           = "/user.AuthService/FollowREQ"
 	AuthService_ShowFollowREQ_FullMethodName                       = "/user.AuthService/ShowFollowREQ"
@@ -69,6 +70,7 @@ type AuthServiceClient interface {
 	UserData(ctx context.Context, in *UserDataRequest, opts ...grpc.CallOption) (*UserDataResponse, error)
 	CheckUserAvalilabilityWithTagUserID(ctx context.Context, in *CheckUserAvalilabilityWithTagUserIDRequest, opts ...grpc.CallOption) (*CheckUserAvalilabilityWithTagUserIDResponse, error)
 	GetUserNameWithTagUserID(ctx context.Context, in *GetUserNameWithTagUserIDRequest, opts ...grpc.CallOption) (*GetUserNameWithTagUserIDResponse, error)
+	GetFollowingUsers(ctx context.Context, in *GetFollowingUsersRequest, opts ...grpc.CallOption) (*GetFollowingUsersResponse, error)
 	ReportUser(ctx context.Context, in *ReportUserRequest, opts ...grpc.CallOption) (*ReportUserResponse, error)
 	FollowREQ(ctx context.Context, in *FollowREQRequest, opts ...grpc.CallOption) (*FollowREQResponse, error)
 	ShowFollowREQ(ctx context.Context, in *ShowREQRequest, opts ...grpc.CallOption) (*ShowREQResponse, error)
@@ -215,6 +217,15 @@ func (c *authServiceClient) CheckUserAvalilabilityWithTagUserID(ctx context.Cont
 func (c *authServiceClient) GetUserNameWithTagUserID(ctx context.Context, in *GetUserNameWithTagUserIDRequest, opts ...grpc.CallOption) (*GetUserNameWithTagUserIDResponse, error) {
 	out := new(GetUserNameWithTagUserIDResponse)
 	err := c.cc.Invoke(ctx, AuthService_GetUserNameWithTagUserID_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) GetFollowingUsers(ctx context.Context, in *GetFollowingUsersRequest, opts ...grpc.CallOption) (*GetFollowingUsersResponse, error) {
+	out := new(GetFollowingUsersResponse)
+	err := c.cc.Invoke(ctx, AuthService_GetFollowingUsers_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -383,6 +394,7 @@ type AuthServiceServer interface {
 	UserData(context.Context, *UserDataRequest) (*UserDataResponse, error)
 	CheckUserAvalilabilityWithTagUserID(context.Context, *CheckUserAvalilabilityWithTagUserIDRequest) (*CheckUserAvalilabilityWithTagUserIDResponse, error)
 	GetUserNameWithTagUserID(context.Context, *GetUserNameWithTagUserIDRequest) (*GetUserNameWithTagUserIDResponse, error)
+	GetFollowingUsers(context.Context, *GetFollowingUsersRequest) (*GetFollowingUsersResponse, error)
 	ReportUser(context.Context, *ReportUserRequest) (*ReportUserResponse, error)
 	FollowREQ(context.Context, *FollowREQRequest) (*FollowREQResponse, error)
 	ShowFollowREQ(context.Context, *ShowREQRequest) (*ShowREQResponse, error)
@@ -447,6 +459,9 @@ func (UnimplementedAuthServiceServer) CheckUserAvalilabilityWithTagUserID(contex
 }
 func (UnimplementedAuthServiceServer) GetUserNameWithTagUserID(context.Context, *GetUserNameWithTagUserIDRequest) (*GetUserNameWithTagUserIDResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserNameWithTagUserID not implemented")
+}
+func (UnimplementedAuthServiceServer) GetFollowingUsers(context.Context, *GetFollowingUsersRequest) (*GetFollowingUsersResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetFollowingUsers not implemented")
 }
 func (UnimplementedAuthServiceServer) ReportUser(context.Context, *ReportUserRequest) (*ReportUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ReportUser not implemented")
@@ -757,6 +772,24 @@ func _AuthService_GetUserNameWithTagUserID_Handler(srv interface{}, ctx context.
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AuthServiceServer).GetUserNameWithTagUserID(ctx, req.(*GetUserNameWithTagUserIDRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_GetFollowingUsers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetFollowingUsersRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).GetFollowingUsers(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_GetFollowingUsers_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).GetFollowingUsers(ctx, req.(*GetFollowingUsersRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1111,6 +1144,10 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetUserNameWithTagUserID",
 			Handler:    _AuthService_GetUserNameWithTagUserID_Handler,
+		},
+		{
+			MethodName: "GetFollowingUsers",
+			Handler:    _AuthService_GetFollowingUsers_Handler,
 		},
 		{
 			MethodName: "ReportUser",

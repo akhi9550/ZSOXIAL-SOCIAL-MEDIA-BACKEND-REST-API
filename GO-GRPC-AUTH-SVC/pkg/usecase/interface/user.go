@@ -17,6 +17,7 @@ type UserUseCase interface {
 	UserData(userID int) (models.UserData, error)
 	CheckUserAvalilabilityWithTagUserID(users []models.Tag) (bool, error)
 	GetUserNameWithTagUserID(users []models.Tag) ([]models.UserTag, error)
+	GetFollowingUsers(userID int)([]models.FollowUsers,error)
 	ReportUser(userID int, req models.ReportRequest) error
 	FollowREQ(userID, FollowingUserID int) error
 	ShowFollowREQ(userID int) ([]models.FollowingRequests, error)
