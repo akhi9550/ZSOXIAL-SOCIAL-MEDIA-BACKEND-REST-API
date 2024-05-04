@@ -1,4 +1,1671 @@
+definitions:
+  models.AdminLoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  models.ChangePassword:
+    properties:
+      old_password:
+        type: string
+      password:
+        type: string
+      re_password:
+        type: string
+    type: object
+  models.ChatRequest:
+    properties:
+      friendID:
+        type: string
+      limit:
+        type: string
+      offset:
+        type: string
+    required:
+    - friendID
+    - limit
+    - offset
+    type: object
+  models.ForgotPasswordSend:
+    properties:
+      phone:
+        type: string
+    type: object
+  models.ForgotVerify:
+    properties:
+      newpassword:
+        maxLength: 20
+        minLength: 6
+        type: string
+      otp:
+        type: string
+      phone:
+        type: string
+    required:
+    - newpassword
+    - otp
+    - phone
+    type: object
+  models.NotificationPagination:
+    properties:
+      limit:
+        type: integer
+      offset:
+        type: integer
+    type: object
+  models.OTPData:
+    properties:
+      phone:
+        type: string
+    type: object
+  models.PostCommentReq:
+    properties:
+      comment:
+        type: string
+      post_id:
+        type: integer
+    type: object
+  models.ReplyCommentReq:
+    properties:
+      comment_id:
+        type: integer
+      reply:
+        type: string
+    type: object
+  models.ReportPostRequest:
+    properties:
+      post_id:
+        type: integer
+      report:
+        type: string
+    type: object
+  models.ReportRequest:
+    properties:
+      report:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  models.SearchUser:
+    properties:
+      limit:
+        type: integer
+      offset:
+        type: integer
+      username:
+        type: string
+    type: object
+  models.UserLoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  models.UserSignUpRequest:
+    properties:
+      email:
+        type: string
+      firstname:
+        minLength: 3
+        type: string
+      lastname:
+        minLength: 1
+        type: string
+      password:
+        maxLength: 20
+        minLength: 6
+        type: string
+      phone:
+        maxLength: 10
+        minLength: 10
+        type: string
+      username:
+        minLength: 3
+        type: string
+    type: object
+  models.VerifyData:
+    properties:
+      code:
+        type: string
+      user:
+        $ref: '#/definitions/models.OTPData'
+    required:
+    - code
+    - user
+    type: object
+  response.Response:
+    properties:
+      data: {}
+      error: {}
+      message:
+        type: string
+      status_code:
+        type: integer
+    type: object
 info:
   contact: {}
-paths: {}
+paths:
+  /admin/login:
+    post:
+      consumes:
+      - application/json
+      description: Login handler for Zsoxial admins
+      parameters:
+      - description: Admin login details
+        in: body
+        name: AdminLoginDetail
+        required: true
+        schema:
+          $ref: '#/definitions/models.AdminLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Admin Login
+      tags:
+      - Admin
+  /admin/post:
+    delete:
+      consumes:
+      - application/json
+      description: Admin can delete a post
+      parameters:
+      - description: post id
+        in: query
+        name: post_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Remove Post
+      tags:
+      - Admin Post Management
+  /admin/posts:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve posts with pagination
+      parameters:
+      - description: Page number
+        in: query
+        name: page
+        type: string
+      - description: Page size
+        in: query
+        name: count
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Get Posts
+      tags:
+      - Admin Post Management
+  /admin/report/post:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve UserReports with pagination
+      parameters:
+      - description: Page number
+        in: query
+        name: page
+        type: string
+      - description: Page size
+        in: query
+        name: count
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Get User Reports
+      tags:
+      - Admin Reports Management
+  /admin/report/user:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve UserReports with pagination
+      parameters:
+      - description: Page number
+        in: query
+        name: page
+        type: string
+      - description: Page size
+        in: query
+        name: count
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Get User Reports
+      tags:
+      - Admin Reports Management
+  /admin/user/block:
+    put:
+      consumes:
+      - application/json
+      description: Using this handler admins can block an user
+      parameters:
+      - description: user id
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Block an existing User
+      tags:
+      - Admin User Management
+  /admin/user/unblock:
+    put:
+      consumes:
+      - application/json
+      description: Using this handler admins can block an user
+      parameters:
+      - description: user id
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: UnBlock an existing user
+      tags:
+      - Admin User Management
+  /admin/users:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve users with pagination
+      parameters:
+      - description: Page number
+        in: query
+        name: page
+        type: string
+      - description: Page size
+        in: query
+        name: count
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Show All Users
+      tags:
+      - Admin User Management
+  /archive:
+    get:
+      consumes:
+      - application/json
+      description: Get All Archive User Posts
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Get All Archive User Posts
+      tags:
+      - Archive Post
+    post:
+      consumes:
+      - application/json
+      description: Archive Specific User Post
+      parameters:
+      - description: post id
+        in: query
+        name: post_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Archive Specific User Post
+      tags:
+      - Archive Post
+  /archive/unarchive:
+    post:
+      consumes:
+      - application/json
+      description: UnArchive Specific User Post
+      parameters:
+      - description: post id
+        in: query
+        name: post_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: UnArchive Specific User Post
+      tags:
+      - Archive Post
+  /chat/message:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve UsersChats
+      parameters:
+      - description: GetChat details
+        in: body
+        name: chatRequest
+        required: true
+        schema:
+          $ref: '#/definitions/models.ChatRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Get Users Chats
+      tags:
+      - Chat
+  /comment:
+    delete:
+      consumes:
+      - application/json
+      description: Delete specific user Comment on Post
+      parameters:
+      - description: Comment id
+        in: query
+        name: comment_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Delete specific user Comment on Post
+      tags:
+      - Comment
+    get:
+      consumes:
+      - application/json
+      description: Show All Comments on Post
+      parameters:
+      - description: Post id
+        in: query
+        name: post_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Show All Comments on Post
+      tags:
+      - Comment
+    post:
+      consumes:
+      - application/json
+      description: Comment Specific Post
+      parameters:
+      - description: Commnet details
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/models.PostCommentReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Comment Specific Post
+      tags:
+      - Comment
+  /comment/reply:
+    post:
+      consumes:
+      - application/json
+      description: Reply specific user Comment on Post
+      parameters:
+      - description: Admin login details
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/models.ReplyCommentReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Reply specific user Comment on Post
+      tags:
+      - Comment
+  /comment/showcomments:
+    get:
+      consumes:
+      - application/json
+      description: Show All Comments and Replies on Specific Post
+      parameters:
+      - description: Post id
+        in: query
+        name: post_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Show All Comments and Replies on Specific Post
+      tags:
+      - Comment
+  /follow/accept:
+    post:
+      consumes:
+      - application/json
+      description: Accept Follow Request
+      parameters:
+      - description: user id
+        in: query
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Accept Follow Request
+      tags:
+      - Follow
+  /follow/followers:
+    get:
+      consumes:
+      - application/json
+      description: Show Followers
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Show Followers
+      tags:
+      - Follow
+  /follow/following:
+    get:
+      consumes:
+      - application/json
+      description: Show Followings
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Show Followings
+      tags:
+      - Follow
+  /follow/request:
+    post:
+      consumes:
+      - application/json
+      description: Send Follow Request
+      parameters:
+      - description: user id
+        in: query
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Send Follow Request
+      tags:
+      - Follow
+  /follow/requests:
+    get:
+      consumes:
+      - application/json
+      description: Show Follow Request
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Show Follow Request
+      tags:
+      - Follow
+  /follow/unfollow:
+    post:
+      consumes:
+      - application/json
+      description: User Unfollow
+      parameters:
+      - description: user id
+        in: query
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: User Unfollow
+      tags:
+      - Follow
+  /like:
+    put:
+      consumes:
+      - application/json
+      description: Like a Post
+      parameters:
+      - description: post id
+        in: query
+        name: post_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Like a Post
+      tags:
+      - Like Post
+  /like/unlike:
+    put:
+      consumes:
+      - application/json
+      description: UnLike a Post
+      parameters:
+      - description: post id
+        in: query
+        name: post_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: UnLike a Post
+      tags:
+      - Like Post
+  /notification:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve  User All Notifications
+      parameters:
+      - description: Notification details
+        in: body
+        name: notificationRequest
+        required: true
+        schema:
+          $ref: '#/definitions/models.NotificationPagination'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Show All Notifications
+      tags:
+      - Notifications
+  /post:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a Specific Post
+      parameters:
+      - description: Post id
+        in: query
+        name: post_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Delete a Post
+      tags:
+      - Post
+    get:
+      consumes:
+      - application/json
+      description: Retrieve  User Posts
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Show User Posts
+      tags:
+      - Post
+    post:
+      consumes:
+      - application/json
+      description: User Create a Post
+      parameters:
+      - description: New caption for the post
+        in: formData
+        name: caption
+        required: true
+        type: string
+      - description: New type of the post
+        in: formData
+        name: posttype
+        required: true
+        type: string
+      - description: User IDs to tag in the post (e.g., '2 3 4 5')
+        in: query
+        name: user
+        type: string
+      - description: Photo of the post
+        in: formData
+        name: photo
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Create a Post
+      tags:
+      - Post
+    put:
+      consumes:
+      - application/json
+      description: Update  Specific Post
+      parameters:
+      - description: ID of the post to be updated
+        in: formData
+        name: post_id
+        required: true
+        type: string
+      - description: New caption for the post
+        in: formData
+        name: caption
+        required: true
+        type: string
+      - description: New type of the post
+        in: formData
+        name: posttype
+        required: true
+        type: string
+      - description: Users associated with the post. Provide multiple user IDs separated
+          by commas.
+        in: formData
+        name: user
+        required: true
+        type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Update a Post
+      tags:
+      - Post
+  /post/getposts:
+    get:
+      consumes:
+      - application/json
+      description: Show  Posts With Specific UserID
+      parameters:
+      - description: User id
+        in: query
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Show  Specific User Posts
+      tags:
+      - Post
+  /post/home:
+    get:
+      consumes:
+      - application/json
+      description: HomePage
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: HomePage
+      tags:
+      - Home
+  /post/posts:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve Specific Post With Its ID
+      parameters:
+      - description: post id
+        in: query
+        name: post_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Show Specific Post
+      tags:
+      - Post
+  /report/post:
+    post:
+      consumes:
+      - application/json
+      description: Report User to Post
+      parameters:
+      - description: Post Report
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/models.ReportPostRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Report Post
+      tags:
+      - Reports
+  /report/user:
+    post:
+      consumes:
+      - application/json
+      description: Report User to User
+      parameters:
+      - description: User Report
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/models.ReportRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Report User
+      tags:
+      - Reports
+  /saved:
+    get:
+      consumes:
+      - application/json
+      description: Get User Saved Posts
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Get User Saved Posts
+      tags:
+      - Save Post
+    post:
+      consumes:
+      - application/json
+      description: User Can Saved Specific Post
+      parameters:
+      - description: Post id
+        in: query
+        name: post_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: User Can Saved Specific Post
+      tags:
+      - Save Post
+  /saved/unsaved:
+    post:
+      consumes:
+      - application/json
+      description: User Can UnSaved Specific Post
+      parameters:
+      - description: Post id
+        in: query
+        name: post_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: User Can UnSaved Specific Post
+      tags:
+      - Save Post
+  /story:
+    delete:
+      consumes:
+      - application/json
+      description: Delete User Story
+      parameters:
+      - description: Story id
+        in: query
+        name: story_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Delete Story
+      tags:
+      - Story
+    get:
+      consumes:
+      - application/json
+      description: Get Specific User Story
+      parameters:
+      - description: User id
+        in: query
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Get Story
+      tags:
+      - Story
+    post:
+      consumes:
+      - application/json
+      description: Create User Story
+      parameters:
+      - description: Image file to upload
+        in: formData
+        name: photo
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Create  Story
+      tags:
+      - Story
+  /story/details:
+    get:
+      consumes:
+      - application/json
+      description: Get User Story Details
+      parameters:
+      - description: Story id
+        in: query
+        name: story_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Get User Story Details
+      tags:
+      - Story
+  /story/like:
+    put:
+      consumes:
+      - application/json
+      description: Liked User Story
+      parameters:
+      - description: Story id
+        in: query
+        name: story_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Like Story
+      tags:
+      - Story
+  /story/unlike:
+    put:
+      consumes:
+      - application/json
+      description: UnLiked User Story
+      parameters:
+      - description: Story id
+        in: query
+        name: story_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: UnLike Story
+      tags:
+      - Story
+  /user:
+    get:
+      consumes:
+      - application/json
+      description: User Details from User Profile
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: User Profile Details
+      tags:
+      - User Profile
+    put:
+      consumes:
+      - application/json
+      description: Update User Details by sending in user id
+      parameters:
+      - description: First Name of the user
+        in: formData
+        name: firstname
+        required: true
+        type: string
+      - description: Last Name of the user
+        in: formData
+        name: lastname
+        required: true
+        type: string
+      - description: Username of the user
+        in: formData
+        name: username
+        required: true
+        type: string
+      - description: Date of Birth of the user (YYYY-MM-DD)
+        in: formData
+        name: dob
+        required: true
+        type: string
+      - description: Gender of the user
+        in: formData
+        name: gender
+        required: true
+        type: string
+      - description: Phone number of the user
+        in: formData
+        name: phone
+        type: string
+      - description: Email address of the user
+        in: formData
+        name: email
+        type: string
+      - description: Biography of the user
+        in: formData
+        name: bio
+        type: string
+      - description: Photo of the user
+        in: formData
+        name: photo
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Update User Details
+      tags:
+      - User Profile
+  /user/changepassword:
+    put:
+      consumes:
+      - application/json
+      description: Change User Password
+      parameters:
+      - description: User Password Change
+        in: body
+        name: changePassword
+        required: true
+        schema:
+          $ref: '#/definitions/models.ChangePassword'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Change User Password
+      tags:
+      - User Profile
+  /user/forgot-password:
+    post:
+      consumes:
+      - application/json
+      description: User can change their password if user forgot the password and
+        login
+      parameters:
+      - description: forgot-send
+        in: body
+        name: model
+        required: true
+        schema:
+          $ref: '#/definitions/models.ForgotPasswordSend'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Forgot password Send OTP
+      tags:
+      - User OTP Login
+  /user/forgot-password-verify:
+    post:
+      consumes:
+      - application/json
+      description: user can change their password if user forgot the password and
+        login
+      parameters:
+      - description: forgot-verify
+        in: body
+        name: model
+        required: true
+        schema:
+          $ref: '#/definitions/models.ForgotVerify'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Forgot password Verfy and Change
+      tags:
+      - User OTP Login
+  /user/login:
+    post:
+      consumes:
+      - application/json
+      description: user can log in by giving their details
+      parameters:
+      - description: User Login
+        in: body
+        name: UserLoginDetail
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: User Login
+      tags:
+      - User
+  /user/search:
+    get:
+      consumes:
+      - application/json
+      description: Search Users
+      parameters:
+      - description: Search Details
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/models.SearchUser'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Search Users
+      tags:
+      - User Profile
+  /user/send-otp:
+    post:
+      consumes:
+      - application/json
+      description: Send OTP to Authenticate user
+      parameters:
+      - description: phone number details
+        in: body
+        name: phone
+        required: true
+        schema:
+          $ref: '#/definitions/models.OTPData'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: OTP login
+      tags:
+      - User OTP Login
+  /user/signup:
+    post:
+      consumes:
+      - application/json
+      description: user can signup by giving their details
+      parameters:
+      - description: User Signup
+        in: body
+        name: UserSignupDetail
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserSignUpRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: User Signup
+      tags:
+      - User
+  /user/users:
+    get:
+      consumes:
+      - application/json
+      description: User Details from User Profile
+      parameters:
+      - description: user id
+        in: query
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Specific User Details
+      tags:
+      - User Profile
+  /user/verify-otp:
+    post:
+      consumes:
+      - application/json
+      description: Verify OTP by passing the OTP in order to authenticate user
+      parameters:
+      - description: Verify OTP Details
+        in: body
+        name: code
+        required: true
+        schema:
+          $ref: '#/definitions/models.VerifyData'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Verify OTP
+      tags:
+      - User OTP Login
+securityDefinitions:
+  Bearer:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

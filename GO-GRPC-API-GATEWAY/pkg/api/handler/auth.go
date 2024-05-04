@@ -26,6 +26,15 @@ func NewAuthHandler(authClient interfaces.AuthClient, authCaching *helper.RedisA
 	}
 }
 
+// @Summary		User Signup
+// @Description	user can signup by giving their details
+// @Tags			User
+// @Accept			json
+// @Produce		    json
+// @Param			UserSignupDetail   body  models.UserSignUpRequest  true  "User Signup"
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/user/signup    [POST]
 func (au *AuthHandler) UserSignup(c *gin.Context) {
 	var UserSignupDetail models.UserSignUpRequest
 	if err := c.ShouldBindJSON(&UserSignupDetail); err != nil {
@@ -58,6 +67,15 @@ func (au *AuthHandler) UserSignup(c *gin.Context) {
 	c.JSON(http.StatusCreated, success)
 }
 
+// @Summary		User Login
+// @Description	user can log in by giving their details
+// @Tags			User
+// @Accept			json
+// @Produce		    json
+// @Param			UserLoginDetail  body  models.UserLoginRequest  true	"User Login"
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/user/login     [POST]
 func (au *AuthHandler) Userlogin(c *gin.Context) {
 	var UserLoginDetail models.UserLoginRequest
 	if err := c.ShouldBindJSON(&UserLoginDetail); err != nil {
@@ -80,6 +98,15 @@ func (au *AuthHandler) Userlogin(c *gin.Context) {
 	c.JSON(http.StatusCreated, success)
 }
 
+// @Summary 	OTP login
+// @Description Send OTP to Authenticate user
+// @Tags 		User OTP Login
+// @Accept 		json
+// @Produce 	json
+// @Param 		phone 	body models.OTPData 	true 	"phone number details"
+// @Success 	200 	{object} response.Response{}
+// @Failure 	500 	{object} response.Response{}
+// @Router 		/user/send-otp   [POST]
 func (au *AuthHandler) SendOtp(c *gin.Context) {
 	var phone models.OTPData
 	if err := c.ShouldBindJSON(&phone); err != nil {
@@ -97,6 +124,15 @@ func (au *AuthHandler) SendOtp(c *gin.Context) {
 	c.JSON(http.StatusOK, success)
 }
 
+// @Summary 	Verify OTP
+// @Description Verify OTP by passing the OTP in order to authenticate user
+// @Tags 		User OTP Login
+// @Accept 		json
+// @Produce 	json
+// @Param 		code 	body models.VerifyData 	true 	"Verify OTP Details"
+// @Success 	200 	{object} response.Response{}
+// @Failure 	500 	{object} response.Response{}
+// @Router 		/user/verify-otp      [POST]
 func (au *AuthHandler) VerifyOtp(c *gin.Context) {
 	var code models.VerifyData
 	if err := c.ShouldBindJSON(&code); err != nil {
@@ -114,6 +150,16 @@ func (au *AuthHandler) VerifyOtp(c *gin.Context) {
 	c.JSON(http.StatusOK, sucess)
 }
 
+// @Summary			Forgot password Send OTP
+// @Description		User can change their password if user forgot the password and login
+// @Tags			User OTP Login
+// @Accept			json
+// @Produce		    json
+// @Param			model  body  models.ForgotPasswordSend  true	"forgot-send"
+// @Security		Bearer
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/user/forgot-password   [POST]
 func (au *AuthHandler) ForgotPassword(c *gin.Context) {
 	var model models.ForgotPasswordSend
 	if err := c.BindJSON(&model); err != nil {
@@ -133,6 +179,16 @@ func (au *AuthHandler) ForgotPassword(c *gin.Context) {
 
 }
 
+// @Summary		Forgot password Verfy and Change
+// @Description	user can change their password if user forgot the password and login
+// @Tags			User OTP Login
+// @Accept			json
+// @Produce		    json
+// @Param			model  body  models.ForgotVerify  true	"forgot-verify"
+// @Security		Bearer
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/user/forgot-password-verify      [POST]
 func (au *AuthHandler) ForgotPasswordVerifyAndChange(c *gin.Context) {
 	var model models.ForgotVerify
 	if err := c.BindJSON(&model); err != nil {
@@ -152,6 +208,15 @@ func (au *AuthHandler) ForgotPasswordVerifyAndChange(c *gin.Context) {
 	c.JSON(http.StatusOK, success)
 }
 
+// @Summary 		User Profile Details
+// @Description 	User Details from User Profile
+// @Tags 			User Profile
+// @Accept 			json
+// @Produce 		json
+// @Security 		Bearer
+// @Success 	200 {object} response.Response{}
+// @Failure 	500 {object} response.Response{}
+// @Router 		/user   [GET]
 func (au *AuthHandler) UserDetails(c *gin.Context) {
 	userID, _ := c.Get("user_id")
 	UserDetails, err := au.AuthCachig.GetUserDetails(userID.(int))
@@ -164,6 +229,16 @@ func (au *AuthHandler) UserDetails(c *gin.Context) {
 	c.JSON(http.StatusOK, success)
 }
 
+// @Summary 	Specific User Details
+// @Description User Details from User Profile
+// @Tags 		User Profile
+// @Accept 		json
+// @Produce 	json
+// @Security 	Bearer
+// @Param 		user_id 	query 	string true 	"user id"
+// @Success 	200 {object} response.Response{}
+// @Failure 	500 {object} response.Response{}
+// @Router 		/user/users   [GET]
 func (au *AuthHandler) SpecificUserDetails(c *gin.Context) {
 	userID := c.Query("user_id")
 	UserID, err := strconv.Atoi(userID)
@@ -182,6 +257,24 @@ func (au *AuthHandler) SpecificUserDetails(c *gin.Context) {
 	c.JSON(http.StatusOK, success)
 }
 
+// @Summary 	Update User Details
+// @Description Update User Details by sending in user id
+// @Tags 		User Profile
+// @Accept 		json
+// @Produce	 	json
+// @Security	Bearer
+// @Param 		firstname formData string true "First Name of the user"
+// @Param 		lastname formData string true "Last Name of the user"
+// @Param 		username formData string true "Username of the user"
+// @Param 		dob formData string true "Date of Birth of the user (YYYY-MM-DD)"
+// @Param 		gender formData string true "Gender of the user"
+// @Param 		phone formData string false "Phone number of the user"
+// @Param 		email formData string false "Email address of the user"
+// @Param 		bio formData string false "Biography of the user"
+// @Param 		photo formData file true "Photo of the user"
+// @Success 	200 {object} response.Response{}
+// @Failure 	500 {object} response.Response{}
+// @Router 		/user [PUT]
 func (au *AuthHandler) UpdateUserDetails(c *gin.Context) {
 	firstname := c.PostForm("firstname")
 	lastname := c.PostForm("lastname")
@@ -245,6 +338,16 @@ func (au *AuthHandler) UpdateUserDetails(c *gin.Context) {
 	c.JSON(http.StatusOK, success)
 }
 
+// @Summary 	Change User Password
+// @Description Change User Password
+// @Tags 		User Profile
+// @Accept 		json
+// @Produce 	json
+// @Security 	Bearer
+// @Param 		changePassword 	body   models.ChangePassword 	true 	"User Password Change"
+// @Success 	200 {object} response.Response{}
+// @Failure 	500 {object} response.Response{}
+// @Router 		/user/changepassword     [PUT]
 func (au *AuthHandler) ChangePassword(c *gin.Context) {
 	user_id, _ := c.Get("user_id")
 	var changePassword models.ChangePassword
@@ -262,6 +365,42 @@ func (au *AuthHandler) ChangePassword(c *gin.Context) {
 	c.JSON(http.StatusOK, success)
 }
 
+// @Summary 	Search Users
+// @Description Search Users
+// @Tags 		User Profile
+// @Accept 		json
+// @Produce 	json
+// @Security 	Bearer
+// @Param 		req 	body   models.SearchUser 	true 	"Search Details"
+// @Success 	200 {object} response.Response{}
+// @Failure 	500 {object} response.Response{}
+// @Router 		/user/search     [GET]
+func (au *AuthHandler) SearchUser(c *gin.Context) {
+	var req models.SearchUser
+	if err := c.ShouldBindJSON(&req); err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+	}
+	data, err := au.GRPC_Client.SearchUser(req)
+	if err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+		return
+	}
+	success := response.ClientResponse(http.StatusOK, "Successfully Searched User", data, nil)
+	c.JSON(http.StatusOK, success)
+}
+
+// @Summary 	Report User
+// @Description Report User to User
+// @Tags 		Reports
+// @Accept 		json
+// @Produce 	json
+// @Security 	Bearer
+// @Param 		req 	body models.ReportRequest	 true 	"User Report"
+// @Success 	200 {object} response.Response{}
+// @Failure 	500 {object} response.Response{}
+// @Router 		/report/user     [POST]
 func (au *AuthHandler) ReportUser(c *gin.Context) {
 	ReportedID, _ := c.Get("user_id")
 	var req models.ReportRequest
@@ -279,6 +418,16 @@ func (au *AuthHandler) ReportUser(c *gin.Context) {
 	c.JSON(http.StatusOK, success)
 }
 
+// @Summary 		Send Follow Request
+// @Description 	Send Follow Request
+// @Tags 			Follow
+// @Accept 			json
+// @Produce 		json
+// @Security 		Bearer
+// @Param 			user_id 	query 	string true 	"user id"
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router 		/follow/request      [POST]
 func (au *AuthHandler) FollowREQ(c *gin.Context) {
 	userID, _ := c.Get("user_id")
 	id := c.Query("user_id")
@@ -298,6 +447,15 @@ func (au *AuthHandler) FollowREQ(c *gin.Context) {
 	c.JSON(http.StatusOK, sucess)
 }
 
+// @Summary 		Show Follow Request
+// @Description 	Show Follow Request
+// @Tags 			Follow
+// @Accept 			json
+// @Produce 		json
+// @Security 		Bearer
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router 		/follow/requests      [GET]
 func (au *AuthHandler) ShowFollowREQ(c *gin.Context) {
 	userID, _ := c.Get("user_id")
 	data, err := au.GRPC_Client.ShowFollowREQ(userID.(int))
@@ -310,6 +468,16 @@ func (au *AuthHandler) ShowFollowREQ(c *gin.Context) {
 	c.JSON(http.StatusOK, sucess)
 }
 
+// @Summary 		Accept Follow Request
+// @Description 	Accept Follow Request
+// @Tags 			Follow
+// @Accept 			json
+// @Produce 		json
+// @Security 		Bearer
+// @Param 		    user_id 	query 	string true 	"user id"
+// @Success 	200 {object} response.Response{}
+// @Failure 	500 {object} response.Response{}
+// @Router		 /follow/accept      [POST]
 func (au *AuthHandler) AcceptFollowREQ(c *gin.Context) {
 	userID, _ := c.Get("user_id")
 	id := c.Query("user_id")
@@ -329,6 +497,16 @@ func (au *AuthHandler) AcceptFollowREQ(c *gin.Context) {
 	c.JSON(http.StatusOK, sucess)
 }
 
+// @Summary 		User Unfollow
+// @Description 	User Unfollow
+// @Tags 			Follow
+// @Accept 			json
+// @Produce 		json
+// @Security 		Bearer
+// @Param 		 	user_id  	query 	string true 	"user id"
+// @Success 	200 {object} response.Response{}
+// @Failure		500 {object} response.Response{}
+// @Router 		/follow/unfollow      [POST]
 func (au *AuthHandler) UnFollow(c *gin.Context) {
 	userID, _ := c.Get("user_id")
 	id := c.Query("user_id")
@@ -348,6 +526,15 @@ func (au *AuthHandler) UnFollow(c *gin.Context) {
 	c.JSON(http.StatusOK, sucess)
 }
 
+// @Summary 		Show Followings
+// @Description 	Show Followings
+// @Tags 			Follow
+// @Accept 			json
+// @Produce 		json
+// @Security 		Bearer
+// @Success 	200 {object} response.Response{}
+// @Failure 	500 {object} response.Response{}
+// @Router 		/follow/following      [GET]
 func (au *AuthHandler) Following(c *gin.Context) {
 	userID, _ := c.Get("user_id")
 	data, err := au.GRPC_Client.Following(userID.(int))
@@ -360,6 +547,15 @@ func (au *AuthHandler) Following(c *gin.Context) {
 	c.JSON(http.StatusOK, sucess)
 }
 
+// @Summary 		Show Followers
+// @Description 	Show Followers
+// @Tags 			Follow
+// @Accept 			json
+// @Produce 		json
+// @Security 		Bearer
+// @Success 	200 {object} response.Response{}
+// @Failure 	500 {object} response.Response{}
+// @Router 		/follow/followers      [GET]
 func (au *AuthHandler) Follower(c *gin.Context) {
 	userID, _ := c.Get("user_id")
 	data, err := au.GRPC_Client.Follower(userID.(int))
@@ -372,22 +568,17 @@ func (au *AuthHandler) Follower(c *gin.Context) {
 	c.JSON(http.StatusOK, sucess)
 }
 
-func (au *AuthHandler) SearchUser(c *gin.Context) {
-	var req models.SearchUser
-	if err := c.ShouldBindJSON(&req); err != nil {
-		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
-		c.JSON(http.StatusBadRequest, errs)
-	}
-	data, err := au.GRPC_Client.SearchUser(req)
-	if err != nil {
-		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
-		c.JSON(http.StatusBadRequest, errs)
-		return
-	}
-	success := response.ClientResponse(http.StatusOK, "Successfully Searched User", data, nil)
-	c.JSON(http.StatusOK, success)
-}
 
+// @Summary		Admin Login
+// @Description	Login handler for Zsoxial admins
+// @Tags			Admin
+// @Accept 			json
+// @Produce 		json
+// @Security 		Bearer
+// @Param			AdminLoginDetail	body		models.AdminLoginRequest	true	"Admin login details"
+// @Success			200		{object}	response.Response{}
+// @Failure			500		{object}	response.Response{}
+// @Router			/admin/login  [POST]
 func (au *AuthHandler) AdminLogin(c *gin.Context) {
 	var AdminLoginDetail models.AdminLoginRequest
 	if err := c.ShouldBindJSON(&AdminLoginDetail); err != nil {
@@ -410,6 +601,17 @@ func (au *AuthHandler) AdminLogin(c *gin.Context) {
 	c.JSON(http.StatusCreated, success)
 }
 
+// @Summary		Show All Users
+// @Description	Retrieve users with pagination
+// @Tags			Admin User Management
+// @Accept 			json
+// @Produce 		json
+// @Security 		Bearer
+// @Param 	page 	query 	string	 false	 "Page number"
+// @Param 	count 	query 	string 	false	 "Page size"
+// @Success		200		{object}	response.Response{}
+// @Failure		500		{object}	response.Response{}
+// @Router			/admin/users   [GET]
 func (au *AuthHandler) ShowAllUsers(c *gin.Context) {
 	pageStr := c.DefaultQuery("page", "1")
 	page, err := strconv.Atoi(pageStr)
@@ -435,6 +637,16 @@ func (au *AuthHandler) ShowAllUsers(c *gin.Context) {
 	c.JSON(http.StatusOK, success)
 }
 
+// @Summary		Block an existing User
+// @Description	Using this handler admins can block an user
+// @Tags			Admin User Management
+// @Accept			json
+// @Produce			json
+// @Security		Bearer
+// @Param			id	query	string	true	"user id"
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/admin/user/block   [PUT]
 func (au *AuthHandler) BlockUser(c *gin.Context) {
 	id := c.Query("id")
 	userID, _ := strconv.Atoi(id)
@@ -448,6 +660,16 @@ func (au *AuthHandler) BlockUser(c *gin.Context) {
 	c.JSON(http.StatusOK, sucess)
 }
 
+// @Summary		 UnBlock an existing user
+// @Description	 Using this handler admins can block an user
+// @Tags			Admin User Management
+// @Accept			json
+// @Produce		    json
+// @Security		Bearer
+// @Param			id	query		string	true	"user id"
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/admin/user/unblock    [PUT]
 func (au *AuthHandler) UnBlockUser(c *gin.Context) {
 	id := c.Query("id")
 	userID, _ := strconv.Atoi(id)
@@ -461,6 +683,17 @@ func (au *AuthHandler) UnBlockUser(c *gin.Context) {
 	c.JSON(http.StatusOK, sucess)
 }
 
+// @Summary			Get User Reports
+// @Description		Retrieve UserReports with pagination
+// @Tags			Admin Reports Management
+// @Accept			json
+// @Produce		    json
+// @Security		Bearer
+// @Param 	page 	query 	string 	false 	"Page number"
+// @Param 	count 	query 	string 	false 	"Page size"
+// @Success		200		{object}	response.Response{}
+// @Failure		500		{object}	response.Response{}
+// @Router			/admin/report/user   [GET]
 func (au *AuthHandler) ShowUserReports(c *gin.Context) {
 	pageStr := c.DefaultQuery("page", "1")
 	page, err := strconv.Atoi(pageStr)
@@ -486,6 +719,17 @@ func (au *AuthHandler) ShowUserReports(c *gin.Context) {
 	c.JSON(http.StatusOK, success)
 }
 
+// @Summary			Get User Reports
+// @Description		Retrieve UserReports with pagination
+// @Tags			Admin Reports Management
+// @Accept			json
+// @Produce		    json
+// @Security		Bearer
+// @Param 	page 	query 	string 	false 	"Page number"
+// @Param 	count 	query 	string 	false 	"Page size"
+// @Success		200		{object}	response.Response{}
+// @Failure		500		{object}	response.Response{}
+// @Router			/admin/report/post   [GET]
 func (au *AuthHandler) ShowPostReports(c *gin.Context) {
 	pageStr := c.DefaultQuery("page", "1")
 	page, err := strconv.Atoi(pageStr)
@@ -511,6 +755,17 @@ func (au *AuthHandler) ShowPostReports(c *gin.Context) {
 	c.JSON(http.StatusOK, success)
 }
 
+// @Summary			Get Posts
+// @Description		Retrieve posts with pagination
+// @Tags			Admin Post Management
+// @Accept			json
+// @Produce		    json
+// @Security		Bearer
+// @Param 		page query string false "Page number"
+// @Param 		count query string false "Page size"
+// @Success		200		{object}	response.Response{}
+// @Failure		500		{object}	response.Response{}
+// @Router			/admin/posts   [GET]
 func (au *AuthHandler) GetAllPosts(c *gin.Context) {
 	pageStr := c.DefaultQuery("page", "1")
 	page, err := strconv.Atoi(pageStr)
@@ -536,6 +791,16 @@ func (au *AuthHandler) GetAllPosts(c *gin.Context) {
 	c.JSON(http.StatusOK, success)
 }
 
+// @Summary		Remove Post
+// @Description	 Admin can delete a post
+// @Tags			Admin Post Management
+// @Accept			json
+// @Produce		    json
+// @Security		Bearer
+// @Param			post_id	query	string	true	"post id"
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/admin/post     [DELETE]
 func (au *AuthHandler) RemovePost(c *gin.Context) {
 	postID := c.Query("post_id")
 	PostID, err := strconv.Atoi(postID)

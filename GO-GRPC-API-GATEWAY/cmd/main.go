@@ -3,18 +3,21 @@ package main
 import (
 	"log"
 
-	"github.com/akhi9550/api-gateway/cmd/docs"
-	_ "github.com/akhi9550/api-gateway/cmd/docs"
+	docs "github.com/akhi9550/api-gateway/cmd/docs"
 	"github.com/akhi9550/api-gateway/pkg/config"
 	"github.com/akhi9550/api-gateway/pkg/di"
 	_ "github.com/swaggo/files"
 	_ "github.com/swaggo/gin-swagger"
 )
 
+// @securityDefinitions.apikey Bearer
+// @in header
+// @name Authorization
+
 func main() {
 	docs.SwaggerInfo.Title = "Zsoxial_Microservice_CleanArchitecture"
 	docs.SwaggerInfo.Description = "Zsoxial is an Social media platform to interact with peoples"
-	docs.SwaggerInfo.Version = "1.0"
+	docs.SwaggerInfo.Version = "2.0"
 	docs.SwaggerInfo.Host = "localhost:8000"
 	docs.SwaggerInfo.BasePath = ""
 	docs.SwaggerInfo.Schemes = []string{"http", "https"}

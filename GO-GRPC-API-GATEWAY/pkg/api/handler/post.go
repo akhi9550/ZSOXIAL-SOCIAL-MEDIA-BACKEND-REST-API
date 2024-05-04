@@ -24,9 +24,21 @@ func NewPostHandler(postClient interfaces.PostClient, postCaching *helper.RedisP
 	}
 }
 
+// @Summary			Create a Post
+// @Description		User Create a Post
+// @Tags			Post
+// @Accept			json
+// @Produce		    json
+// @Security		Bearer
+// @Param caption formData string true "New caption for the post"
+// @Param posttype formData string true "New type of the post"
+// @Param user query string false "User IDs to tag in the post (e.g., '2 3 4 5')"
+// @Param           photo formData file true "Photo of the post"
+// @Success		200		{object}	response.Response{}
+// @Failure		500		{object}	response.Response{}
+// @Router			/post   [POST]
 func (p *PostHandler) CreatePost(c *gin.Context) {
 	userID, _ := c.Get("user_id")
-
 	caption := c.PostForm("caption")
 	typeid := c.PostForm("posttype")
 	user := c.PostFormArray("user")
@@ -36,9 +48,8 @@ func (p *PostHandler) CreatePost(c *gin.Context) {
 			return
 		}
 	}
-
 	posttype, _ := strconv.Atoi(typeid)
-
+	fmt.Println("datra", user, userID, caption, typeid)
 	req := models.PostRequest{
 		Caption: caption,
 		TypeId:  uint(posttype),
@@ -60,6 +71,15 @@ func (p *PostHandler) CreatePost(c *gin.Context) {
 	c.JSON(http.StatusCreated, success)
 }
 
+// @Summary			Show User Posts
+// @Description		Retrieve  User Posts
+// @Tags			Post
+// @Accept			json
+// @Produce		    json
+// @Security		Bearer
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/post   [GET]
 func (p *PostHandler) GetUserPost(c *gin.Context) {
 	userID, _ := c.Get("user_id")
 	data, err := p.GRPC_Client.GetUserPost(userID.(int))
@@ -72,6 +92,16 @@ func (p *PostHandler) GetUserPost(c *gin.Context) {
 	c.JSON(http.StatusOK, success)
 }
 
+// @Summary			Show Specific Post
+// @Description		Retrieve Specific Post With Its ID
+// @Tags			Post
+// @Accept			json
+// @Produce		    json
+// @Security		Bearer
+// @Param			post_id	 query	string	true	"post id"
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/post/posts   [GET]
 func (p *PostHandler) GetPost(c *gin.Context) {
 	userID, _ := c.Get("user_id")
 	postID := c.Query("post_id")
@@ -91,6 +121,19 @@ func (p *PostHandler) GetPost(c *gin.Context) {
 	c.JSON(http.StatusOK, success)
 }
 
+// @Summary			Update a Post
+// @Description		Update  Specific Post
+// @Tags			Post
+// @Accept			json
+// @Produce		    json
+// @Security		Bearer
+// @Param post_id formData string true "ID of the post to be updated"
+// @Param caption formData string true "New caption for the post"
+// @Param posttype formData string true "New type of the post"
+// @Param user formData array true "Users associated with the post. Provide multiple user IDs separated by commas."
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/post   [put]
 func (p *PostHandler) UpdatePost(c *gin.Context) {
 	userID, _ := c.Get("user_id")
 	postid := c.PostForm("post_id")
@@ -106,7 +149,6 @@ func (p *PostHandler) UpdatePost(c *gin.Context) {
 
 	posttype, _ := strconv.Atoi(typeid)
 	postID, _ := strconv.Atoi(postid)
-
 	req := models.UpdatePostReq{
 		PostID:  uint(postID),
 		Caption: caption,
@@ -123,6 +165,16 @@ func (p *PostHandler) UpdatePost(c *gin.Context) {
 	c.JSON(http.StatusCreated, success)
 }
 
+// @Summary			Delete a Post
+// @Description		Delete a Specific Post
+// @Tags			Post
+// @Accept			json
+// @Produce		    json
+// @Security		Bearer
+// @Param			post_id	 query	string	true	"Post id"
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/post   [DELETE]
 func (p *PostHandler) DeletePost(c *gin.Context) {
 	userID, _ := c.Get("user_id")
 	postID := c.Query("post_id")
@@ -142,6 +194,16 @@ func (p *PostHandler) DeletePost(c *gin.Context) {
 	c.JSON(http.StatusOK, success)
 }
 
+// @Summary			Show  Specific User Posts
+// @Description		Show  Posts With Specific UserID
+// @Tags			Post
+// @Accept			json
+// @Produce		    json
+// @Security		Bearer
+// @Param			user_id	 query	string	true	"User id"
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/post/getposts   [GET]
 func (p *PostHandler) GetAllPost(c *gin.Context) {
 	userID := c.Query("user_id")
 	UserID, err := strconv.Atoi(userID)
@@ -160,6 +222,16 @@ func (p *PostHandler) GetAllPost(c *gin.Context) {
 	c.JSON(http.StatusOK, success)
 }
 
+// @Summary			Archive Specific User Post
+// @Description		Archive Specific User Post
+// @Tags			Archive Post
+// @Accept			json
+// @Produce		    json
+// @Security		Bearer
+// @Param			post_id	 query	string	true	"post id"
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/archive   [POST]
 func (p *PostHandler) ArchivePost(c *gin.Context) {
 	userID, _ := c.Get("user_id")
 	postID := c.Query("post_id")
@@ -179,6 +251,16 @@ func (p *PostHandler) ArchivePost(c *gin.Context) {
 	c.JSON(http.StatusOK, success)
 }
 
+// @Summary			UnArchive Specific User Post
+// @Description		UnArchive Specific User Post
+// @Tags			Archive Post
+// @Accept			json
+// @Produce		    json
+// @Security		Bearer
+// @Param			post_id	 query	string	true	"post id"
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/archive/unarchive   [POST]
 func (p *PostHandler) UnArchivePost(c *gin.Context) {
 	userID, _ := c.Get("user_id")
 	postID := c.Query("post_id")
@@ -198,6 +280,15 @@ func (p *PostHandler) UnArchivePost(c *gin.Context) {
 	c.JSON(http.StatusOK, success)
 }
 
+// @Summary			Get All Archive User Posts
+// @Description		Get All Archive User Posts
+// @Tags			Archive Post
+// @Accept			json
+// @Produce		    json
+// @Security		Bearer
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/archive   [GET]
 func (p *PostHandler) GetAllArchivePost(c *gin.Context) {
 	userID, _ := c.Get("user_id")
 	data, err := p.PostCachig.GetAllArchivePost(userID.(int))
@@ -210,6 +301,16 @@ func (p *PostHandler) GetAllArchivePost(c *gin.Context) {
 	c.JSON(http.StatusOK, success)
 }
 
+// @Summary			Like a Post
+// @Description		Like a Post
+// @Tags			Like Post
+// @Accept			json
+// @Produce		    json
+// @Security		Bearer
+// @Param			post_id	 query	string	true	"post id"
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/like   [PUT]
 func (p *PostHandler) LikePost(c *gin.Context) {
 	userID, _ := c.Get("user_id")
 	postID := c.Query("post_id")
@@ -230,6 +331,16 @@ func (p *PostHandler) LikePost(c *gin.Context) {
 	c.JSON(http.StatusOK, success)
 }
 
+// @Summary			UnLike a Post
+// @Description		UnLike a Post
+// @Tags			Like Post
+// @Accept			json
+// @Produce		    json
+// @Security		Bearer
+// @Param			post_id	 query	string	true	"post id"
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/like/unlike   [PUT]
 func (p *PostHandler) UnLinkPost(c *gin.Context) {
 	userID, _ := c.Get("user_id")
 	postID := c.Query("post_id")
@@ -249,6 +360,16 @@ func (p *PostHandler) UnLinkPost(c *gin.Context) {
 	c.JSON(http.StatusOK, success)
 }
 
+// @Summary		Comment Specific Post
+// @Description	Comment Specific Post
+// @Tags			Comment
+// @Accept 			json
+// @Produce 		json
+// @Security 		Bearer
+// @Param			req	body		models.PostCommentReq	true	"Commnet details"
+// @Success			200		{object}	response.Response{}
+// @Failure			500		{object}	response.Response{}
+// @Router			/comment   [POST]
 func (p *PostHandler) PostComment(c *gin.Context) {
 	userID, _ := c.Get("user_id")
 	var req models.PostCommentReq
@@ -266,6 +387,16 @@ func (p *PostHandler) PostComment(c *gin.Context) {
 	c.JSON(http.StatusOK, success)
 }
 
+// @Summary		Show All Comments on Post
+// @Description	Show All Comments on Post
+// @Tags			Comment
+// @Accept 			json
+// @Produce 		json
+// @Security 		Bearer
+// @Param			post_id	 query	string	true	"Post id"
+// @Success			200		{object}	response.Response{}
+// @Failure			500		{object}	response.Response{}
+// @Router			/comment   [GET]
 func (p *PostHandler) GetAllPostComments(c *gin.Context) {
 	postID := c.Query("post_id")
 	PostID, err := strconv.Atoi(postID)
@@ -284,6 +415,16 @@ func (p *PostHandler) GetAllPostComments(c *gin.Context) {
 	c.JSON(http.StatusOK, success)
 }
 
+// @Summary			Delete specific user Comment on Post
+// @Description		Delete specific user Comment on Post
+// @Tags			Comment
+// @Accept 			json
+// @Produce 		json
+// @Security 		Bearer
+// @Param			comment_id	 query	string	true	"Comment id"
+// @Success			200		{object}	response.Response{}
+// @Failure			500		{object}	response.Response{}
+// @Router			/comment  [DELETE]
 func (p *PostHandler) DeleteComment(c *gin.Context) {
 	userID, _ := c.Get("user_id")
 	comment := c.Query("comment_id")
@@ -303,6 +444,16 @@ func (p *PostHandler) DeleteComment(c *gin.Context) {
 	c.JSON(http.StatusOK, success)
 }
 
+// @Summary			Reply specific user Comment on Post
+// @Description		Reply specific user Comment on Post
+// @Tags			Comment
+// @Accept 			json
+// @Produce 		json
+// @Security 		Bearer
+// @Param			req	 body		models.ReplyCommentReq	true	"Admin login details"
+// @Success			200		{object}	response.Response{}
+// @Failure			500		{object}	response.Response{}
+// @Router			/comment/reply  [POST]
 func (p *PostHandler) ReplyComment(c *gin.Context) {
 	userID, _ := c.Get("user_id")
 	var req models.ReplyCommentReq
@@ -320,6 +471,44 @@ func (p *PostHandler) ReplyComment(c *gin.Context) {
 	c.JSON(http.StatusOK, success)
 }
 
+// @Summary		Show All Comments and Replies on Specific Post
+// @Description	Show All Comments and Replies on Specific Post
+// @Tags			Comment
+// @Accept 			json
+// @Produce 		json
+// @Security 		Bearer
+// @Param			post_id	 query	string	true	"Post id"
+// @Success			200		{object}	response.Response{}
+// @Failure			500		{object}	response.Response{}
+// @Router			/comment/showcomments   [GET]
+func (p *PostHandler) ShowAllPostComments(c *gin.Context) {
+	PostID := c.Query("post_id")
+	postID, err := strconv.Atoi(PostID)
+	if err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "PostID not in right format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+		return
+	}
+	data, err := p.GRPC_Client.ShowAllPostComments(postID)
+	if err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+		return
+	}
+	success := response.ClientResponse(http.StatusOK, "User successfully Recived All Comments", data, nil)
+	c.JSON(http.StatusOK, success)
+}
+
+// @Summary			User Can Saved Specific Post
+// @Description		User Can Saved Specific Post
+// @Tags			Save Post
+// @Accept 			json
+// @Produce 		json
+// @Security 		Bearer
+// @Param			post_id	 query	string	true	"Post id"
+// @Success			200		{object}	response.Response{}
+// @Failure			500		{object}	response.Response{}
+// @Router			/saved    [POST]
 func (p *PostHandler) SavedPost(c *gin.Context) {
 	userID, _ := c.Get("user_id")
 	PostID := c.Query("post_id")
@@ -339,6 +528,16 @@ func (p *PostHandler) SavedPost(c *gin.Context) {
 	c.JSON(http.StatusOK, success)
 }
 
+// @Summary			User Can UnSaved Specific Post
+// @Description		User Can UnSaved Specific Post
+// @Tags			Save Post
+// @Accept 			json
+// @Produce 		json
+// @Security 		Bearer
+// @Param			post_id	 query	string	true	"Post id"
+// @Success			200		{object}	response.Response{}
+// @Failure			500		{object}	response.Response{}
+// @Router			/saved/unsaved  [POST]
 func (p *PostHandler) UnSavedPost(c *gin.Context) {
 	userID, _ := c.Get("user_id")
 	PostID := c.Query("post_id")
@@ -358,6 +557,15 @@ func (p *PostHandler) UnSavedPost(c *gin.Context) {
 	c.JSON(http.StatusOK, success)
 }
 
+// @Summary			Get User Saved Posts
+// @Description		Get User Saved Posts
+// @Tags			Save Post
+// @Accept 			json
+// @Produce 		json
+// @Security 		Bearer
+// @Success			200		{object}	response.Response{}
+// @Failure			500		{object}	response.Response{}
+// @Router			/saved    [GET]
 func (p *PostHandler) GetSavedPost(c *gin.Context) {
 	userID, _ := c.Get("user_id")
 	data, err := p.PostCachig.GetSavedPost(userID.(int))
@@ -366,11 +574,20 @@ func (p *PostHandler) GetSavedPost(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errs)
 		return
 	}
-	fmt.Println("darta", data)
 	success := response.ClientResponse(http.StatusOK, "Successfully Received Saved Post", data, nil)
 	c.JSON(http.StatusOK, success)
 }
 
+// @Summary			Create  Story
+// @Description		Create User Story
+// @Tags			Story
+// @Accept 			json
+// @Produce 		json
+// @Security 		Bearer
+// @Param           photo formData	 file true "Image file to upload" collectionFormat "multi"
+// @Success			200		{object}	response.Response{}
+// @Failure			500		{object}	response.Response{}
+// @Router			/story     [POST]
 func (p *PostHandler) CreateStory(c *gin.Context) {
 	userID, _ := c.Get("user_id")
 	file, err := c.FormFile("photo")
@@ -389,6 +606,16 @@ func (p *PostHandler) CreateStory(c *gin.Context) {
 	c.JSON(http.StatusCreated, success)
 }
 
+// @Summary			Get Story
+// @Description		Get Specific User Story
+// @Tags			Story
+// @Accept 			json
+// @Produce 		json
+// @Security 		Bearer
+// @Param			user_id	 query	string	true	"User id"
+// @Success			200		{object}	response.Response{}
+// @Failure			500		{object}	response.Response{}
+// @Router			/story     [GET]
 func (p *PostHandler) GetStory(c *gin.Context) {
 	viewUser, _ := c.Get("user_id")
 	UserID := c.Query("user_id")
@@ -408,6 +635,16 @@ func (p *PostHandler) GetStory(c *gin.Context) {
 	c.JSON(http.StatusOK, success)
 }
 
+// @Summary			Delete Story
+// @Description		Delete User Story
+// @Tags			Story
+// @Accept 			json
+// @Produce 		json
+// @Security 		Bearer
+// @Param			story_id	 query	string	true	"Story id"
+// @Success			200		{object}	response.Response{}
+// @Failure			500		{object}	response.Response{}
+// @Router			/story     [DELETE]
 func (p *PostHandler) DeleteStory(c *gin.Context) {
 	userID, _ := c.Get("user_id")
 	StoryID := c.Query("story_id")
@@ -427,6 +664,16 @@ func (p *PostHandler) DeleteStory(c *gin.Context) {
 	c.JSON(http.StatusOK, success)
 }
 
+// @Summary			Like Story
+// @Description		Liked User Story
+// @Tags			Story
+// @Accept			json
+// @Produce		    json
+// @Security		Bearer
+// @Param			story_id	 query	string	true	"Story id"
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/story/like     [PUT]
 func (p *PostHandler) LikeStory(c *gin.Context) {
 	userID, _ := c.Get("user_id")
 	StoryID := c.Query("story_id")
@@ -446,6 +693,16 @@ func (p *PostHandler) LikeStory(c *gin.Context) {
 	c.JSON(http.StatusOK, success)
 }
 
+// @Summary			UnLike Story
+// @Description		UnLiked User Story
+// @Tags			Story
+// @Accept			json
+// @Produce		    json
+// @Security		Bearer
+// @Param			story_id	 query	string	true	"Story id"
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/story/unlike   [PUT]
 func (p *PostHandler) UnLikeStory(c *gin.Context) {
 	userID, _ := c.Get("user_id")
 	StoryID := c.Query("story_id")
@@ -465,6 +722,16 @@ func (p *PostHandler) UnLikeStory(c *gin.Context) {
 	c.JSON(http.StatusOK, success)
 }
 
+// @Summary			Get User Story Details
+// @Description		Get User Story Details
+// @Tags			Story
+// @Accept			json
+// @Produce		    json
+// @Security		Bearer
+// @Param			story_id	 query	string	true	"Story id"
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/story/details   [GET]
 func (p *PostHandler) StoryDetails(c *gin.Context) {
 	userID, _ := c.Get("user_id")
 	StoryID := c.Query("story_id")
@@ -484,24 +751,16 @@ func (p *PostHandler) StoryDetails(c *gin.Context) {
 	c.JSON(http.StatusOK, success)
 }
 
-func (p *PostHandler) ShowAllPostComments(c *gin.Context) {
-	PostID := c.Query("post_id")
-	postID, err := strconv.Atoi(PostID)
-	if err != nil {
-		errs := response.ClientResponse(http.StatusBadRequest, "PostID not in right format", nil, err.Error())
-		c.JSON(http.StatusBadRequest, errs)
-		return
-	}
-	data, err := p.GRPC_Client.ShowAllPostComments(postID)
-	if err != nil {
-		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
-		c.JSON(http.StatusBadRequest, errs)
-		return
-	}
-	success := response.ClientResponse(http.StatusOK, "User successfully Recived All Comments", data, nil)
-	c.JSON(http.StatusOK, success)
-}
-
+// @Summary 	Report Post
+// @Description Report User to Post
+// @Tags 		Reports
+// @Accept 		json
+// @Produce 	json
+// @Security 	Bearer
+// @Param 		body 	body models.ReportPostRequest	 true 	"Post Report"
+// @Success 	200 {object} response.Response{}
+// @Failure 	500 {object} response.Response{}
+// @Router 		/report/post     [POST]
 func (p *PostHandler) ReportPost(c *gin.Context) {
 	ReportedID, _ := c.Get("user_id")
 	var req models.ReportPostRequest
@@ -519,9 +778,18 @@ func (p *PostHandler) ReportPost(c *gin.Context) {
 	c.JSON(http.StatusOK, success)
 }
 
+// @Summary 	HomePage
+// @Description HomePage
+// @Tags 		Home
+// @Accept 		json
+// @Produce 	json
+// @Security 	Bearer
+// @Success 	200 {object} response.Response{}
+// @Failure 	500 {object} response.Response{}
+// @Router 		/post/home     [GET]
 func (p *PostHandler) Home(c *gin.Context) {
 	userID, _ := c.Get("user_id")
-	data,err := p.GRPC_Client.Home(userID.(int))
+	data, err := p.GRPC_Client.Home(userID.(int))
 	if err != nil {
 		errs := response.ClientResponse(http.StatusBadRequest, "Couldn't Get HomePage", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)

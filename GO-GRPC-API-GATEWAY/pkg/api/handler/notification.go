@@ -4,24 +4,31 @@ import (
 	"net/http"
 
 	interfaces "github.com/akhi9550/api-gateway/pkg/client/interface"
-	"github.com/akhi9550/api-gateway/pkg/helper"
 	"github.com/akhi9550/api-gateway/pkg/utils/models"
 	"github.com/akhi9550/api-gateway/pkg/utils/response"
 	"github.com/gin-gonic/gin"
 )
 
 type NotificationHandler struct {
-	GRPC_Client        interfaces.NotificationClient
-	NotificationCachig *helper.RedisNotificationCaching
+	GRPC_Client interfaces.NotificationClient
 }
 
-func NewNotificationHandler(notificationClient interfaces.NotificationClient, notificationCache *helper.RedisNotificationCaching) *NotificationHandler {
+func NewNotificationHandler(notificationClient interfaces.NotificationClient) *NotificationHandler {
 	return &NotificationHandler{
-		GRPC_Client:        notificationClient,
-		NotificationCachig: notificationCache,
+		GRPC_Client: notificationClient,
 	}
 }
 
+// @Summary			Show All Notifications
+// @Description		Retrieve  User All Notifications
+// @Tags			Notifications
+// @Accept			json
+// @Produce		    json
+// @Security		Bearer
+// @Param			notificationRequest  	body		models.NotificationPagination	true	"Notification details"
+// @Success		200		{object}	response.Response{}
+// @Failure		500		{object}	response.Response{}
+// @Router			/notification   [GET]
 func (n *NotificationHandler) GetNotification(c *gin.Context) {
 	var notificationRequest models.NotificationPagination
 	if err := c.ShouldBindJSON(&notificationRequest); err != nil {

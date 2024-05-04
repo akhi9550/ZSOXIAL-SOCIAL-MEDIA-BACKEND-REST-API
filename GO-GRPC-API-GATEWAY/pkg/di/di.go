@@ -21,12 +21,10 @@ func InitializeAPI(cfg config.Config) (*server.ServerHTTP, error) {
 
 	helper := helper.NewHelper(&cfg)
 	chatClient := client.NewChatClient(cfg)
-	chatCaching := ChatCache(cfg, chatClient)
-	chatHandler := handler.NewChatHandler(chatClient, helper, chatCaching)
+	chatHandler := handler.NewChatHandler(chatClient, helper)
 
 	notificationClient := client.NewNotificationClient(cfg)
-	notificationCaching := NotificationCache(cfg, notificationClient)
-	notificationHandler := handler.NewNotificationHandler(notificationClient, notificationCaching)
+	notificationHandler := handler.NewNotificationHandler(notificationClient)
 
 	serverHTTP := server.NewServerHTTP(authHandler, postHandler, chatHandler, notificationHandler)
 	return serverHTTP, nil
@@ -38,14 +36,6 @@ func AuthCache(cfg config.Config, authClient interfaces.AuthClient) *helper.Redi
 
 func PostCache(cfg config.Config, postClient interfaces.PostClient) *helper.RedisPostCaching {
 	return helper.NewRedisPostCaching(InitRedisDB(cfg), postClient)
-}
-
-func NotificationCache(cfg config.Config, notificationClient interfaces.NotificationClient) *helper.RedisNotificationCaching {
-	return helper.NewRedisNotificationCaching(InitRedisDB(cfg), notificationClient)
-}
-
-func ChatCache(cfg config.Config, chatClient interfaces.ChatClient) *helper.RedisChatCaching {
-	return helper.NewRedisChatCaching(InitRedisDB(cfg), chatClient)
 }
 
 func InitRedisDB(config config.Config) *redis.Client {

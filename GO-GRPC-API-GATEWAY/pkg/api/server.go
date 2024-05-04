@@ -22,7 +22,7 @@ func NewServerHTTP(authHandler *handler.AuthHandler, postHandler *handler.PostHa
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	r.POST("/login", authHandler.AdminLogin)
+	r.POST("admin/login", authHandler.AdminLogin)
 
 	r.GET("admin/users", middleware.AdminAuthMiddleware(), authHandler.ShowAllUsers)
 	r.PUT("admin/user/block", middleware.AdminAuthMiddleware(), authHandler.BlockUser)
@@ -30,7 +30,7 @@ func NewServerHTTP(authHandler *handler.AuthHandler, postHandler *handler.PostHa
 	r.GET("/admin/report/user", middleware.AdminAuthMiddleware(), authHandler.ShowUserReports)
 	r.GET("/admin/report/post", middleware.AdminAuthMiddleware(), authHandler.ShowPostReports)
 	r.GET("/admin/posts", middleware.AdminAuthMiddleware(), authHandler.GetAllPosts)
-	r.POST("/admin/post/remove", middleware.AdminAuthMiddleware(), authHandler.RemovePost)
+	r.DELETE("/admin/post", middleware.AdminAuthMiddleware(), authHandler.RemovePost)
 
 	r.POST("user/signup", authHandler.UserSignup)
 	r.POST("user/login", authHandler.Userlogin)

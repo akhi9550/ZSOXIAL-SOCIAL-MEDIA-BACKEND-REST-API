@@ -23,17 +23,16 @@ var User = make(map[string]*websocket.Conn)
 type ChatHandler struct {
 	GRPC_Client interfaces.ChatClient
 	helper      *helper.Helper
-	ChatCachig  *helper.RedisChatCaching
 }
 
-func NewChatHandler(chatClient interfaces.ChatClient, helper *helper.Helper, chatCache *helper.RedisChatCaching) *ChatHandler {
+func NewChatHandler(chatClient interfaces.ChatClient, helper *helper.Helper) *ChatHandler {
 	return &ChatHandler{
 		GRPC_Client: chatClient,
 		helper:      helper,
-		ChatCachig:  chatCache,
 	}
 }
 
+//WebSocket
 func (ch *ChatHandler) FriendMessage(c *gin.Context) {
 	fmt.Println("message called")
 	conn, err := upgrade.Upgrade(c.Writer, c.Request, nil)
@@ -65,6 +64,16 @@ func (ch *ChatHandler) FriendMessage(c *gin.Context) {
 	}
 }
 
+// @Summary			Get Users Chats
+// @Description		Retrieve UsersChats
+// @Tags			Chat
+// @Accept			json
+// @Produce		    json
+// @Security		Bearer
+// @Param			chatRequest  	body		models.ChatRequest	true	"GetChat details"
+// @Success		200		{object}	response.Response{}
+// @Failure		500		{object}	response.Response{}
+// @Router			/chat/message   [GET]
 func (ch *ChatHandler) GetChat(c *gin.Context) {
 	var chatRequest models.ChatRequest
 	if err := c.ShouldBindJSON(&chatRequest); err != nil {
@@ -80,9 +89,6 @@ func (ch *ChatHandler) GetChat(c *gin.Context) {
 		return
 	}
 	userID := strconv.Itoa(userIDInterface.(int))
-	// ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
-	// defer cancel()
-
 	result, err := ch.GRPC_Client.GetChat(userID, chatRequest)
 	if err != nil {
 		errs := response.ClientResponse(http.StatusBadRequest, "Failed to get chat details", nil, err.Error())
