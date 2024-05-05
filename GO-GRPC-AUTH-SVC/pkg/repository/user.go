@@ -403,6 +403,10 @@ func (ur *userRepository) UnFollow(userID, UnFollowUserID int) error {
 	if err != nil {
 		return err
 	}
+	err = ur.DB.Exec(`DELETE FROM followers WHERE user_id = ? AND following_user = ?`, UnFollowUserID, userID).Error
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
