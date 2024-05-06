@@ -15,12 +15,21 @@ type ServerHTTP struct {
 	engine *gin.Engine
 }
 
-func NewServerHTTP(authHandler *handler.AuthHandler, postHandler *handler.PostHandler, chatHandler *handler.ChatHandler, notificationHandler *handler.NotificationHandler) *ServerHTTP {
+func NewServerHTTP(authHandler *handler.AuthHandler, postHandler *handler.PostHandler, chatHandler *handler.ChatHandler, notificationHandler *handler.NotificationHandler, videocallHandler *handler.VideoCallHandler) *ServerHTTP {
 	r := gin.New()
 
 	r.Use(gin.Logger())
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
+	r.Static("/static", "./static")
+	r.LoadHTMLGlob("templates/*")
+
+	videocallHandler.SetupRoutes(r.Group("/v1"))
+	r.GET("/", videocallHandler.RequestToRoom)
+	r.GET("/lobby", videocallHandler.ConnectedPage)
+	r.GET("/index", videocallHandler.IndexedPage)
+	r.GET("/get-offer", videocallHandler.GetStoredOffer)
 
 	r.POST("admin/login", authHandler.AdminLogin)
 
@@ -134,8 +143,8 @@ func NewServerHTTP(authHandler *handler.AuthHandler, postHandler *handler.PostHa
 }
 
 func (s *ServerHTTP) Start() {
-	log.Printf("Starting Server on 8000")
-	err := s.engine.Run(":8000")
+	log.Printf("Starting Server on 8080")
+	err := s.engine.Run(":8080")
 	if err != nil {
 		log.Printf("error while starting the server")
 	}
