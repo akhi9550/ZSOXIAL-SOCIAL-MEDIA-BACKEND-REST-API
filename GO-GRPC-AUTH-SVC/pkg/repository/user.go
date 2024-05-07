@@ -279,7 +279,6 @@ func (ur *userRepository) Changepassword(id int, password string) error {
 }
 
 func (ur *userRepository) CheckUserAvalilabilityWithTagUserID(users []models.Tag) (bool, error) {
-	fmt.Println("dat", users)
 	var count int
 	for _, i := range users {
 		if err := ur.DB.Raw("SELECT COUNT(*) FROM users WHERE id = ?", i.User).Scan(&count).Error; err != nil {
