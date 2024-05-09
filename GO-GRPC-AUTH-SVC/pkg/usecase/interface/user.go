@@ -26,4 +26,5 @@ type UserUseCase interface {
 	Following(userID int) ([]models.FollowingResponse, error)
 	Follower(userID int) ([]models.FollowingResponse, error)
 	SearchUser(req models.SearchUser) ([]models.Users, error)
+	VideoCallKey(userID, oppositeUser int) (string, error)
 }

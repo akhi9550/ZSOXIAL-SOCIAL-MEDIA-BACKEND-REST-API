@@ -436,3 +436,12 @@ func (ur *userRepository) SearchUser(req models.SearchUser) ([]models.Users, err
 	}
 	return response, nil
 }
+
+func (ur *userRepository) CheckUserAlreadyExistFromFollowers(userID, oppositeUser int) bool {
+	var count int
+	err := ur.DB.Raw(`SELECT COUNT(*) FROM followers WHERE user_id = ? AND following_user = ?`, userID, oppositeUser).Scan(&count).Error
+	if err != nil {
+		return false
+	}
+	return count > 0
+}

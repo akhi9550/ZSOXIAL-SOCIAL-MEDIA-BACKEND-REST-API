@@ -520,3 +520,13 @@ func (au *AuthSever) RemovePost(ctx context.Context, req *pb.RemovePostRequest) 
 	}
 	return &pb.RemovePostResponse{}, nil
 }
+
+func (au *AuthSever) VideoCallKey(ctx context.Context, req *pb.VideoCallRequest) (*pb.VideoCallResponse, error) {
+	key, err := au.userUseCase.VideoCallKey(int(req.UserID), int(req.OppositeUser))
+	if err != nil {
+		return &pb.VideoCallResponse{}, nil
+	}
+	return &pb.VideoCallResponse{
+		Key: key,
+	}, nil
+}

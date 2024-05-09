@@ -1,7 +1,10 @@
 package helper
 
 import (
+	"crypto/md5"
+	"encoding/hex"
 	"errors"
+	"strconv"
 	"time"
 
 	"github.com/akhi9550/auth-svc/pkg/config"
@@ -78,4 +81,13 @@ func CompareHashAndPassword(a string, b string) error {
 		return err
 	}
 	return nil
+}
+
+func GenerateVideoCallKey(userID, oppositeUser int) (string, error) {
+	currentTime := strconv.FormatInt(time.Now().UnixNano(), 10)
+	key := strconv.Itoa(userID) + "_" + strconv.Itoa(oppositeUser) + "_" + currentTime
+	hash := md5.Sum([]byte(key))
+	keyString := hex.EncodeToString(hash[:])
+
+	return keyString, nil
 }

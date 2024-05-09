@@ -453,3 +453,29 @@ func (ur *userUseCase) SearchUser(req models.SearchUser) ([]models.Users, error)
 	}
 	return data, nil
 }
+
+func (ur *userUseCase) VideoCallKey(userID, oppositeUser int) (string, error) {
+	userExist := ur.userRepository.CheckUserAvailabilityWithUserID(userID)
+	if !userExist {
+		return "", errors.New("user doesn't exist")
+	}
+	FollowuserExist := ur.userRepository.CheckUserAlreadyExistFromFollowers(userID, oppositeUser)
+	if !FollowuserExist {
+		return "", errors.New("you doesn't follow this user")
+	}
+	key, err := helper.GenerateVideoCallKey(userID, oppositeUser)
+	if err != nil {
+		return "", err
+	}
+	UserName, err := ur.userRepository.UserData(userID)
+	if err != nil {
+		return "", err
+	}
+	url := fmt.Sprintf("%s Invaited to Join the link :- http://localhost:8080/index?room=%s", UserName.Username, key)
+	helper.SendNotification(models.Notification{
+		UserID:   oppositeUser,
+		SenderID: userID,
+	}, []byte(url))
+
+	return key, nil
+}

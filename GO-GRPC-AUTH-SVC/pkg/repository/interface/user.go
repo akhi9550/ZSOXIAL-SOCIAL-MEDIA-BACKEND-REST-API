@@ -36,7 +36,7 @@ type UserRepository interface {
 	Changepassword(phone int, password string) error
 	CheckUserAvalilabilityWithTagUserID(users []models.Tag) (bool, error)
 	GetUserNameWithTagUserID(users []models.Tag) ([]models.UserTag, error)
-	GetFollowingUsers(userID int)([]models.FollowUsers,error)
+	GetFollowingUsers(userID int) ([]models.FollowUsers, error)
 	AlreadyReported(RuserID, userID int) bool
 	ReportUser(userID int, req models.ReportRequest) error
 	ExistFollowreq(userID, FollowingUserID int) bool
@@ -49,4 +49,5 @@ type UserRepository interface {
 	Following(userID int) ([]models.FollowResp, error)
 	Follower(userID int) ([]models.FollowResp, error)
 	SearchUser(req models.SearchUser) ([]models.Users, error)
+	CheckUserAlreadyExistFromFollowers(userID, oppositeUser int) bool
 }
