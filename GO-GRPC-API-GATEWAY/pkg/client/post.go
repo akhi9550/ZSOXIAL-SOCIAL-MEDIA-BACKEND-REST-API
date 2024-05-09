@@ -46,7 +46,7 @@ func (p *PostClient) CreatePost(userID int, req models.PostRequest, file *multip
 		Userid:  int64(userID),
 		Caption: req.Caption,
 		Post:    files,
-		Typeid:  int64(req.TypeId),
+		Typeid:  req.TypeId,
 		Tag:     tag,
 	})
 	if err != nil {
@@ -77,7 +77,7 @@ func (p *PostClient) CreatePost(userID int, req models.PostRequest, file *multip
 
 }
 
-func(p *PostClient) GetUserPost(userID int) ([]models.PostResponse, error){
+func (p *PostClient) GetUserPost(userID int) ([]models.PostResponse, error) {
 	data, err := p.Client.GetAllPost(context.Background(), &pb.GetAllPostRequest{
 		Userid: int64(userID),
 	})
@@ -146,7 +146,7 @@ func (p *PostClient) UpdatePost(userID int, req models.UpdatePostReq, user []str
 		Userid:  int64(userID),
 		Postid:  int64(req.PostID),
 		Caption: req.Caption,
-		Typeid:  int64(req.TypeID),
+		Typeid:  req.TypeID,
 		Tag:     tag,
 	})
 	if err != nil {
@@ -278,8 +278,8 @@ func (p *PostClient) LikePost(userID int, postID int) (models.LikePostResponse, 
 	}, nil
 }
 
-func (p *PostClient) UnLinkPost(userID int, postID int) error {
-	_, err := p.Client.UnLinkPost(context.Background(), &pb.UnLikePostRequest{
+func (p *PostClient) UnLikePost(userID int, postID int) error {
+	_, err := p.Client.UnLikePost(context.Background(), &pb.UnLikePostRequest{
 		Userid: int64(userID),
 		Postid: int64(postID),
 	})
@@ -588,7 +588,7 @@ func (p *PostClient) StoryDetails(userID, storyID int) (models.StoryDetails, err
 	}, nil
 }
 
-func(p *PostClient)Home(userID int) ([]models.PostResponse, error){
+func (p *PostClient) Home(userID int) ([]models.PostResponse, error) {
 	data, err := p.Client.Home(context.Background(), &pb.HomeRequest{
 		UserID: int64(userID),
 	})

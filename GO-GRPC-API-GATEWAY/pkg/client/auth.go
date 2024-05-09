@@ -514,3 +514,14 @@ func (au *AuthClient) RemovePost(postID int) error {
 	}
 	return nil
 }
+
+func (au *AuthClient) VideoCallKey(userID, oppositeUser int) (string, error) {
+	key, err := au.Client.VideoCallKey(context.Background(), &pb.VideoCallRequest{
+		UserID:       int64(userID),
+		OppositeUser: int64(oppositeUser),
+	})
+	if err != nil {
+		return "", err
+	}
+	return key.Key, nil
+}

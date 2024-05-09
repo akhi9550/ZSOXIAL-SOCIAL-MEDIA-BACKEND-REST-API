@@ -6,7 +6,7 @@ import (
 
 type PostRequest struct {
 	Caption string `json:"caption"`
-	TypeId  uint   `json:"TypeId"`
+	TypeId  string   `json:"type_id"`
 }
 type UserData struct {
 	UserId   uint   `json:"user_id"`
@@ -154,7 +154,7 @@ type CommentReply struct {
 type UpdatePostReq struct {
 	PostID  uint   `json:"post_id"`
 	Caption string `json:"caption"`
-	TypeID  uint   `json:"type_id"`
+	TypeID  string   `json:"type_id"`
 }
 
 type CreateStoryResponse struct {

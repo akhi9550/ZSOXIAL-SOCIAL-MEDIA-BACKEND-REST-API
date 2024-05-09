@@ -49,6 +49,7 @@ const (
 	AuthService_GetAllPosts_FullMethodName                         = "/user.AuthService/GetAllPosts"
 	AuthService_RemovePost_FullMethodName                          = "/user.AuthService/RemovePost"
 	AuthService_SearchUser_FullMethodName                          = "/user.AuthService/SearchUser"
+	AuthService_VideoCallKey_FullMethodName                        = "/user.AuthService/VideoCallKey"
 )
 
 // AuthServiceClient is the client API for AuthService service.
@@ -85,6 +86,7 @@ type AuthServiceClient interface {
 	GetAllPosts(ctx context.Context, in *GetAllPostsRequest, opts ...grpc.CallOption) (*GetAllPostsResponse, error)
 	RemovePost(ctx context.Context, in *RemovePostRequest, opts ...grpc.CallOption) (*RemovePostResponse, error)
 	SearchUser(ctx context.Context, in *SearchUserRequest, opts ...grpc.CallOption) (*SearchUserResponse, error)
+	VideoCallKey(ctx context.Context, in *VideoCallRequest, opts ...grpc.CallOption) (*VideoCallResponse, error)
 }
 
 type authServiceClient struct {
@@ -365,6 +367,15 @@ func (c *authServiceClient) SearchUser(ctx context.Context, in *SearchUserReques
 	return out, nil
 }
 
+func (c *authServiceClient) VideoCallKey(ctx context.Context, in *VideoCallRequest, opts ...grpc.CallOption) (*VideoCallResponse, error) {
+	out := new(VideoCallResponse)
+	err := c.cc.Invoke(ctx, AuthService_VideoCallKey_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthServiceServer is the server API for AuthService service.
 // All implementations must embed UnimplementedAuthServiceServer
 // for forward compatibility
@@ -399,6 +410,7 @@ type AuthServiceServer interface {
 	GetAllPosts(context.Context, *GetAllPostsRequest) (*GetAllPostsResponse, error)
 	RemovePost(context.Context, *RemovePostRequest) (*RemovePostResponse, error)
 	SearchUser(context.Context, *SearchUserRequest) (*SearchUserResponse, error)
+	VideoCallKey(context.Context, *VideoCallRequest) (*VideoCallResponse, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
 
@@ -495,6 +507,9 @@ func (UnimplementedAuthServiceServer) RemovePost(context.Context, *RemovePostReq
 }
 func (UnimplementedAuthServiceServer) SearchUser(context.Context, *SearchUserRequest) (*SearchUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SearchUser not implemented")
+}
+func (UnimplementedAuthServiceServer) VideoCallKey(context.Context, *VideoCallRequest) (*VideoCallResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VideoCallKey not implemented")
 }
 func (UnimplementedAuthServiceServer) mustEmbedUnimplementedAuthServiceServer() {}
 
@@ -1049,6 +1064,24 @@ func _AuthService_SearchUser_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthService_VideoCallKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(VideoCallRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).VideoCallKey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_VideoCallKey_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).VideoCallKey(ctx, req.(*VideoCallRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AuthService_ServiceDesc is the grpc.ServiceDesc for AuthService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1175,6 +1208,10 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SearchUser",
 			Handler:    _AuthService_SearchUser_Handler,
+		},
+		{
+			MethodName: "VideoCallKey",
+			Handler:    _AuthService_VideoCallKey_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -1,55 +1,73 @@
 package handler
 
 import (
-	"encoding/json"
-	"errors"
-	"fmt"
 	"net/http"
+	"sync"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 	"github.com/pion/webrtc/v3"
 )
 
-type VideoCallHandler struct{}
-
-// type WebRTCHandler struct{}
-func NewVideoCallHandler() *VideoCallHandler {
-	return &VideoCallHandler{}
+type VideoCallHandler struct {
+	rooms map[string]*Room
+	mu    sync.Mutex
 }
 
+type Room struct {
+	Participants map[*websocket.Conn]bool
+	mu           sync.Mutex
+}
+
+func NewVideoCallHandler() *VideoCallHandler {
+	return &VideoCallHandler{
+		rooms: make(map[string]*Room),
+	}
+}
+
+func (v *VideoCallHandler) SetupRoutes(group *gin.RouterGroup) {
+    group.GET("/ws", v.handleWebSocket)
+}
 func (v *VideoCallHandler) RequestToRoom(c *gin.Context) {
+	roomId := c.DefaultQuery("room", "")
+	if roomId == "" {
+		c.Redirect(http.StatusFound, "/exit")
+		return
+	}
+
+	v.mu.Lock()
+	room, exists := v.rooms[roomId]
+	if !exists {
+		room = &Room{
+			Participants: make(map[*websocket.Conn]bool),
+		}
+		v.rooms[roomId] = room
+	}
+	v.mu.Unlock()
+
+	room.mu.Lock()
+	defer room.mu.Unlock()
+
+	if len(room.Participants) >= 2 { 
+		c.Redirect(http.StatusFound, "/error")
+		return
+	}
+
 	c.HTML(http.StatusOK, "index.html", nil)
 }
 
-func (v *VideoCallHandler) ConnectedPage(c *gin.Context) {
-	c.HTML(http.StatusOK, "lobby.html", nil)
+
+func (v *VideoCallHandler) ExitPage(c *gin.Context) {
+	c.HTML(http.StatusOK, "exit.html", nil)
+}
+
+func (v *VideoCallHandler) ErrorPage(c *gin.Context) {
+	c.HTML(http.StatusOK, "error.html", nil)
 }
 
 func (v *VideoCallHandler) IndexedPage(c *gin.Context) {
 	room := c.DefaultQuery("room", "")
 	c.HTML(http.StatusOK, "index.html", gin.H{"room": room})
-}
-
-func (v *VideoCallHandler) GetStoredOffer(c *gin.Context) {
-	c.String(http.StatusOK, GetStoredOffer())
-}
-
-var signalingMsg struct {
-	Type string `json:"type"`
-	Data string `json:"data"`
-}
-
-var StoredOffer string
-
-func GetStoredOffer() string {
-	return StoredOffer
-}
-
-var answerSDP1 string
-
-func (v *VideoCallHandler) SetupRoutes(router *gin.RouterGroup) {
-	router.GET("/ws", v.handleWebSocket)
 }
 
 func (v *VideoCallHandler) handleWebSocket(c *gin.Context) {
@@ -63,102 +81,26 @@ func (v *VideoCallHandler) handleWebSocket(c *gin.Context) {
 
 	conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
 	if err != nil {
-		fmt.Println("error upgrade", err)
 		return
 	}
 	defer conn.Close()
+
+	roomId := c.DefaultQuery("room", "")
+	v.mu.Lock()
+	room, exists := v.rooms[roomId]
+	v.mu.Unlock()
+	if !exists {
+		return
+	}
+
+	room.mu.Lock()
+	room.Participants[conn] = true
+	room.mu.Unlock()
+
 	peerConnection, err := webrtc.NewPeerConnection(webrtc.Configuration{})
 	if err != nil {
 		return
 	}
-	for {
-		_, message, err := conn.ReadMessage()
-		if err != nil {
-			fmt.Println("error readmsg", err)
-			break
-		}
-		if err := json.Unmarshal(message, &signalingMsg); err != nil {
-			fmt.Println("error json:", err)
-			continue
-		}
-		switch signalingMsg.Type {
-		case "offer":
-			fmt.Println("case offer")
-			err := handleOffer(conn, signalingMsg.Data, peerConnection)
-			if err != nil {
-				fmt.Println("error case1", err.Error())
-				break
-			}
-		case "answer":
-			fmt.Println("case answer")
-			err := handleAnswer(conn, signalingMsg.Data, peerConnection)
-			if err != nil {
-				fmt.Println("error case2", err.Error())
-				break
-			}
-		case "candidate":
-			fmt.Println("case candidate")
-			err := handleICECandidate(conn, signalingMsg.Data, peerConnection)
-			if err != nil {
-				fmt.Println("error case3", err.Error())
-				break
-			}
-		default:
-			fmt.Println("error", "unknown type")
-		}
-	}
+	defer peerConnection.Close()
 
-}
-
-func handleOffer(conn *websocket.Conn, offerSDPstring string, peerConnection *webrtc.PeerConnection) error {
-	offerSDP := webrtc.SessionDescription{
-		Type: webrtc.SDPTypeOffer,
-		SDP:  offerSDPstring,
-	}
-
-	StoredOffer = offerSDPstring
-	err := peerConnection.SetLocalDescription(offerSDP)
-	if err != nil {
-		return errors.Join(errors.New("setRemote"), err)
-	}
-	return nil
-}
-
-func handleAnswer(conn *websocket.Conn, answerSDP string, peerConnection *webrtc.PeerConnection) error {
-
-	answer := webrtc.SessionDescription{
-		Type: webrtc.SDPTypeAnswer,
-		SDP:  answerSDP1,
-	}
-
-	err := peerConnection.SetLocalDescription(answer)
-	if err != nil {
-		return errors.Join(errors.New("SetRemoteDsc"), err)
-	}
-
-	offer := webrtc.SessionDescription{
-		Type: webrtc.SDPTypeOffer,
-		SDP:  StoredOffer,
-	}
-
-	err = peerConnection.SetRemoteDescription(offer)
-	if err != nil {
-		return errors.Join(errors.New("setRemote"), err)
-	}
-
-	return nil
-}
-
-func handleICECandidate(conn *websocket.Conn, candidate string, peerConnection *webrtc.PeerConnection) error {
-
-	iceCandidate := webrtc.ICECandidateInit{
-		Candidate: candidate,
-	}
-
-	err := peerConnection.AddICECandidate(iceCandidate)
-	if err != nil {
-		return errors.Join(errors.New("AddICE"), err)
-	}
-
-	return nil
 }

@@ -133,3 +133,11 @@ type SearchResult struct {
 	Username string `json:"username"`
 	Profile  string `json:"profile" gorm:"column:imageurl"`
 }
+
+type TagUserId struct {
+	Id int32 `json:"id"`
+}
+
+type VideoCallKey struct {
+	Key string `json:"key"`
+}

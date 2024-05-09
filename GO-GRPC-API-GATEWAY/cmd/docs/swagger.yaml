@@ -902,8 +902,8 @@ paths:
         name: posttype
         required: true
         type: string
-      - description: User IDs to tag in the post (e.g., '2 3 4 5')
-        in: query
+      - description: IDs of the users to share the post with (comma-separated)
+        in: formData
         name: user
         type: string
       - description: Photo of the post

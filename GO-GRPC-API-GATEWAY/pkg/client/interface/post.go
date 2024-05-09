@@ -17,7 +17,7 @@ type PostClient interface {
 	UnArchivePost(userID, PostID int) error
 	GetAllArchivePost(userID int) ([]models.ArchivePostResponse, error)
 	LikePost(userID int, postID int) (models.LikePostResponse, error)
-	UnLinkPost(userID int, postID int) error
+	UnLikePost(userID int, postID int) error
 	PostComment(userID int, data models.PostCommentReq) (models.PostComment, error)
 	DeleteComment(userID, CommentID int) error
 	GetAllPostComments(PostID int) ([]models.PostCommentResponse, error)

@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -32,7 +31,7 @@ func NewPostHandler(postClient interfaces.PostClient, postCaching *helper.RedisP
 // @Security		Bearer
 // @Param caption formData string true "New caption for the post"
 // @Param posttype formData string true "New type of the post"
-// @Param user query string false "User IDs to tag in the post (e.g., '2 3 4 5')"
+// @Param user formData array true "Users associated with the post. Provide multiple user IDs"
 // @Param           photo formData file true "Photo of the post"
 // @Success		200		{object}	response.Response{}
 // @Failure		500		{object}	response.Response{}
@@ -48,13 +47,10 @@ func (p *PostHandler) CreatePost(c *gin.Context) {
 			return
 		}
 	}
-	posttype, _ := strconv.Atoi(typeid)
-	fmt.Println("datra", user, userID, caption, typeid)
 	req := models.PostRequest{
 		Caption: caption,
-		TypeId:  uint(posttype),
+		TypeId:  typeid,
 	}
-
 	file, err := c.FormFile("photo")
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "No file provided", nil, err.Error())
@@ -130,7 +126,7 @@ func (p *PostHandler) GetPost(c *gin.Context) {
 // @Param post_id formData string true "ID of the post to be updated"
 // @Param caption formData string true "New caption for the post"
 // @Param posttype formData string true "New type of the post"
-// @Param user formData array true "Users associated with the post. Provide multiple user IDs separated by commas."
+// @Param user formData array true "Users associated with the post. Provide multiple user IDs"
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
 // @Router			/post   [put]
@@ -147,12 +143,11 @@ func (p *PostHandler) UpdatePost(c *gin.Context) {
 		}
 	}
 
-	posttype, _ := strconv.Atoi(typeid)
 	postID, _ := strconv.Atoi(postid)
 	req := models.UpdatePostReq{
 		PostID:  uint(postID),
 		Caption: caption,
-		TypeID:  uint(posttype),
+		TypeID:  typeid,
 	}
 
 	data, err := p.GRPC_Client.UpdatePost(userID.(int), req, user)
@@ -341,7 +336,7 @@ func (p *PostHandler) LikePost(c *gin.Context) {
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
 // @Router			/like/unlike   [PUT]
-func (p *PostHandler) UnLinkPost(c *gin.Context) {
+func (p *PostHandler) UnLikePost(c *gin.Context) {
 	userID, _ := c.Get("user_id")
 	postID := c.Query("post_id")
 	PostID, err := strconv.Atoi(postID)
@@ -350,7 +345,7 @@ func (p *PostHandler) UnLinkPost(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errs)
 		return
 	}
-	err = p.GRPC_Client.UnLinkPost(userID.(int), PostID)
+	err = p.GRPC_Client.UnLikePost(userID.(int), PostID)
 	if err != nil {
 		errs := response.ClientResponse(http.StatusBadRequest, "Successfully Liked Post", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)

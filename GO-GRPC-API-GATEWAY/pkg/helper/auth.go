@@ -37,7 +37,7 @@ func ExtractUserIDFromToken(tokenString string) (int, string, error) {
 	})
 
 	if err != nil {
-		fmt.Println("🔗errors:-", err)
+		fmt.Println("errors:-", err)
 		return 0, "", err
 	}
 

@@ -16,7 +16,7 @@ service PostService {
     rpc UnArchivePost (UnArchivePostrequest) returns (UnArchivePostResponse){}
     rpc GetAllArchivePost (GetAllArchivePostRequest) returns (GetAllArchivePostResponse){}
     rpc LikePost (LikePostRequest) returns (LikePostResponse){}
-    rpc UnLinkPost (UnLikePostRequest) returns (UnLikePostResponse){}
+    rpc UnLikePost (UnLikePostRequest) returns (UnLikePostResponse){}
     rpc PostComment (PostCommentRequest) returns (PostCommentResponse){}
     rpc GetAllPostComments (GetAllCommentsRequest) returns (GetAllCommentsResponse){}
     rpc ShowAllPostComments (ShowAllPostCommentsRequest) returns (ShowAllPostCommentsResponse){}
@@ -39,7 +39,7 @@ message CreatePostRequest {
     int64 userid = 1;
     string caption = 2;
     PostPhoto post = 3;
-    int64 typeid = 4; 
+    string typeid = 4; 
     Tag tag = 5;
 }
 
@@ -77,7 +77,7 @@ message UpdatePostRequest {
     int64 userid = 1;
     int64 postid = 2;
     string caption = 3;
-    int64 typeid = 5; 
+    string typeid = 5; 
     Tag tag = 6;
 }
 

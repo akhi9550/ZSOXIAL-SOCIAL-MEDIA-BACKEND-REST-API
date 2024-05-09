@@ -32,5 +32,6 @@ type AuthClient interface {
 	ShowPostReports(page, count int) ([]models.PostReports, error)
 	GetAllPosts(page, count int) ([]models.PostResponse, error)
 	RemovePost(postID int) error
-	SearchUser(req models.SearchUser)([]models.SearchResult,error)
+	SearchUser(req models.SearchUser) ([]models.SearchResult, error)
+	VideoCallKey(userID, oppositeUser int) (string, error)
 }

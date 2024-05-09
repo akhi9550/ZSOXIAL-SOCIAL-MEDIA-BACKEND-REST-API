@@ -568,7 +568,6 @@ func (au *AuthHandler) Follower(c *gin.Context) {
 	c.JSON(http.StatusOK, sucess)
 }
 
-
 // @Summary		Admin Login
 // @Description	Login handler for Zsoxial admins
 // @Tags			Admin
@@ -816,5 +815,35 @@ func (au *AuthHandler) RemovePost(c *gin.Context) {
 		return
 	}
 	sucess := response.ClientResponse(http.StatusOK, "Successfully Removed Post", nil, nil)
+	c.JSON(http.StatusOK, sucess)
+}
+
+// @Summary		Generate Key For VideoCall
+// @Description	Generate Key For VideoCall
+// @Tags			VideoCall
+// @Accept			json
+// @Produce		    json
+// @Security		Bearer
+// @Param			user	query	string	true	"user"
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/videocall/users     [GET]
+func (au *AuthHandler) VideoCallKey(c *gin.Context) {
+	userID, _ := c.Get("user_id")
+	UserID := c.Query("user")
+	oppositeUser, err := strconv.Atoi(UserID)
+	if err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "PostID not in right format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+		return
+	}
+	key, err := au.GRPC_Client.VideoCallKey(userID.(int), oppositeUser)
+	if err != nil {
+		errs := response.ClientResponse(http.StatusInternalServerError, "user could not be unblocked", nil, err.Error())
+		c.JSON(http.StatusInternalServerError, errs)
+		return
+	}
+	url := fmt.Sprintf("http://localhost:8080/index?room=%s", key)
+	sucess := response.ClientResponse(http.StatusOK, "Successfully Get a VideoCallKey And Private Link", url, nil)
 	c.JSON(http.StatusOK, sucess)
 }

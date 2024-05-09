@@ -27,9 +27,11 @@ func NewServerHTTP(authHandler *handler.AuthHandler, postHandler *handler.PostHa
 
 	videocallHandler.SetupRoutes(r.Group("/v1"))
 	r.GET("/", videocallHandler.RequestToRoom)
-	r.GET("/lobby", videocallHandler.ConnectedPage)
+	// r.GET("/lobby", videocallHandler.ConnectedPage)
+	r.GET("/exit", videocallHandler.ExitPage)
+	r.GET("/error", videocallHandler.ErrorPage)
 	r.GET("/index", videocallHandler.IndexedPage)
-	r.GET("/get-offer", videocallHandler.GetStoredOffer)
+	// r.GET("/get-offer", videocallHandler.GetStoredOffer)
 
 	r.POST("admin/login", authHandler.AdminLogin)
 
@@ -106,7 +108,7 @@ func NewServerHTTP(authHandler *handler.AuthHandler, postHandler *handler.PostHa
 		like := r.Group("/like")
 		{
 			like.PUT("", postHandler.LikePost)
-			like.PUT("/unlike", postHandler.UnLinkPost)
+			like.PUT("/unlike", postHandler.UnLikePost)
 		}
 
 		comment := r.Group("/comment")
@@ -136,6 +138,10 @@ func NewServerHTTP(authHandler *handler.AuthHandler, postHandler *handler.PostHa
 		notification := r.Group("/notification")
 		{
 			notification.GET("", notificationHandler.GetNotification)
+		}
+		videoCall := r.Group("/videocall")
+		{
+			videoCall.GET("/key", authHandler.VideoCallKey)
 		}
 	}
 

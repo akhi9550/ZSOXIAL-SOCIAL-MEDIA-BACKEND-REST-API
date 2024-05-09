@@ -1250,9 +1250,9 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "User IDs to tag in the post (e.g., '2 3 4 5')",
+                        "description": "IDs of the users to share the post with (comma-separated)",
                         "name": "user",
-                        "in": "query"
+                        "in": "formData"
                     },
                     {
                         "type": "file",
