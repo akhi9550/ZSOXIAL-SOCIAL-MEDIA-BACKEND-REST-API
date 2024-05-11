@@ -25,7 +25,7 @@ func (p *PostServer) CreatePost(ctx context.Context, req *pb.CreatePostRequest) 
 	userID := req.Userid
 	createPost := models.PostRequest{
 		Caption: req.Caption,
-		TypeId:  uint(req.Typeid),
+		TypeId:  req.Typeid,
 	}
 	File := req.Post.Url
 	var users []models.Tag
@@ -93,7 +93,7 @@ func (p *PostServer) UpdatePost(ctx context.Context, req *pb.UpdatePostRequest) 
 	user := models.UpdatePostReq{
 		PostID:  uint(req.Postid),
 		Caption: req.Caption,
-		TypeID:  uint(req.Typeid),
+		TypeID:  req.Typeid,
 	}
 	var users []models.Tag
 	for _, user := range req.Tag.User {
@@ -223,9 +223,9 @@ func (p *PostServer) LikePost(ctx context.Context, req *pb.LikePostRequest) (*pb
 	}, nil
 }
 
-func (p *PostServer) UnLinkPost(ctx context.Context, req *pb.UnLikePostRequest) (*pb.UnLikePostResponse, error) {
+func (p *PostServer) UnLikePost(ctx context.Context, req *pb.UnLikePostRequest) (*pb.UnLikePostResponse, error) {
 	userID, postID := req.Userid, req.Postid
-	err := p.postUseCase.UnLinkPost(int(userID), int(postID))
+	err := p.postUseCase.UnLikePost(int(userID), int(postID))
 	if err != nil {
 		return &pb.UnLikePostResponse{}, err
 	}

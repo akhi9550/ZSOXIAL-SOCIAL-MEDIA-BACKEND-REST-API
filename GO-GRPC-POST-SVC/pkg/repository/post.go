@@ -3,7 +3,6 @@ package repository
 import (
 	"math/rand"
 	"sort"
-	"time"
 
 	interfaces "github.com/akhi9550/post-svc/pkg/repository/interface"
 	"github.com/akhi9550/post-svc/pkg/utils/models"
@@ -29,7 +28,7 @@ func (p *postRepository) CheckUserAvalilabilityWithUserID(userID int) bool {
 	return count > 0
 }
 
-func (p *postRepository) CheckMediaAvalilabilityWithID(typeid int) bool {
+func (p *postRepository) CheckMediaAvalilabilityWithID(typeid string) bool {
 	var count int
 	err := p.DB.Raw(`SELECT COUNT(*) FROM post_types WHERE id = ?`, typeid).Scan(&count).Error
 	if err != nil {
@@ -47,17 +46,16 @@ func (p *postRepository) CheckPostAvalilabilityWithID(postID int) bool {
 	return count > 0
 }
 
-func(p *postRepository) CheckPostedUserID(userID, PostID int)bool{
+func (p *postRepository) CheckPostedUserID(userID, PostID int) bool {
 	var count int
-	err := p.DB.Raw(`SELECT COUNT(*) FROM posts WHERE id = ? AND user_id = ?`, PostID,userID).Scan(&count).Error
+	err := p.DB.Raw(`SELECT COUNT(*) FROM posts WHERE id = ? AND user_id = ?`, PostID, userID).Scan(&count).Error
 	if err != nil {
 		return false
 	}
 	return count > 0
 }
 
-
-func (p *postRepository) CreatePost(userID int, Caption string, TypeId int, file string, users []models.Tag) (models.Response, []models.Tag, error) {
+func (p *postRepository) CreatePost(userID int, Caption string, TypeId string, file string, users []models.Tag) (models.Response, []models.Tag, error) {
 	var post models.Response
 	var tag []models.Tag
 	err := p.DB.Raw(`INSERT INTO posts (user_id, url, caption, type_id, created_at) VALUES (?, ?,?, ?, NOW()) RETURNING id,url, caption, likes_count, comments_count, created_at`, userID, file, Caption, TypeId).Scan(&post).Error
@@ -117,7 +115,7 @@ func (ur *postRepository) UpdateCaption(userID, postID int, caption string) erro
 	return nil
 }
 
-func (ur *postRepository) UpdateTypeID(userID, postID, typeID int) error {
+func (ur *postRepository) UpdateTypeID(userID, postID int, typeID string) error {
 	err := ur.DB.Exec("UPDATE posts SET type_id= ? WHERE id = ? AND user_id = ?", typeID, postID, userID).Error
 	if err != nil {
 		return err
@@ -467,36 +465,33 @@ func (p *postRepository) RemovePost(postID int) error {
 }
 
 func (p *postRepository) Home(users []models.Users) ([]models.Responses, error) {
-	var allPosts []models.Responses
+	var latestPosts []models.Responses
+	var remainingPosts []models.Responses
 	for _, user := range users {
 		var userPosts []models.Responses
 		err := p.DB.Raw(`SELECT id, url, caption, user_id, likes_count, comments_count, created_at 
-						FROM posts 
-						WHERE is_archive = 'false' AND user_id = ? AND created_at IS NOT NULL
-						ORDER BY created_at DESC`, user.FollowingUser).Scan(&userPosts).Error
+                        FROM posts 
+                        WHERE is_archive = 'false' AND user_id = ? AND created_at IS NOT NULL
+                        ORDER BY created_at DESC`, user.FollowingUser).Scan(&userPosts).Error
 		if err != nil {
 			return nil, err
 		}
-		allPosts = append(allPosts, userPosts...)
+		for i, post := range userPosts {
+			if i < 5 {
+				latestPosts = append(latestPosts, post)
+			} else {
+				remainingPosts = append(remainingPosts, post)
+			}
+		}
 	}
+	rand.Shuffle(len(remainingPosts), func(i, j int) {
+		remainingPosts[i], remainingPosts[j] = remainingPosts[j], remainingPosts[i]
+	})
+	allPosts := append(latestPosts, remainingPosts...)
 
 	sort.SliceStable(allPosts, func(i, j int) bool {
 		return allPosts[i].CreatedAt.After(allPosts[j].CreatedAt)
 	})
 
-	rand.Seed(time.Now().UnixNano())
-	rand.Shuffle(len(users), func(i, j int) {
-		users[i], users[j] = users[j], users[i]
-	})
-
-	var responses []models.Responses
-	for _, user := range users {
-		for _, post := range allPosts {
-			if post.UserID == uint(user.FollowingUser) {
-				responses = append(responses, post)
-			}
-		}
-	}
-
-	return responses, nil
+	return allPosts, nil
 }

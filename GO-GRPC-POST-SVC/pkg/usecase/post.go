@@ -30,13 +30,13 @@ func (p *postUseCase) CreatePost(userID int, data models.PostRequest, file []byt
 	if !userExist {
 		return models.PostResponse{}, errors.New("user doesn't exist")
 	}
-	mediatype := p.postRepository.CheckMediaAvalilabilityWithID(int(data.TypeId))
+	mediatype := p.postRepository.CheckMediaAvalilabilityWithID(data.TypeId)
 	if !mediatype {
 		return models.PostResponse{}, errors.New("type doesn't exist")
 	}
 	fileUID := uuid.New()
 	fileName := fileUID.String()
-	s3Path := helper.Formated(int(data.TypeId), fileName)
+	s3Path := helper.Formated(data.TypeId, fileName)
 	url, err := helper.AddImageToAwsS3(file, s3Path)
 	if err != nil {
 		return models.PostResponse{}, err
@@ -45,7 +45,7 @@ func (p *postUseCase) CreatePost(userID int, data models.PostRequest, file []byt
 	if !usersExist {
 		return models.PostResponse{}, errors.New("user doesn't exist")
 	}
-	post, tag, err := p.postRepository.CreatePost(userID, data.Caption, int(data.TypeId), url, users)
+	post, tag, err := p.postRepository.CreatePost(userID, data.Caption, data.TypeId, url, users)
 	if err != nil {
 		return models.PostResponse{}, err
 	}
@@ -140,11 +140,11 @@ func (p *postUseCase) UpdatePost(userID int, data models.UpdatePostReq, tag []mo
 	if err != nil {
 		return models.UpdateResponse{}, err
 	}
-	mediatype := p.postRepository.CheckMediaAvalilabilityWithID(int(data.TypeID))
+	mediatype := p.postRepository.CheckMediaAvalilabilityWithID(data.TypeID)
 	if !mediatype {
 		return models.UpdateResponse{}, errors.New("type doesn't exist")
 	}
-	err = p.postRepository.UpdateTypeID(userID, int(data.PostID), int(data.TypeID))
+	err = p.postRepository.UpdateTypeID(userID, int(data.PostID), data.TypeID)
 	if err != nil {
 		return models.UpdateResponse{}, err
 	}
@@ -329,7 +329,7 @@ func (p *postUseCase) LikePost(userID int, postID int) (models.LikePostResponse,
 	}, nil
 }
 
-func (p *postUseCase) UnLinkPost(userID int, postID int) error {
+func (p *postUseCase) UnLikePost(userID int, postID int) error {
 	userExist := p.authClient.CheckUserAvalilabilityWithUserID(userID)
 	if !userExist {
 		return errors.New("user doesn't exist")

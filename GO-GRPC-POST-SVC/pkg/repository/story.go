@@ -94,6 +94,15 @@ func (s *storyRepository) LikeStory(userID, storyID int) error {
 	return nil
 }
 
+func (s *storyRepository) PostedStoryUser(storyID int) (int, error) {
+	var id int
+	err := s.DB.Raw(`SELECT user_id FROM stories WHERE id = ?`, storyID).Scan(&id).Error
+	if err != nil {
+		return 0, err
+	}
+	return id, nil
+}
+
 func (s *storyRepository) UnLikeStory(userID, storyID int) error {
 	err := s.DB.Exec(`UPDATE stories SET likes_count = likes_count - 1 WHERE id = ?`, storyID).Error
 	if err != nil {

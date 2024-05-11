@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"errors"
+	"fmt"
 
 	authclientinterfaces "github.com/akhi9550/post-svc/pkg/client/interface"
 	"github.com/akhi9550/post-svc/pkg/helper"
@@ -109,6 +110,20 @@ func (s *storyUseCase) LikeStory(userID, storyID int) error {
 	if err != nil {
 		return err
 	}
+	userData, err := s.authClient.UserData(userID)
+	if err != nil {
+		return err
+	}
+	postedUserID, err := s.storyRepository.PostedStoryUser(storyID)
+	if err != nil {
+		return err
+	}
+	msg := fmt.Sprintf("%s Liked Your Story %d", userData.Username, storyID)
+	helper.SendNotification(models.Notification{
+		UserID:   postedUserID,
+		SenderID: userID,
+	}, []byte(msg))
+
 	return nil
 }
 

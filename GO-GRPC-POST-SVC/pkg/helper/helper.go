@@ -94,8 +94,8 @@ func AddImageToAwsS3(file []byte, filename string) (string, error) {
 	return url, nil
 }
 
-func Formated(posttype int, filename string) string {
-	if posttype == 1 {
+func Formated(posttype string, filename string) string {
+	if posttype == "1" {
 		str := "post/" + filename + ".jpg"
 		return str
 	}

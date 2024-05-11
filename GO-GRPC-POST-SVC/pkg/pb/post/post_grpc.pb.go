@@ -28,7 +28,7 @@ const (
 	PostService_UnArchivePost_FullMethodName       = "/post.PostService/UnArchivePost"
 	PostService_GetAllArchivePost_FullMethodName   = "/post.PostService/GetAllArchivePost"
 	PostService_LikePost_FullMethodName            = "/post.PostService/LikePost"
-	PostService_UnLinkPost_FullMethodName          = "/post.PostService/UnLinkPost"
+	PostService_UnLikePost_FullMethodName          = "/post.PostService/UnLikePost"
 	PostService_PostComment_FullMethodName         = "/post.PostService/PostComment"
 	PostService_GetAllPostComments_FullMethodName  = "/post.PostService/GetAllPostComments"
 	PostService_ShowAllPostComments_FullMethodName = "/post.PostService/ShowAllPostComments"
@@ -64,7 +64,7 @@ type PostServiceClient interface {
 	UnArchivePost(ctx context.Context, in *UnArchivePostrequest, opts ...grpc.CallOption) (*UnArchivePostResponse, error)
 	GetAllArchivePost(ctx context.Context, in *GetAllArchivePostRequest, opts ...grpc.CallOption) (*GetAllArchivePostResponse, error)
 	LikePost(ctx context.Context, in *LikePostRequest, opts ...grpc.CallOption) (*LikePostResponse, error)
-	UnLinkPost(ctx context.Context, in *UnLikePostRequest, opts ...grpc.CallOption) (*UnLikePostResponse, error)
+	UnLikePost(ctx context.Context, in *UnLikePostRequest, opts ...grpc.CallOption) (*UnLikePostResponse, error)
 	PostComment(ctx context.Context, in *PostCommentRequest, opts ...grpc.CallOption) (*PostCommentResponse, error)
 	GetAllPostComments(ctx context.Context, in *GetAllCommentsRequest, opts ...grpc.CallOption) (*GetAllCommentsResponse, error)
 	ShowAllPostComments(ctx context.Context, in *ShowAllPostCommentsRequest, opts ...grpc.CallOption) (*ShowAllPostCommentsResponse, error)
@@ -176,9 +176,9 @@ func (c *postServiceClient) LikePost(ctx context.Context, in *LikePostRequest, o
 	return out, nil
 }
 
-func (c *postServiceClient) UnLinkPost(ctx context.Context, in *UnLikePostRequest, opts ...grpc.CallOption) (*UnLikePostResponse, error) {
+func (c *postServiceClient) UnLikePost(ctx context.Context, in *UnLikePostRequest, opts ...grpc.CallOption) (*UnLikePostResponse, error) {
 	out := new(UnLikePostResponse)
-	err := c.cc.Invoke(ctx, PostService_UnLinkPost_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, PostService_UnLikePost_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -378,7 +378,7 @@ type PostServiceServer interface {
 	UnArchivePost(context.Context, *UnArchivePostrequest) (*UnArchivePostResponse, error)
 	GetAllArchivePost(context.Context, *GetAllArchivePostRequest) (*GetAllArchivePostResponse, error)
 	LikePost(context.Context, *LikePostRequest) (*LikePostResponse, error)
-	UnLinkPost(context.Context, *UnLikePostRequest) (*UnLikePostResponse, error)
+	UnLikePost(context.Context, *UnLikePostRequest) (*UnLikePostResponse, error)
 	PostComment(context.Context, *PostCommentRequest) (*PostCommentResponse, error)
 	GetAllPostComments(context.Context, *GetAllCommentsRequest) (*GetAllCommentsResponse, error)
 	ShowAllPostComments(context.Context, *ShowAllPostCommentsRequest) (*ShowAllPostCommentsResponse, error)
@@ -433,8 +433,8 @@ func (UnimplementedPostServiceServer) GetAllArchivePost(context.Context, *GetAll
 func (UnimplementedPostServiceServer) LikePost(context.Context, *LikePostRequest) (*LikePostResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method LikePost not implemented")
 }
-func (UnimplementedPostServiceServer) UnLinkPost(context.Context, *UnLikePostRequest) (*UnLikePostResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UnLinkPost not implemented")
+func (UnimplementedPostServiceServer) UnLikePost(context.Context, *UnLikePostRequest) (*UnLikePostResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UnLikePost not implemented")
 }
 func (UnimplementedPostServiceServer) PostComment(context.Context, *PostCommentRequest) (*PostCommentResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PostComment not implemented")
@@ -671,20 +671,20 @@ func _PostService_LikePost_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
-func _PostService_UnLinkPost_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _PostService_UnLikePost_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UnLikePostRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(PostServiceServer).UnLinkPost(ctx, in)
+		return srv.(PostServiceServer).UnLikePost(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: PostService_UnLinkPost_FullMethodName,
+		FullMethod: PostService_UnLikePost_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PostServiceServer).UnLinkPost(ctx, req.(*UnLikePostRequest))
+		return srv.(PostServiceServer).UnLikePost(ctx, req.(*UnLikePostRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1093,8 +1093,8 @@ var PostService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _PostService_LikePost_Handler,
 		},
 		{
-			MethodName: "UnLinkPost",
-			Handler:    _PostService_UnLinkPost_Handler,
+			MethodName: "UnLikePost",
+			Handler:    _PostService_UnLikePost_Handler,
 		},
 		{
 			MethodName: "PostComment",

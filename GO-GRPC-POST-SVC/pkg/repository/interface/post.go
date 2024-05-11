@@ -6,15 +6,15 @@ import (
 
 type PostRepository interface {
 	CheckUserAvalilabilityWithUserID(userID int) bool
-	CheckMediaAvalilabilityWithID(typeID int) bool
+	CheckMediaAvalilabilityWithID(typeID string) bool
 	CheckPostAvalilabilityWithID(postID int) bool
 	CheckPostedUserID(userID, PostID int)bool
 	UserData(userID int) (models.UserData, error)
-	CreatePost(userID int, Caption string, TypeId int, file string, users []models.Tag) (models.Response, []models.Tag, error)
+	CreatePost(userID int, Caption string, TypeId string, file string, users []models.Tag) (models.Response, []models.Tag, error)
 	GetPost(postID int) (models.Responses, error)
 	GetTagUser(postID int) ([]models.Tag, error)
 	UpdateCaption(postID, userID int, caption string) error
-	UpdateTypeID(userID, PostID, TypeID int) error
+	UpdateTypeID(userID, PostID int, TypeID string) error
 	UpdateTags(userID, PostID int, tag []models.Tag) error
 	PostDetails(PostID, userID int) (models.Response, []models.Tag, error)
 	DeletePost(userID, postID int) error
