@@ -23,7 +23,7 @@ func NewServerHTTP(authHandler *handler.AuthHandler, postHandler *handler.PostHa
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	r.Static("/static", "./static")
-	r.LoadHTMLGlob("templates/*")
+	r.LoadHTMLGlob("template/*")
 
 	videocallHandler.SetupRoutes(r.Group("/v1"))
 	r.GET("/", videocallHandler.RequestToRoom)

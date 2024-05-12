@@ -7,7 +7,7 @@ RUN go build -v -o /post_svc/build/api ./cmd
 
 
 FROM gcr.io/distroless/static-debian11
-COPY --from=build-stage /post_svc/build/api /api
+COPY --from=build-stage /post_svc/build/api /
 COPY --from=build-stage /post_svc/.env /
 EXPOSE 50052
 CMD ["/api"]

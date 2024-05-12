@@ -1,13 +1,16 @@
-# Build Stage
-FROM golang:1.21-alpine3.19 AS build-stage
-WORKDIR /app
-COPY ./ /app
+FROM golang:1.21.2-alpine3.18 AS build-stage
+WORKDIR /zsoxial
+COPY ./ /zsoxial
+RUN mkdir -p /zsoxial/build
 RUN go mod download
-RUN go build -o /app/build ./cmd/main.go
+RUN go build -v -o /zsoxial/build/api ./cmd
 
-# Final Stage
+
 FROM gcr.io/distroless/static-debian11
-COPY --from=build-stage /app/build /
-COPY --from=build-stage /app/.env /
-EXPOSE 8000
-CMD ["/build"]
+COPY --from=build-stage /zsoxial/build/api /
+COPY --from=build-stage /zsoxial/template/ /template/
+COPY --from=build-stage /zsoxial/static /static/
+COPY --from=build-stage /zsoxial/.env /
+EXPOSE 8080
+CMD ["/api"]
+
