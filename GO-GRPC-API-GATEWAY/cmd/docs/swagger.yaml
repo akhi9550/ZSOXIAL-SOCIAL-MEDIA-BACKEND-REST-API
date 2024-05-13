@@ -902,10 +902,11 @@ paths:
         name: posttype
         required: true
         type: string
-      - description: IDs of the users to share the post with (comma-separated)
+      - description: Users associated with the post. Provide multiple user IDs
         in: formData
         name: user
-        type: string
+        required: true
+        type: array
       - description: Photo of the post
         in: formData
         name: photo
@@ -947,8 +948,7 @@ paths:
         name: posttype
         required: true
         type: string
-      - description: Users associated with the post. Provide multiple user IDs separated
-          by commas.
+      - description: Users associated with the post. Provide multiple user IDs
         in: formData
         name: user
         required: true
@@ -1663,6 +1663,33 @@ paths:
       summary: Verify OTP
       tags:
       - User OTP Login
+  /videocall/users:
+    get:
+      consumes:
+      - application/json
+      description: Generate Key For VideoCall
+      parameters:
+      - description: user
+        in: query
+        name: user
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Generate Key For VideoCall
+      tags:
+      - VideoCall
 securityDefinitions:
   Bearer:
     in: header

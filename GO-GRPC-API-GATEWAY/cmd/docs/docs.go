@@ -1195,7 +1195,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "array",
-                        "description": "Users associated with the post. Provide multiple user IDs separated by commas.",
+                        "description": "Users associated with the post. Provide multiple user IDs",
                         "name": "user",
                         "in": "formData",
                         "required": true
@@ -1249,10 +1249,11 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "string",
-                        "description": "IDs of the users to share the post with (comma-separated)",
+                        "type": "array",
+                        "description": "Users associated with the post. Provide multiple user IDs",
                         "name": "user",
-                        "in": "formData"
+                        "in": "formData",
+                        "required": true
                     },
                     {
                         "type": "file",
@@ -2394,6 +2395,49 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/models.VerifyData"
                         }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/videocall/users": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Generate Key For VideoCall",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "VideoCall"
+                ],
+                "summary": "Generate Key For VideoCall",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "user",
+                        "name": "user",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
