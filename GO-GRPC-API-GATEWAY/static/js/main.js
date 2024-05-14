@@ -62,6 +62,7 @@ let handleMessageFromPeer = async (message, MemberId) => {
         createAnswer(MemberId, message.offer);
     }
 
+    
     if (message.type === 'answer') {
         addAnswer(message.answer);
     }
@@ -170,3 +171,5 @@ document.getElementById('camera-btn').addEventListener('click', toggleCamera);
 document.getElementById('mic-btn').addEventListener('click', toggleMic);
 
 init();
+
+
