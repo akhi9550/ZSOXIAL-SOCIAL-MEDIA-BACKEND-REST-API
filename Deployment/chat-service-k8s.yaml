@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zsoxial-chat-svc
+  namespace: zsoxial
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chat_service
+  template:
+    metadata:
+      labels: 
+        app: chat_service
+    spec:
+      containers:
+      - image: akhi9550/zsoxial-auth-service
+        name: chat-svc-container
+        ports:
+        - containerPort: 50053
+        resources:
+          limits:
+            cpu: ".2"
+            memory: "250Mi"
+          requests:
+            cpu: ".1"
+            memory: "150Mi"
+        
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: zsoxial
+  name: chat-service
+spec:
+  type: ClusterIP
+  ports:
+  - port: 50053
+    targetPort: 50053
+  selector:
+    app: chat_service

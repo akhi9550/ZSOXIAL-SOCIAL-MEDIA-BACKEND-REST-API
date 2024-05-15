@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zsoxial-auth-svc
+  namespace: zsoxial
+spec:
+  selector:
+    matchLabels:
+      app: auth_service
+  template:
+    metadata:
+      labels:
+        app: auth_service
+    spec:
+      containers:
+        - image: akhi9550/zsoxial-auth-service
+          name: auth-svc-container
+          ports:
+            - containerPort: 50051
+          resources:
+            limits:
+              memory: 212Mi
+              cpu: ".2"
+            requests:
+              memory: 150Mi
+              cpu: "0.1"
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-services
+  namespace: zsoxial
+spec: 
+  type: ClusterIP
+  ports:
+    - port: 50051
+      targetPort: 50051
+  selector:
+    app: auth_service

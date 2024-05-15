@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zsoxial-notification-svc
+  namespace: zsoxial
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: notification_service
+  template:
+    metadata:
+      labels: 
+        app: notification_service
+    spec:
+      containers:
+      - image: akhi9550/zsoxial-post-service
+        name: post-svc-container
+        ports:
+        - containerPort: 50054
+        resources:
+          limits:
+            cpu: ".2"
+            memory: "250Mi"
+          requests:
+            cpu: ".1"
+            memory: "150Mi"
+        
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: zsoxial
+  name: notification_service
+spec:
+  type: ClusterIP
+  ports:
+  - port: 50054
+    targetPort: 50054
+  selector:
+    app: notification_service
