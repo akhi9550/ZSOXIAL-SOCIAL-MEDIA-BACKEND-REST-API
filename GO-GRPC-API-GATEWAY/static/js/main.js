@@ -11,7 +11,7 @@ let urlParams = new URLSearchParams(queryString);
 let roomId = urlParams.get('room');
 
 if (!roomId) {
-    window.location = '/exit';
+    window.location = '/error';
 }
 
 let localStream;

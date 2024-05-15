@@ -26,12 +26,9 @@ func NewServerHTTP(authHandler *handler.AuthHandler, postHandler *handler.PostHa
 	r.LoadHTMLGlob("template/*")
 
 	// videocallHandler.SetupRoutes(r.Group("/v1"))
-	// r.GET("/", videocallHandler.RequestToRoom)
-	// r.GET("/lobby", videocallHandler.ConnectedPage)
 	r.GET("/exit", videocallHandler.ExitPage)
 	r.GET("/error", videocallHandler.ErrorPage)
 	r.GET("/index", videocallHandler.IndexedPage)
-	// r.GET("/get-offer", videocallHandler.GetStoredOffer)
 
 	r.POST("admin/login", authHandler.AdminLogin)
 

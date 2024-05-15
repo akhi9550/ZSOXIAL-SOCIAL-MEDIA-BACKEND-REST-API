@@ -2,26 +2,16 @@ package handler
 
 import (
 	"net/http"
-	"sync"
 
 	"github.com/gin-gonic/gin"
-	"github.com/gorilla/websocket"
 )
 
-type VideoCallHandler struct {
-	rooms map[string]*Room
-	mu    sync.Mutex
-}
+type VideoCallHandler struct{}
 
-type Room struct {
-	Participants map[*websocket.Conn]bool
-	mu           sync.Mutex
-}
+type Room struct {}
 
 func NewVideoCallHandler() *VideoCallHandler {
-	return &VideoCallHandler{
-		rooms: make(map[string]*Room),
-	}
+	return &VideoCallHandler{}
 }
 
 func (v *VideoCallHandler) ExitPage(c *gin.Context) {
@@ -37,6 +27,10 @@ func (v *VideoCallHandler) IndexedPage(c *gin.Context) {
 	c.HTML(http.StatusOK, "index.html", gin.H{"room": room})
 }
 
+// func (v *VideoCallHandler) SetupRoutes(group *gin.RouterGroup) {
+// 	group.GET("/ws", v.handleWebSocket)
+// }
+// 
 // func (v *VideoCallHandler) handleWebSocket(c *gin.Context) {
 // 	upgrader := websocket.Upgrader{
 // 		ReadBufferSize:  1024,
@@ -69,5 +63,4 @@ func (v *VideoCallHandler) IndexedPage(c *gin.Context) {
 // 		return
 // 	}
 // 	defer peerConnection.Close()
-
 // }
