@@ -182,6 +182,43 @@ func (r *RedisPostCaching) SetStoryDetails(userID, storyID int) (models.StoryDet
 	return data, nil
 }
 
+func (r *RedisPostCaching) Home(userID int) ([]models.PostResponse, error) {
+	res := r.redis.Get(context.Background(), "UserHome:"+strconv.Itoa(userID))
+	var data []models.PostResponse
+
+	if res.Val() == "" {
+		var err error
+		data, err = r.SetHome(userID)
+		if err != nil {
+			return []models.PostResponse{}, err
+		}
+	} else {
+		err := r.jsonUnmarshel(&data, []byte(res.Val()))
+		if err != nil {
+			return []models.PostResponse{}, err
+		}
+	}
+	return data, nil
+}
+
+func (r *RedisPostCaching) SetHome(userID int) ([]models.PostResponse, error) {
+	data, err := r.postClient.Home(userID)
+	if err != nil {
+		return []models.PostResponse{}, err
+	}
+
+	profileByte, err := r.structMarshel(data)
+	if err != nil {
+		return []models.PostResponse{}, err
+	}
+
+	result := r.redis.Set(context.Background(), "UserHome:"+strconv.Itoa(userID), profileByte, time.Hour)
+	if result.Err() != nil {
+		return []models.PostResponse{}, err
+	}
+	return data, nil
+}
+
 // func (r *RedisPostCaching) GetUserPost(userID int) ([]models.PostResponse, error) {
 // 	res := r.redis.Get(context.Background(), "userpost:"+strconv.Itoa(userID))
 // 	var data []models.PostResponse

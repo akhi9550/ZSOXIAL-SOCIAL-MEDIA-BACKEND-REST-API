@@ -784,7 +784,7 @@ func (p *PostHandler) ReportPost(c *gin.Context) {
 // @Router 		/post/home     [GET]
 func (p *PostHandler) Home(c *gin.Context) {
 	userID, _ := c.Get("user_id")
-	data, err := p.GRPC_Client.Home(userID.(int))
+	data, err := p.PostCachig.Home(userID.(int))
 	if err != nil {
 		errs := response.ClientResponse(http.StatusBadRequest, "Couldn't Get HomePage", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
