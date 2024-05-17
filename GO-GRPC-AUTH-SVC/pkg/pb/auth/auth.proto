@@ -1,0 +1,464 @@
+syntax = "proto3";
+
+package user;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "./pkg/pb/auth";
+
+service AuthService {
+    rpc UserSignUp (UserSignUpRequest) returns (UserSignUpResponse){}
+    rpc UserLogin (UserLoginRequest) returns (UserLoginResponse){}
+    rpc SendOtp (SendOtpRequest) returns (SendOtpResponse){}
+    rpc VerifyOtp (VerifyOtpRequest) returns (VerifyOtpResponse){}
+    rpc ForgotPassword (ForgotPasswordRequest) returns (ForgotPasswordResponse){}
+    rpc ForgotPasswordVerifyAndChange (ForgotPasswordVerifyAndChangeRequest) returns (ForgotPasswordVerifyAndChangeResponse){}
+    rpc SpecificUserDetails (UserDetailsRequest) returns (SpecificUserDetailsResponse){}
+    rpc UserDetails (UserDetailsRequest) returns (SpecificUserDetailsResponse){}
+    rpc UpdateUserDetails (UpdateUserDetailsRequest) returns (UpdateUserDetailsResponse){}
+    rpc ChangePassword (ChangePasswordRequest) returns (ChangePasswordResponse){}
+    rpc CheckUserAvalilabilityWithUserID (CheckUserAvalilabilityWithUserIDRequest) returns (CheckUserAvalilabilityWithUserIDResponse){}
+    rpc UserData (UserDataRequest) returns (UserDataResponse){}
+    rpc CheckUserAvalilabilityWithTagUserID (CheckUserAvalilabilityWithTagUserIDRequest) returns (CheckUserAvalilabilityWithTagUserIDResponse){}
+    rpc GetUserNameWithTagUserID (GetUserNameWithTagUserIDRequest) returns (GetUserNameWithTagUserIDResponse){}
+    rpc GetFollowingUsers (GetFollowingUsersRequest) returns (GetFollowingUsersResponse){}
+    rpc ReportUser (ReportUserRequest) returns (ReportUserResponse){}
+    rpc FollowREQ (FollowREQRequest) returns (FollowREQResponse){}
+    rpc ShowFollowREQ (ShowREQRequest) returns (ShowREQResponse){}
+    rpc AcceptFollowREQ (AcceptFollowREQRequest) returns (AcceptFollowREQResponse){}
+    rpc UnFollow (UnFollowRequest) returns (UnFollowResponse){}
+    rpc Following (FollowingRequest) returns (FollowingResponse){}
+    rpc Follower (FollowerRequest) returns (FollowerResponse){}
+    rpc AdminLogin (AdminLoginRequest) returns (AdminLoginResponse){}
+    rpc ShowAllUsers (ShowAllUsersRequest) returns (ShowAllUsersResponse){}
+    rpc AdminBlockUser(AdminBlockUserRequest) returns (AdminBlockUserResponse) {}
+    rpc AdminUnblockUser(AdminUnblockUserRequest) returns (AdminUnblockUserResponse) {}
+    rpc ShowUserReports (ShowUserReportsRequest) returns (ShowUserReportsResponse){}
+    rpc ShowPostReports (ShowPostReportsRequest) returns (ShowPostReportsResponse){}
+    rpc GetAllPosts (GetAllPostsRequest) returns (GetAllPostsResponse){}
+    rpc RemovePost (RemovePostRequest) returns (RemovePostResponse){}
+    rpc SearchUser (SearchUserRequest) returns (SearchUserResponse){}
+    rpc VideoCallKey (VideoCallRequest) returns (VideoCallResponse){}
+}
+
+message UserSignUpRequest {
+    string firstname = 1;
+    string lastname = 2;
+    string username = 3; 
+    string phone = 4; 
+    string email = 5;
+    string password = 6;  
+}
+
+message UserProfile {
+    bytes profile_photo = 1; 
+}
+
+message UserInfo {
+    int64 id = 1;
+    string username = 2;
+    string email = 3;
+    string profile_photo = 4;
+    bool isadmin = 5;
+}
+
+message UserResponse {
+    UserInfo info = 1;
+    string accesstoken = 2;
+    string refreshtoken = 3;
+}
+
+message UserSignUpResponse {
+    UserResponse reposnse = 1;
+    string error = 2;
+}
+
+message UserLoginRequest {
+    string email = 1;
+    string password = 2;
+}
+
+message UserLoginResponse {
+    UserResponse reposnse = 1;
+    string error = 2;
+}
+
+message SendOtpRequest {
+    string phone = 1;
+}
+
+message SendOtpResponse {
+    string error = 1;
+}
+
+message OTPData {
+     string phone = 1;
+}
+
+message VerifyOtp {
+    OTPData user = 1;
+    string code = 2;
+}
+
+message VerifyOtpRequest {
+    VerifyOtp otpdata = 1;
+}
+
+message VerifyOtpResponse{
+    UserResponse reposnse = 1;
+    string error = 2;
+}
+
+message ForgotPasswordRequest {
+    string phone = 1;
+}
+
+message ForgotPasswordResponse {
+    string error = 2;
+}
+
+message ForgotVerify {
+    string phone = 1;
+    string otp = 2;
+    string newpassword = 3;
+}
+
+message ForgotPasswordVerifyAndChangeRequest {
+    ForgotVerify verify = 1;
+}
+
+message ForgotPasswordVerifyAndChangeResponse {
+    string error = 1;
+}
+
+message UserDetailsRequest {
+    int64 id = 1;
+}
+ 
+message UserData {
+    string firstname = 1;
+    string lastname = 2;
+    string username = 3; 
+    string dob = 4;
+    string gender = 5;
+    string phone = 6; 
+    string email = 7;
+    string bio = 8;      
+    string profile_photo = 9; 
+}
+
+message FollowingDetails {
+    int64 follower = 1;
+    int64 following = 2;
+}
+
+message SpecificUserDetailsResponse {
+    UserData responsedata = 1;
+    FollowingDetails responseFollowigs = 2;
+}
+
+message UserDataUpdate {
+    string firstname = 1;
+    string lastname = 2;
+    string username = 3; 
+    string dob = 4;
+    string gender = 5;
+    string phone = 6; 
+    string email = 7;
+    string bio = 8;      
+    UserProfile profile_photo = 9; 
+}
+
+message UpdateUserDetailsRequest {
+    UserDataUpdate userDetails = 1;
+    int64 id = 2;
+}
+
+message UpdateUserDetailsResponse {
+    UserData userDetails = 1;
+    string error = 2; 
+}
+
+message ChangePassword {
+    string oldpassword = 1;
+    string password = 2;
+    string repassword = 3;
+}
+
+message ChangePasswordRequest{
+    int64 id = 1;
+    ChangePassword password = 2;
+}
+
+message ChangePasswordResponse {
+    string error = 1;
+}
+
+message AdminLoginRequest {
+    string email = 1;
+    string password = 2;
+}
+
+message AdminInfo {
+    int64 id = 1;
+    string email = 2;
+    bytes profile_photo = 3;
+    bool isadmin = 4;
+}
+
+message AdminResponse {
+    AdminInfo info = 1;
+    string accesstoken = 2;
+    string refreshtoken = 3;
+}
+
+message AdminLoginResponse {
+    AdminResponse reposnse = 1;
+    string error = 2;
+}
+
+message ShowAllUsersRequest {
+    int64 page = 1;
+    int64 count = 2;
+}
+
+message Users{
+    int64 id = 1;
+    string firstname = 2;
+    string lastname = 3;
+    string username = 4; 
+    string dob = 5;
+    string gender = 6;
+    string phone = 7; 
+    string email = 8;
+    string profile_photo = 9;
+    google.protobuf.Timestamp created_at = 10;   
+    bool blocked = 11;
+}
+
+message ShowAllUsersResponse {
+    repeated Users UsersData = 1;
+    string error = 2;
+}
+
+message AdminBlockUserRequest {
+    int64 id = 1;
+}
+
+message AdminBlockUserResponse {
+    string error = 1;
+}
+ 
+message AdminUnblockUserRequest {
+    int64 id = 1;
+}
+
+message AdminUnblockUserResponse {
+    string error = 1;
+}
+
+message ShowUserReportsRequest {
+    int64 page = 1;
+    int64 count = 2;
+}
+
+message ReportUser{
+    int64 reportedUserID = 1;
+    int64 UserID = 2;
+    string Report = 3;
+}
+
+message ShowUserReportsResponse{
+    repeated ReportUser reports = 1;
+}
+
+message ShowPostReportsRequest{
+    int64 page = 1;
+    int64 count = 2;
+}
+
+message ReprotPost{
+    int64 reportedUserID = 1;
+    int64 postID = 2;
+    string Report = 3;
+}
+
+message ShowPostReportsResponse{
+  repeated ReprotPost reports = 1;
+}
+
+message GetAllPostsRequest {
+    int64 page = 1;
+    int64 count = 2;
+}
+
+message UserDatas {
+    int64 userID = 1;
+    string username = 2; 
+    string profile = 3;
+}
+
+message Posts{
+    int64 id = 1;
+    UserDatas user =2;
+    string caption = 3;
+    repeated string tag = 4; 
+    string url = 5;
+    int64 like =6 ;
+    int64 comment = 7;
+    google.protobuf.Timestamp created_at = 8; 
+}
+
+message GetAllPostsResponse {
+    repeated Posts posts = 1;
+}
+
+message RemovePostRequest {
+    int64 postID = 1;
+}
+
+message RemovePostResponse {}
+
+message CheckUserAvalilabilityWithUserIDRequest {
+    int64 id = 1;
+}
+
+message CheckUserAvalilabilityWithUserIDResponse {
+    bool valid = 1;
+}
+
+message UserDataRequest{
+      int64 id = 1;
+}
+
+message UserDataResponse {
+    int64 id = 1;
+    string username = 2;
+    string profile_photo = 3;
+}
+
+
+message  CheckUserAvalilabilityWithTagUserIDRequest {
+    Tag tag = 1;
+}
+  
+message Tag {
+    repeated string user = 1;
+}
+
+message  CheckUserAvalilabilityWithTagUserIDResponse {
+      bool valid = 1;
+}
+
+message GetUserNameWithTagUserIDRequest{
+    Tag tag = 1;
+}
+
+message TagUsernames{
+    string username =1;
+}
+
+message GetUserNameWithTagUserIDResponse{
+    repeated TagUsernames name = 1;
+}
+
+message GetFollowingUsersRequest{
+    int64 userID = 1;
+}
+
+message Followuser{
+    int64 followinguser = 1;
+}
+
+message GetFollowingUsersResponse{
+    repeated Followuser user = 1;
+}
+
+message ReportUserRequest {
+    int64 RepostedUserid = 1;
+    int64  userid = 2;
+    string Report = 3;
+}
+
+message  ReportUserResponse {}
+
+message FollowREQRequest {
+    int64 userid = 1;
+    int64 followingUser = 2;
+}
+
+message FollowREQResponse {}
+
+message ShowREQRequest {
+    int64 userid = 1;
+}
+
+message REQResponse {
+    int64 followingUserID = 1;
+    string followingUser = 2;
+    string profile_photo = 3;
+    google.protobuf.Timestamp createdAt = 4;
+}
+
+message ShowREQResponse {
+    repeated REQResponse response = 1;
+}
+
+message AcceptFollowREQRequest {
+    int64 userid = 1;
+    int64 followingUser = 2;
+}
+
+message AcceptFollowREQResponse{}
+
+message UnFollowRequest{
+    int64 userid = 1;
+    int64 followingUser = 2;
+}
+
+message UnFollowResponse{}
+
+message FollowingRequest {
+    int64 userid = 1;  
+}
+
+message FollowResponse {
+    string username = 1;
+    string userProfile = 2;
+}
+
+message FollowingResponse {
+    repeated FollowResponse users = 1;
+}
+
+message FollowerRequest {
+    int64 userid = 1;  
+}
+
+message FollowerResponse {
+    repeated FollowResponse users = 1;
+}
+
+message SearchUserRequest {
+    string username = 1;
+    int64 limit = 2;
+    int64 offset = 3;
+}
+
+message User {
+    string username = 1;
+    string profile = 2;
+}
+
+message SearchUserResponse {
+    repeated User user = 1;
+}
+
+message VideoCallRequest{
+    int64 userID = 1;
+    int64 OppositeUser = 2;
+}
+
+message VideoCallResponse {
+    string Key = 1;
+}
