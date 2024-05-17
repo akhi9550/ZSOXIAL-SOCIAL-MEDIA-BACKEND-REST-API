@@ -8,8 +8,6 @@ import (
 
 type VideoCallHandler struct{}
 
-type Room struct{}
-
 func NewVideoCallHandler() *VideoCallHandler {
 	return &VideoCallHandler{}
 }
