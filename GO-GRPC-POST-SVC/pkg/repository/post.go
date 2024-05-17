@@ -484,14 +484,16 @@ func (p *postRepository) Home(users []models.Users) ([]models.Responses, error) 
 			}
 		}
 	}
+	
+	sort.SliceStable(latestPosts, func(i, j int) bool {
+		return latestPosts[i].CreatedAt.After(latestPosts[j].CreatedAt)
+	})
+
 	rand.Shuffle(len(remainingPosts), func(i, j int) {
 		remainingPosts[i], remainingPosts[j] = remainingPosts[j], remainingPosts[i]
 	})
-	allPosts := append(latestPosts, remainingPosts...)
 
-	sort.SliceStable(allPosts, func(i, j int) bool {
-		return allPosts[i].CreatedAt.After(allPosts[j].CreatedAt)
-	})
+	allPosts := append(latestPosts[:5], remainingPosts...)
 
 	return allPosts, nil
 }
