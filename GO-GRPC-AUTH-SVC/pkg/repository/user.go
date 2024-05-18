@@ -389,6 +389,11 @@ func (ur *userRepository) AcceptFollowREQ(userID, FollowingUserID int) error {
 		return err
 	}
 
+	err = ur.DB.Exec(`INSERT INTO followings (user_id,following_user,created_at) VALUES(?,?,NOW())`, userID, FollowingUserID).Error
+	if err != nil {
+		return err
+	}
+
 	err = ur.DB.Exec(`DELETE FROM following_requests WHERE user_id = ? AND following_user = ?`, FollowingUserID, userID).Error
 	if err != nil {
 		return err
