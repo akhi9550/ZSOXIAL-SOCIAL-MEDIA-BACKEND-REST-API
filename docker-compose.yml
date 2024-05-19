@@ -72,7 +72,7 @@ services:
     container_name: zsoxial-auth-service
     networks:
       - zsoxial_network
-    hostname: zsoxial_auth_service
+    hostname: zsoxial-auth-service
 
 
   chat-service:
@@ -86,6 +86,7 @@ services:
     container_name: zsoxial-chat-service
     networks:
       - zsoxial_network
+    hostname: zsoxial-chat-service
 
   notification-service:
     image: zsoxial_notification_service
@@ -97,6 +98,7 @@ services:
     container_name: zsoxial-notification-service
     networks:
       - zsoxial_network
+    hostname: zsoxial-notification-service
 
   post-service:
     image: zsoxial_post_service
@@ -108,6 +110,7 @@ services:
     container_name: zsoxial-post-service
     networks:
       - zsoxial_network
+    hostname: zsoxial-post-service
 
 networks:
   zsoxial_network:
