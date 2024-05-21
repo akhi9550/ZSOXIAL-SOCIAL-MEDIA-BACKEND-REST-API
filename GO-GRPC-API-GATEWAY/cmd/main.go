@@ -18,7 +18,7 @@ func main() {
 	docs.SwaggerInfo.Title = "Zsoxial_Microservice_CleanArchitecture"
 	docs.SwaggerInfo.Description = "Zsoxial is an Social media platform to interact with peoples"
 	docs.SwaggerInfo.Version = "2.0"
-	docs.SwaggerInfo.Host = "localhost:8081"
+	docs.SwaggerInfo.Host = "localhost:8080"
 	docs.SwaggerInfo.BasePath = ""
 	docs.SwaggerInfo.Schemes = []string{"http", "https"}
 
