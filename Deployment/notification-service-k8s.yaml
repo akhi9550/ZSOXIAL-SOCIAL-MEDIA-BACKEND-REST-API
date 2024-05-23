@@ -33,7 +33,7 @@ apiVersion: v1
 kind: Service
 metadata:
   namespace: zsoxial
-  name: notification_service
+  name: zsoxial-notification-service
 spec:
   type: ClusterIP
   ports:

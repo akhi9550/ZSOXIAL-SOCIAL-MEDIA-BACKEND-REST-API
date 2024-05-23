@@ -33,7 +33,7 @@ apiVersion: v1
 kind: Service
 metadata:
   namespace: zsoxial
-  name: chat-service
+  name: zsoxial-chat-service
 spec:
   type: ClusterIP
   ports:

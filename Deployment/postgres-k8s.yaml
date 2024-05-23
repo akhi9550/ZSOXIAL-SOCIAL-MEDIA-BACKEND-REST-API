@@ -23,11 +23,16 @@ spec:
             - containerPort: 5432
           env:
             - name: POSTGRES_PASSWORD
-              # value: "8086"
+              # value: "satheesan"
               valueFrom:
                 secretKeyRef:
-                  name: secretcollection
-                  key: postgresPassword  
+                  name: postgres-secret
+                  key:  postgres-password  
+            - name : POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: postgres-auth-svc
           volumeMounts:
           - name: storagespace
             mountPath: /var/lib/postgresql/data
