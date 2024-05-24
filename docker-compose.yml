@@ -79,7 +79,6 @@ services:
     image: zsoxial_chat_service
     build: ./GO-GRPC-CHAT-SVC/
     depends_on:
-      - postgres
       - mongodb
       - kafka
     restart: always
