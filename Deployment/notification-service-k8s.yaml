@@ -14,8 +14,8 @@ spec:
         app: notification_service
     spec:
       containers:
-      - image: akhi9550/zsoxial-post-service
-        name: post-svc-container
+      - image: akhi9550/zsoxial-notification-service
+        name: notification-svc-container
         ports:
         - containerPort: 50054
         resources:

@@ -14,7 +14,7 @@ spec:
         app: chat_service
     spec:
       containers:
-      - image: akhi9550/zsoxial-auth-service
+      - image: akhi9550/zsoxial-chat-service
         name: chat-svc-container
         ports:
         - containerPort: 50053
