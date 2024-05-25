@@ -24,7 +24,7 @@ services:
     volumes:
       - zsoxial_volume:/data/db
     ports:
-      - "27018:27017"
+      - "27016:27017"
 
   zookeeper:
     image: confluentinc/cp-zookeeper:latest  
