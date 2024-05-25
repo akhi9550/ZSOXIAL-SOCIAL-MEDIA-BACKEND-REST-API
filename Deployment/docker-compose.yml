@@ -1,0 +1,119 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres
+    container_name: zsoxial-postgres
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=satheesan
+      - POSTGRES_USER=postgres
+    networks:
+      - zsoxial_network
+    volumes:
+      - zsoxial_volume:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+
+  mongodb:
+    image: mongo
+    container_name: zsoxial-mongodb
+    restart: on-failure
+    networks:
+      - zsoxial_network
+    volumes:
+      - zsoxial_volume:/data/db
+    ports:
+      - "27018:27017"
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest  
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000   
+    networks:
+      - zsoxial_network
+    container_name: zookeeper
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS: INTERNAL://0.0.0.0:9092,OUTSIDE://0.0.0.0:9094
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:9092,OUTSIDE://localhost:9094
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+    networks:
+      - zsoxial_network
+    container_name: kafka
+    depends_on:
+      - zookeeper
+
+  api-gateway:
+    image: akhi9550/zsoxial_api_gateway
+    build: ./GO-GRPC-API-GATEWAY/
+    restart: always
+    depends_on:
+      - postgres
+      - kafka
+    container_name: zsoxial-api-gateway
+    networks:
+      - zsoxial_network
+    ports:
+      - "8081:8080"
+
+  auth-services:
+    image: akhi9550/zsoxial_auth_service
+    build: ./GO-GRPC-AUTH-SVC/
+    restart: always
+    depends_on:
+      - postgres
+      - kafka
+    container_name: zsoxial-auth-service
+    networks:
+      - zsoxial_network
+    hostname: zsoxial-auth-service
+
+
+  chat-service:
+    image: akhi9550/zsoxial_chat_service
+    build: ./GO-GRPC-CHAT-SVC/
+    depends_on:
+      - mongodb
+      - kafka
+    restart: always
+    container_name: zsoxial-chat-service
+    networks:
+      - zsoxial_network
+    hostname: zsoxial-chat-service
+
+  notification-service:
+    image: akhi9550/zsoxial_notification_service
+    build: ./GO-GRPC-NOTIFICATION-SVC/
+    depends_on:
+      - postgres
+      - kafka
+    restart: always
+    container_name: zsoxial-notification-service
+    networks:
+      - zsoxial_network
+    hostname: zsoxial-notification-service
+
+  post-service:
+    image: akhi9550/zsoxial_post_service
+    build: ./GO-GRPC-POST-SVC/
+    depends_on:
+      - postgres
+      - kafka
+    restart: always
+    container_name: zsoxial-post-service
+    networks:
+      - zsoxial_network
+    hostname: zsoxial-post-service
+
+networks:
+  zsoxial_network:
+    driver: bridge
+
+volumes:
+  zsoxial_volume:

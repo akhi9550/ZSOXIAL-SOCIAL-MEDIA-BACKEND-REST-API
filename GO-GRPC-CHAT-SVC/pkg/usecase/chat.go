@@ -27,6 +27,7 @@ func NewChatUseCase(repository interfaces.ChatRepository, authclient authclienti
 }
 
 func (c *ChatUseCase) MessageConsumer() {
+	fmt.Println("start working")
 	cfg, err := config.LoadConfig()
 	if err != nil {
 		fmt.Println("Error loading config:", err)
