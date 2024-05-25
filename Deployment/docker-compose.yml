@@ -50,7 +50,7 @@ services:
       - zookeeper
 
   api-gateway:
-    image: akhi9550/zsoxial_api_gateway
+    image: akhi9550/zsoxial-api-gateway
     build: ./GO-GRPC-API-GATEWAY/
     restart: always
     depends_on:
@@ -63,7 +63,7 @@ services:
       - "8081:8080"
 
   auth-services:
-    image: akhi9550/zsoxial_auth_service
+    image: akhi9550/zsoxial-auth-service
     build: ./GO-GRPC-AUTH-SVC/
     restart: always
     depends_on:
@@ -76,7 +76,7 @@ services:
 
 
   chat-service:
-    image: akhi9550/zsoxial_chat_service
+    image: akhi9550/zsoxial-chat-service
     build: ./GO-GRPC-CHAT-SVC/
     depends_on:
       - mongodb
@@ -88,7 +88,7 @@ services:
     hostname: zsoxial-chat-service
 
   notification-service:
-    image: akhi9550/zsoxial_notification_service
+    image: akhi9550/zsoxial-notification-service
     build: ./GO-GRPC-NOTIFICATION-SVC/
     depends_on:
       - postgres
@@ -100,7 +100,7 @@ services:
     hostname: zsoxial-notification-service
 
   post-service:
-    image: akhi9550/zsoxial_post_service
+    image: akhi9550/zsoxial-post-service
     build: ./GO-GRPC-POST-SVC/
     depends_on:
       - postgres
