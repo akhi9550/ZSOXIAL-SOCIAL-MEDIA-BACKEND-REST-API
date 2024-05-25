@@ -60,7 +60,7 @@ services:
     networks:
       - zsoxial_network
     ports:
-      - "8081:8080"
+      - "8080:8080"
 
   auth-services:
     image: akhi9550/zsoxial-auth-service
