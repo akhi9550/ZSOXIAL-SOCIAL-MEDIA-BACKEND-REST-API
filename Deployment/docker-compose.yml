@@ -45,7 +45,7 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
     networks:
       - zsoxial_network
-    container_name: kafka
+    container_name: kafka-zsoxial
     depends_on:
       - zookeeper
 
