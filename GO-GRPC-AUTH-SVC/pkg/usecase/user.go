@@ -461,7 +461,7 @@ func (ur *userUseCase) VideoCallKey(userID, oppositeUser int) (string, error) {
 	}
 	FollowuserExist := ur.userRepository.CheckUserAlreadyExistFromFollowers(userID, oppositeUser)
 	if !FollowuserExist {
-		return "", errors.New("you doesn't follow this user")
+		return "", errors.New("this user not follow you")
 	}
 	key, err := helper.GenerateVideoCallKey(userID, oppositeUser)
 	if err != nil {
