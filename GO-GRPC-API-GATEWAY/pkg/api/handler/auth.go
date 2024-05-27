@@ -843,7 +843,7 @@ func (au *AuthHandler) VideoCallKey(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, errs)
 		return
 	}
-	url := fmt.Sprintf("http://localhost:8080/index?room=%s", key)
+	url := fmt.Sprintf("https://zsoxial.zhooze.shop//index?room=%s", key)
 	sucess := response.ClientResponse(http.StatusOK, "Successfully Get a VideoCallKey And Private Link", url, nil)
 	c.JSON(http.StatusOK, sucess)
 }
