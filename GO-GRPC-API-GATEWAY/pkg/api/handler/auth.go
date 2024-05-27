@@ -810,7 +810,7 @@ func (au *AuthHandler) RemovePost(c *gin.Context) {
 	}
 	err = au.GRPC_Client.RemovePost(PostID)
 	if err != nil {
-		errs := response.ClientResponse(http.StatusInternalServerError, "user could not be unblocked", nil, err.Error())
+		errs := response.ClientResponse(http.StatusInternalServerError, "Couldn't Remove Post", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errs)
 		return
 	}
@@ -839,7 +839,7 @@ func (au *AuthHandler) VideoCallKey(c *gin.Context) {
 	}
 	key, err := au.GRPC_Client.VideoCallKey(userID.(int), oppositeUser)
 	if err != nil {
-		errs := response.ClientResponse(http.StatusInternalServerError, "user could not be unblocked", nil, err.Error())
+		errs := response.ClientResponse(http.StatusInternalServerError, "Couldn't not reterive link", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errs)
 		return
 	}
