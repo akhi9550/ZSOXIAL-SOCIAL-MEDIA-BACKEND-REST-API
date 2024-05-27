@@ -422,6 +422,7 @@ func (ur *userUseCase) Following(userID int) ([]models.FollowingResponse, error)
 	}
 	return response, nil
 }
+
 func (ur *userUseCase) Follower(userID int) ([]models.FollowingResponse, error) {
 	userExist := ur.userRepository.CheckUserAvailabilityWithUserID(userID)
 	if !userExist {
@@ -471,7 +472,7 @@ func (ur *userUseCase) VideoCallKey(userID, oppositeUser int) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	url := fmt.Sprintf("%s Invaited to Join the link :- http://localhost:8080/index?room=%s", UserName.Username, key)
+	url := fmt.Sprintf("%s Invaited to Join the link :- https://zsoxial.zhooze.shop/index?room=%s", UserName.Username, key)
 	helper.SendNotification(models.Notification{
 		UserID:   oppositeUser,
 		SenderID: userID,
