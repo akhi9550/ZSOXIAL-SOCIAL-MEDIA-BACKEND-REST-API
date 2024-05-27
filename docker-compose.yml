@@ -43,12 +43,17 @@ services:
       KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:9092,OUTSIDE://localhost:9094
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,OUTSIDE:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_LOG_RETENTION_HOURS: 168
     networks:
       - zsoxial_network
     container_name: kafka
     depends_on:
       - zookeeper
-
+    ports:
+      - "9094:9094"
+      - "9092:9092"
+      
   api-gateway:
     image: zsoxial_api_gateway
     build: ./GO-GRPC-API-GATEWAY/
