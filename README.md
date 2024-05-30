@@ -30,3 +30,11 @@ storing frequently accessed data and reducing database load.
 consistent deployment environments and orchestration with Kubernetes for efficient
 management and scaling of containerized applications.
 
+
+## API Documentation
+
+For interactive API documentation, Swagger is implemented. You can explore and test the API endpoints in real-time.
+
+## Security
+
+Security is a top priority for the project:
