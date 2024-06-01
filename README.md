@@ -38,3 +38,6 @@ For interactive API documentation, Swagger is implemented. You can explore and t
 ## Security
 
 Security is a top priority for the project:
+
+- **OTP Verification**: Twilio API is integrated for OTP verification.
+- **Refresh Tokens**: Enhances security and extends user sessions using refresh tokens.
