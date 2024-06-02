@@ -41,3 +41,13 @@ Security is a top priority for the project:
 
 - **OTP Verification**: Twilio API is integrated for OTP verification.
 - **Refresh Tokens**: Enhances security and extends user sessions using refresh tokens.
+
+## Getting Started
+
+To run the project locally, you can follow these steps:
+
+1. Clone the repository.
+2. Set up your environment with the required dependencies, including Golang, PostgreSQL, Docker, and Wire.
+3. Configure your environment variables (e.g., database credentials, AWS keys, Twilio credentials).
+4. Build and run the project.
+
