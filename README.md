@@ -51,3 +51,16 @@ To run the project locally, you can follow these steps:
 3. Configure your environment variables (e.g., database credentials, AWS keys, Twilio credentials).
 4. Build and run the project.
 
+
+## Acknowledgments
+
+- [Gin Web Framework](https://github.com/gin-gonic/gin)
+- [Wire for Dependency Injection](https://github.com/google/wire)
+- [PostgreSQL](https://www.postgresql.org/)
+- [MongoDB](https://www.mongodb.com/)
+- [AWS S3](https://aws.amazon.com/s3/)
+- [Swagger API Documentation](https://swagger.io/)
+- [Twilio](https://www.twilio.com/)
+- [Kafka](https://kafka.apache.org/)
+- [Redis](https://redis.io/)
+
