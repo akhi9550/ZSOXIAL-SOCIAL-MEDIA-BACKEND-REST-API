@@ -64,3 +64,18 @@ To run the project locally, you can follow these steps:
 - [Kafka](https://kafka.apache.org/)
 - [Redis](https://redis.io/)
 
+
+## Using `go-gin-clean-arch` project
+
+To use `go-gin-clean-arch` project, follow these steps:
+
+```bash
+# Navigate into the project
+cd ./go-gin-clean-arch
+
+# Generate wire_gen.go for dependency injection
+make wire
+
+# Run the project in Development Mode
+make run
+```
