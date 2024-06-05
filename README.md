@@ -79,3 +79,12 @@ make wire
 # Run the project in Development Mode
 make run
 ```
+
+Additional commands:
+```bash
+➔ make help
+build                          Compile the code, build Executable File
+run                            Start application
+wire                           Generate wire_gen.go
+swag                           Generate swagger docs
+```
