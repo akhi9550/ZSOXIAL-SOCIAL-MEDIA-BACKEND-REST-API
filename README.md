@@ -88,3 +88,16 @@ run                            Start application
 wire                           Generate wire_gen.go
 swag                           Generate swagger docs
 ```
+
+# Environment Variables
+
+Before running the project, you need to set the following environment variables with your corresponding values:
+
+## PostgreSQL
+
+- `BASE_URL`: Base url
+- `DB_HOST`: Database host
+- `DB_NAME`: Database name
+- `DB_USER`: Database user
+- `DB_PORT`: Database port
+- `DB_PASSWORD`: Database password
