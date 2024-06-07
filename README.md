@@ -101,3 +101,34 @@ Before running the project, you need to set the following environment variables 
 - `DB_USER`: Database user
 - `DB_PORT`: Database port
 - `DB_PASSWORD`: Database password
+
+## MongoDB
+
+- `BASE_URL`=:Base url
+- `DB_NAME`=Database name
+- `DB_URL`="DatabaseURL url"
+
+## Kafka
+
+- `KAFKA_PORT`=Port
+- `KAFKA_TOPIC`=Topic
+
+## Redis
+- `REDIS_PORT`=Port
+- `REDIS_URL`=Url
+- `REDIS_PASSWORD`=Password
+
+## Twilio
+
+- `DB_AUTHTOKEN`: Twilio authentication token
+- `DB_ACCOUNTSID`: Twilio account SID
+- `DB_SERVICESID`: Twilio services ID
+
+## AWS
+
+- `AWS_REGION`: AWS region
+- `AWS_ACCESS_KEY_ID`: AWS access key ID
+- `AWS_SECRET_ACCESS_KEY`: AWS secret access key
+
+
+Make sure to provide the appropriate values for these environment variables to configure the project correctly.
