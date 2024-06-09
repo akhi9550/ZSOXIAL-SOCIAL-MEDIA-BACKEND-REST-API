@@ -8,6 +8,7 @@ import (
 
 	interfaces "github.com/akhi9550/api-gateway/pkg/client/interface"
 	"github.com/akhi9550/api-gateway/pkg/helper"
+	"github.com/akhi9550/api-gateway/pkg/logging"
 	"github.com/akhi9550/api-gateway/pkg/utils/models"
 	"github.com/akhi9550/api-gateway/pkg/utils/response"
 	"github.com/gin-gonic/gin"
@@ -579,8 +580,11 @@ func (au *AuthHandler) Follower(c *gin.Context) {
 // @Failure			500		{object}	response.Response{}
 // @Router			/admin/login  [POST]
 func (au *AuthHandler) AdminLogin(c *gin.Context) {
+	logEntry := logging.GetLogger().WithField("context", "LogginHandler")
+	logEntry.Info("Processing Loggin request")
 	var AdminLoginDetail models.AdminLoginRequest
 	if err := c.ShouldBindJSON(&AdminLoginDetail); err != nil {
+		logEntry.WithError(err).Error("Error binding request body")
 		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
 	}
@@ -592,10 +596,12 @@ func (au *AuthHandler) AdminLogin(c *gin.Context) {
 	}
 	admin, err := au.GRPC_Client.AdminLogin(AdminLoginDetail)
 	if err != nil {
-		errs := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
+		logEntry.WithError(err).Error("Error During AdminLogin RPC call")
+		errs := response.ClientResponse(http.StatusBadRequest, "Cannot Authenthicate Admin", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
 		return
 	}
+	logEntry.Info("Login successful for Admin")
 	success := response.ClientResponse(http.StatusCreated, "Admin successfully logged in with password", admin, nil)
 	c.JSON(http.StatusCreated, success)
 }
