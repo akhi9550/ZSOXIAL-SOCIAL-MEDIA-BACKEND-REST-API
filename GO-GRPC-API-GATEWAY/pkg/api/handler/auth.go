@@ -37,8 +37,11 @@ func NewAuthHandler(authClient interfaces.AuthClient, authCaching *helper.RedisA
 // @Failure		500	{object}	response.Response{}
 // @Router			/user/signup    [POST]
 func (au *AuthHandler) UserSignup(c *gin.Context) {
+	logEntry := logging.GetLogger().WithField("context", "UserSignupHandler")
+	logEntry.Info("Processing user Signup request")
 	var UserSignupDetail models.UserSignUpRequest
 	if err := c.ShouldBindJSON(&UserSignupDetail); err != nil {
+		logEntry.WithError(err).Error("Error binding request body")
 		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
 	}
@@ -53,17 +56,19 @@ func (au *AuthHandler) UserSignup(c *gin.Context) {
 
 	err := validator.New().Struct(UserSignupDetail)
 	if err != nil {
+		logEntry.WithError(err).Error("Error Constraints not statisfied")
 		errs := response.ClientResponse(http.StatusBadRequest, "Constraints not statisfied", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
 		return
 	}
 	user, err := au.GRPC_Client.UserSignUp(UserSignupDetail)
 	if err != nil {
+		logEntry.WithError(err).Error("Error during User Signup rpc call")
 		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
 		return
 	}
-	fmt.Println("", user)
+	logEntry.Info("user signup succesfull for user")
 	success := response.ClientResponse(http.StatusCreated, "User successfully signed up", user, nil)
 	c.JSON(http.StatusCreated, success)
 }
@@ -78,23 +83,29 @@ func (au *AuthHandler) UserSignup(c *gin.Context) {
 // @Failure		500	{object}	response.Response{}
 // @Router			/user/login     [POST]
 func (au *AuthHandler) Userlogin(c *gin.Context) {
+	logEntry := logging.GetLogger().WithField("context", "LogginHandler")
+	logEntry.Info("Processing Loggin request")
 	var UserLoginDetail models.UserLoginRequest
 	if err := c.ShouldBindJSON(&UserLoginDetail); err != nil {
+		logEntry.WithError(err).Error("Error binding request body")
 		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
 	}
 	err := validator.New().Struct(UserLoginDetail)
 	if err != nil {
+		logEntry.WithError(err).Error("Error Constraints not statisfied")
 		errs := response.ClientResponse(http.StatusBadRequest, "Constraints not statisfied", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
 		return
 	}
 	user, err := au.GRPC_Client.UserLogin(UserLoginDetail)
 	if err != nil {
+		logEntry.WithError(err).Error("Error During UserLogin RPC call")
 		errs := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
 		return
 	}
+	logEntry.Info("Login successful for User")
 	success := response.ClientResponse(http.StatusCreated, "User successfully logged in with password", user, nil)
 	c.JSON(http.StatusCreated, success)
 }
