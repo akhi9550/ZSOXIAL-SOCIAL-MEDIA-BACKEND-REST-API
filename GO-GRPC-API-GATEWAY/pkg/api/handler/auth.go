@@ -120,18 +120,23 @@ func (au *AuthHandler) Userlogin(c *gin.Context) {
 // @Failure 	500 	{object} response.Response{}
 // @Router 		/user/send-otp   [POST]
 func (au *AuthHandler) SendOtp(c *gin.Context) {
+	logEntry := logging.GetLogger().WithField("context", "SendOtp")
+	logEntry.Info("Processing Sendotp Login request")
 	var phone models.OTPData
 	if err := c.ShouldBindJSON(&phone); err != nil {
+		logEntry.WithError(err).Error("Error binding request body")
 		errs := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
 		return
 	}
 	err := au.GRPC_Client.SendOtp(phone.PhoneNumber)
 	if err != nil {
+		logEntry.WithError(err).Error("Error During Sendotp RPC call")
 		errs := response.ClientResponse(http.StatusBadRequest, "user with this phone is not exists", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
 		return
 	}
+	logEntry.Info("OTP sent successfully")
 	success := response.ClientResponse(http.StatusOK, "OTP sent successfully", nil, nil)
 	c.JSON(http.StatusOK, success)
 }
@@ -146,18 +151,23 @@ func (au *AuthHandler) SendOtp(c *gin.Context) {
 // @Failure 	500 	{object} response.Response{}
 // @Router 		/user/verify-otp      [POST]
 func (au *AuthHandler) VerifyOtp(c *gin.Context) {
+	logEntry := logging.GetLogger().WithField("context", "VerifyOtp")
+	logEntry.Info("Processing VerifyOtp Login request")
 	var code models.VerifyData
 	if err := c.ShouldBindJSON(&code); err != nil {
+		logEntry.WithError(err).Error("Error binding request body")
 		errs := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
 		return
 	}
 	user, err := au.GRPC_Client.VerifyOTP(code)
 	if err != nil {
+		logEntry.WithError(err).Error("Error During VerifyOTP RPC call")
 		errs := response.ClientResponse(http.StatusInternalServerError, "Could not verify OTP", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errs)
 		return
 	}
+	logEntry.Info("Successfully verified OTP")
 	sucess := response.ClientResponse(http.StatusOK, "Successfully verified OTP", user, nil)
 	c.JSON(http.StatusOK, sucess)
 }
@@ -173,19 +183,23 @@ func (au *AuthHandler) VerifyOtp(c *gin.Context) {
 // @Failure		500	{object}	response.Response{}
 // @Router			/user/forgot-password   [POST]
 func (au *AuthHandler) ForgotPassword(c *gin.Context) {
+	logEntry := logging.GetLogger().WithField("context", "ForgotPassword")
+	logEntry.Info("Processing ForgotPassword")
 	var model models.ForgotPasswordSend
 	if err := c.BindJSON(&model); err != nil {
+		logEntry.WithError(err).Error("Error binding request body")
 		errs := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
 		return
 	}
 	err := au.GRPC_Client.ForgotPassword(model.Phone)
 	if err != nil {
+		logEntry.WithError(err).Error("Error During ForgotPassword RPC call")
 		errs := response.ClientResponse(http.StatusBadRequest, "Could not send OTP", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
 		return
 	}
-
+	logEntry.Info("OTP sent successfully")
 	success := response.ClientResponse(http.StatusOK, "OTP sent successfully", nil, nil)
 	c.JSON(http.StatusOK, success)
 
@@ -202,8 +216,11 @@ func (au *AuthHandler) ForgotPassword(c *gin.Context) {
 // @Failure		500	{object}	response.Response{}
 // @Router			/user/forgot-password-verify      [POST]
 func (au *AuthHandler) ForgotPasswordVerifyAndChange(c *gin.Context) {
+	logEntry := logging.GetLogger().WithField("context", "ForgotPasswordVerifyAndChange")
+	logEntry.Info("Processing ForgotPasswordVerifyAndChange")
 	var model models.ForgotVerify
 	if err := c.BindJSON(&model); err != nil {
+		logEntry.WithError(err).Error("Error binding request body")
 		errs := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
 		return
@@ -211,11 +228,12 @@ func (au *AuthHandler) ForgotPasswordVerifyAndChange(c *gin.Context) {
 
 	err := au.GRPC_Client.ForgotPasswordVerifyAndChange(model)
 	if err != nil {
+		logEntry.WithError(err).Error("Error During ForgotPasswordVerifyAndChange RPC call")
 		errs := response.ClientResponse(http.StatusBadRequest, "Could not verify OTP", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
 		return
 	}
-
+	logEntry.Info("Successfully Changed the password")
 	success := response.ClientResponse(http.StatusOK, "Successfully Changed the password", nil, nil)
 	c.JSON(http.StatusOK, success)
 }
@@ -230,14 +248,18 @@ func (au *AuthHandler) ForgotPasswordVerifyAndChange(c *gin.Context) {
 // @Failure 	500 {object} response.Response{}
 // @Router 		/user   [GET]
 func (au *AuthHandler) UserDetails(c *gin.Context) {
+	logEntry := logging.GetLogger().WithField("context", "UserDetails")
+	logEntry.Info("Processing UserDetails")
 	userID, _ := c.Get("user_id")
 	UserDetails, err := au.AuthCachig.GetUserDetails(userID.(int))
 	if err != nil {
+		logEntry.WithError(err).Error("Error During UserDetails RPC call")
 		errs := response.ClientResponse(http.StatusInternalServerError, "failed to retrieve details", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errs)
 		return
 	}
-	success := response.ClientResponse(http.StatusOK, "User Details", UserDetails, nil)
+	logEntry.Info("Successfully Get User Details")
+	success := response.ClientResponse(http.StatusOK, "Successfully Get User Details", UserDetails, nil)
 	c.JSON(http.StatusOK, success)
 }
 
@@ -252,6 +274,8 @@ func (au *AuthHandler) UserDetails(c *gin.Context) {
 // @Failure 	500 {object} response.Response{}
 // @Router 		/user/users   [GET]
 func (au *AuthHandler) SpecificUserDetails(c *gin.Context) {
+	logEntry := logging.GetLogger().WithField("context", "SpecificUserDetails")
+	logEntry.Info("Processing SpecificUserDetails")
 	userID := c.Query("user_id")
 	UserID, err := strconv.Atoi(userID)
 	if err != nil {
@@ -261,11 +285,13 @@ func (au *AuthHandler) SpecificUserDetails(c *gin.Context) {
 	}
 	UserDetails, err := au.AuthCachig.GetSpecificUserDetails(UserID)
 	if err != nil {
+		logEntry.WithError(err).Error("Error During SpecificUserDetails RPC call")
 		errs := response.ClientResponse(http.StatusInternalServerError, "failed to retrieve details", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errs)
 		return
 	}
-	success := response.ClientResponse(http.StatusOK, "User Details", UserDetails, nil)
+	logEntry.Info("Successfully Get User Details")
+	success := response.ClientResponse(http.StatusOK, "Successfully Get User Details", UserDetails, nil)
 	c.JSON(http.StatusOK, success)
 }
 
@@ -288,6 +314,8 @@ func (au *AuthHandler) SpecificUserDetails(c *gin.Context) {
 // @Failure 	500 {object} response.Response{}
 // @Router 		/user [PUT]
 func (au *AuthHandler) UpdateUserDetails(c *gin.Context) {
+	logEntry := logging.GetLogger().WithField("context", "UpdateUserDetails")
+	logEntry.Info("Processing UpdateUserDetails")
 	firstname := c.PostForm("firstname")
 	lastname := c.PostForm("lastname")
 	username := c.PostForm("username")
@@ -342,11 +370,13 @@ func (au *AuthHandler) UpdateUserDetails(c *gin.Context) {
 
 	updateDetails, err := au.GRPC_Client.UpdateUserDetails(user, file, userID.(int))
 	if err != nil {
+		logEntry.WithError(err).Error("Error During UpdateUserDetails RPC call")
 		errs := response.ClientResponse(http.StatusInternalServerError, "failed update user", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errs)
 		return
 	}
-	success := response.ClientResponse(http.StatusOK, "Updated User Details", updateDetails, nil)
+	logEntry.Info("Successfully Updated User Details")
+	success := response.ClientResponse(http.StatusOK, "Successfully Updated User Details", updateDetails, nil)
 	c.JSON(http.StatusOK, success)
 }
 
@@ -361,19 +391,24 @@ func (au *AuthHandler) UpdateUserDetails(c *gin.Context) {
 // @Failure 	500 {object} response.Response{}
 // @Router 		/user/changepassword     [PUT]
 func (au *AuthHandler) ChangePassword(c *gin.Context) {
+	logEntry := logging.GetLogger().WithField("context", "ChangePassword")
+	logEntry.Info("Processing ChangePassword")
 	user_id, _ := c.Get("user_id")
 	var changePassword models.ChangePassword
 	if err := c.BindJSON(&changePassword); err != nil {
+		logEntry.WithError(err).Error("Error binding request body")
 		errs := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
 		return
 	}
 	if err := au.GRPC_Client.ChangePassword(user_id.(int), changePassword); err != nil {
+		logEntry.WithError(err).Error("Error During ChangePassword RPC call")
 		errorRes := response.ClientResponse(http.StatusBadRequest, "Could not change the password", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
-	success := response.ClientResponse(http.StatusOK, "password changed Successfully ", nil, nil)
+	logEntry.Info("Password changed Successfully")
+	success := response.ClientResponse(http.StatusOK, "Password changed Successfully", nil, nil)
 	c.JSON(http.StatusOK, success)
 }
 
@@ -388,17 +423,22 @@ func (au *AuthHandler) ChangePassword(c *gin.Context) {
 // @Failure 	500 {object} response.Response{}
 // @Router 		/user/search     [GET]
 func (au *AuthHandler) SearchUser(c *gin.Context) {
+	logEntry := logging.GetLogger().WithField("context", "SearchUser")
+	logEntry.Info("Processing SearchUser")
 	var req models.SearchUser
 	if err := c.ShouldBindJSON(&req); err != nil {
+		logEntry.WithError(err).Error("Error binding request body")
 		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
 	}
 	data, err := au.GRPC_Client.SearchUser(req)
 	if err != nil {
+		logEntry.WithError(err).Error("Error During SearchUser RPC call")
 		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
 		return
 	}
+	logEntry.Info("Successfully Searched User")
 	success := response.ClientResponse(http.StatusOK, "Successfully Searched User", data, nil)
 	c.JSON(http.StatusOK, success)
 }
@@ -414,18 +454,23 @@ func (au *AuthHandler) SearchUser(c *gin.Context) {
 // @Failure 	500 {object} response.Response{}
 // @Router 		/report/user     [POST]
 func (au *AuthHandler) ReportUser(c *gin.Context) {
+	logEntry := logging.GetLogger().WithField("context", "ReportUser")
+	logEntry.Info("Processing ReportUser")
 	ReportedID, _ := c.Get("user_id")
 	var req models.ReportRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
+		logEntry.WithError(err).Error("Error binding request body")
 		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
 	}
 	err := au.GRPC_Client.ReportUser(ReportedID.(int), req)
 	if err != nil {
+		logEntry.WithError(err).Error("Error During ReportUser RPC call")
 		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
 		return
 	}
+	logEntry.Info("Successfully Reported")
 	success := response.ClientResponse(http.StatusOK, "Successfully Reported", nil, nil)
 	c.JSON(http.StatusOK, success)
 }
@@ -441,6 +486,8 @@ func (au *AuthHandler) ReportUser(c *gin.Context) {
 // @Failure 500 {object} response.Response{}
 // @Router 		/follow/request      [POST]
 func (au *AuthHandler) FollowREQ(c *gin.Context) {
+	logEntry := logging.GetLogger().WithField("context", "FollowREQ")
+	logEntry.Info("Processing FollowREQ")
 	userID, _ := c.Get("user_id")
 	id := c.Query("user_id")
 	FollowUserID, err := strconv.Atoi(id)
@@ -451,10 +498,12 @@ func (au *AuthHandler) FollowREQ(c *gin.Context) {
 	}
 	err = au.GRPC_Client.FollowREQ(userID.(int), FollowUserID)
 	if err != nil {
+		logEntry.WithError(err).Error("Error During FollowREQ RPC call")
 		errs := response.ClientResponse(http.StatusInternalServerError, "Details is incorrect", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errs)
 		return
 	}
+	logEntry.Info("Successfully followed")
 	sucess := response.ClientResponse(http.StatusOK, "Successfully followed", nil, nil)
 	c.JSON(http.StatusOK, sucess)
 }
@@ -469,13 +518,17 @@ func (au *AuthHandler) FollowREQ(c *gin.Context) {
 // @Failure 500 {object} response.Response{}
 // @Router 		/follow/requests      [GET]
 func (au *AuthHandler) ShowFollowREQ(c *gin.Context) {
+	logEntry := logging.GetLogger().WithField("context", "ShowFollowREQ")
+	logEntry.Info("Processing ShowFollowREQ")
 	userID, _ := c.Get("user_id")
 	data, err := au.GRPC_Client.ShowFollowREQ(userID.(int))
 	if err != nil {
+		logEntry.WithError(err).Error("Error During ShowFollowREQ RPC call")
 		errs := response.ClientResponse(http.StatusInternalServerError, "user could not be unblocked", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errs)
 		return
 	}
+	logEntry.Info("Successfully Show All Followed Request")
 	sucess := response.ClientResponse(http.StatusOK, "Successfully Show All Followed Request", data, nil)
 	c.JSON(http.StatusOK, sucess)
 }
@@ -491,6 +544,8 @@ func (au *AuthHandler) ShowFollowREQ(c *gin.Context) {
 // @Failure 	500 {object} response.Response{}
 // @Router		 /follow/accept      [POST]
 func (au *AuthHandler) AcceptFollowREQ(c *gin.Context) {
+	logEntry := logging.GetLogger().WithField("context", "AcceptFollowREQ")
+	logEntry.Info("Processing AcceptFollowREQ")
 	userID, _ := c.Get("user_id")
 	id := c.Query("user_id")
 	FollowingID, err := strconv.Atoi(id)
@@ -501,10 +556,12 @@ func (au *AuthHandler) AcceptFollowREQ(c *gin.Context) {
 	}
 	err = au.GRPC_Client.AcceptFollowREQ(userID.(int), FollowingID)
 	if err != nil {
+		logEntry.WithError(err).Error("Error During AcceptFollowREQ RPC call")
 		errs := response.ClientResponse(http.StatusInternalServerError, "user could not be unblocked", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errs)
 		return
 	}
+	logEntry.Info("Successfully Accepted Following")
 	sucess := response.ClientResponse(http.StatusOK, "Successfully Accepted Following", nil, nil)
 	c.JSON(http.StatusOK, sucess)
 }
@@ -520,6 +577,8 @@ func (au *AuthHandler) AcceptFollowREQ(c *gin.Context) {
 // @Failure		500 {object} response.Response{}
 // @Router 		/follow/unfollow      [POST]
 func (au *AuthHandler) UnFollow(c *gin.Context) {
+	logEntry := logging.GetLogger().WithField("context", "UnFollow")
+	logEntry.Info("Processing UnFollow")
 	userID, _ := c.Get("user_id")
 	id := c.Query("user_id")
 	UnFollowUserID, err := strconv.Atoi(id)
@@ -530,10 +589,12 @@ func (au *AuthHandler) UnFollow(c *gin.Context) {
 	}
 	err = au.GRPC_Client.UnFollow(userID.(int), UnFollowUserID)
 	if err != nil {
+		logEntry.WithError(err).Error("Error During UnFollow RPC call")
 		errs := response.ClientResponse(http.StatusInternalServerError, "user could not be unblocked", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errs)
 		return
 	}
+	logEntry.Info("Successfully UnFollowed")
 	sucess := response.ClientResponse(http.StatusOK, "Successfully UnFollowed", nil, nil)
 	c.JSON(http.StatusOK, sucess)
 }
@@ -548,13 +609,17 @@ func (au *AuthHandler) UnFollow(c *gin.Context) {
 // @Failure 	500 {object} response.Response{}
 // @Router 		/follow/following      [GET]
 func (au *AuthHandler) Following(c *gin.Context) {
+	logEntry := logging.GetLogger().WithField("context", "Following")
+	logEntry.Info("Processing Get Following")
 	userID, _ := c.Get("user_id")
 	data, err := au.GRPC_Client.Following(userID.(int))
 	if err != nil {
+		logEntry.WithError(err).Error("Error During Following RPC call")
 		errs := response.ClientResponse(http.StatusInternalServerError, "user could not be unblocked", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errs)
 		return
 	}
+	logEntry.Info("Successfully Retrive Followings")
 	sucess := response.ClientResponse(http.StatusOK, "Successfully Retrive Followings", data, nil)
 	c.JSON(http.StatusOK, sucess)
 }
@@ -569,13 +634,17 @@ func (au *AuthHandler) Following(c *gin.Context) {
 // @Failure 	500 {object} response.Response{}
 // @Router 		/follow/followers      [GET]
 func (au *AuthHandler) Follower(c *gin.Context) {
+	logEntry := logging.GetLogger().WithField("context", "Follower")
+	logEntry.Info("Processing Get Follower")
 	userID, _ := c.Get("user_id")
 	data, err := au.GRPC_Client.Follower(userID.(int))
 	if err != nil {
+		logEntry.WithError(err).Error("Error During Follower RPC call")
 		errs := response.ClientResponse(http.StatusInternalServerError, "user could not be unblocked", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errs)
 		return
 	}
+	logEntry.Info("Successfully Retrive Followers")
 	sucess := response.ClientResponse(http.StatusOK, "Successfully Retrive Followers", data, nil)
 	c.JSON(http.StatusOK, sucess)
 }
@@ -591,7 +660,7 @@ func (au *AuthHandler) Follower(c *gin.Context) {
 // @Failure			500		{object}	response.Response{}
 // @Router			/admin/login  [POST]
 func (au *AuthHandler) AdminLogin(c *gin.Context) {
-	logEntry := logging.GetLogger().WithField("context", "LogginHandler")
+	logEntry := logging.GetLogger().WithField("context", "AdminLogin")
 	logEntry.Info("Processing Loggin request")
 	var AdminLoginDetail models.AdminLoginRequest
 	if err := c.ShouldBindJSON(&AdminLoginDetail); err != nil {
@@ -612,7 +681,7 @@ func (au *AuthHandler) AdminLogin(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errs)
 		return
 	}
-	logEntry.Info("Login successful for Admin")
+	logEntry.Info("Admin successfully logged in with password")
 	success := response.ClientResponse(http.StatusCreated, "Admin successfully logged in with password", admin, nil)
 	c.JSON(http.StatusCreated, success)
 }
@@ -629,6 +698,8 @@ func (au *AuthHandler) AdminLogin(c *gin.Context) {
 // @Failure		500		{object}	response.Response{}
 // @Router			/admin/users   [GET]
 func (au *AuthHandler) ShowAllUsers(c *gin.Context) {
+	logEntry := logging.GetLogger().WithField("context", "ShowAllUsers")
+	logEntry.Info("Processing ShowAllUsers")
 	pageStr := c.DefaultQuery("page", "1")
 	page, err := strconv.Atoi(pageStr)
 	if err != nil {
@@ -645,10 +716,12 @@ func (au *AuthHandler) ShowAllUsers(c *gin.Context) {
 	}
 	users, err := au.AuthCachig.ShowAllUsers(page, pageSize)
 	if err != nil {
+		logEntry.WithError(err).Error("Error During ShowAllUsers RPC call")
 		errs := response.ClientResponse(http.StatusInternalServerError, "couldn't retrieve users", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errs)
 		return
 	}
+	logEntry.Info("Successfully Retrieved all Users")
 	success := response.ClientResponse(http.StatusOK, "Successfully Retrieved all Users", users, nil)
 	c.JSON(http.StatusOK, success)
 }
@@ -664,14 +737,18 @@ func (au *AuthHandler) ShowAllUsers(c *gin.Context) {
 // @Failure		500	{object}	response.Response{}
 // @Router			/admin/user/block   [PUT]
 func (au *AuthHandler) BlockUser(c *gin.Context) {
+	logEntry := logging.GetLogger().WithField("context", "BlockUser")
+	logEntry.Info("Processing BlockUser")
 	id := c.Query("id")
 	userID, _ := strconv.Atoi(id)
 	err := au.GRPC_Client.AdminBlockUser(userID)
 	if err != nil {
+		logEntry.WithError(err).Error("Error During BlockUser RPC call")
 		errs := response.ClientResponse(http.StatusInternalServerError, "user could not be blocked", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errs)
 		return
 	}
+	logEntry.Info("Successfully blocked the user")
 	sucess := response.ClientResponse(http.StatusOK, "Successfully blocked the user", nil, nil)
 	c.JSON(http.StatusOK, sucess)
 }
@@ -687,14 +764,18 @@ func (au *AuthHandler) BlockUser(c *gin.Context) {
 // @Failure		500	{object}	response.Response{}
 // @Router			/admin/user/unblock    [PUT]
 func (au *AuthHandler) UnBlockUser(c *gin.Context) {
+	logEntry := logging.GetLogger().WithField("context", "UnBlockUser")
+	logEntry.Info("Processing UnBlockUser")
 	id := c.Query("id")
 	userID, _ := strconv.Atoi(id)
 	err := au.GRPC_Client.AdminUnblockUser(userID)
 	if err != nil {
+		logEntry.WithError(err).Error("Error During UnBlockUser RPC call")
 		errs := response.ClientResponse(http.StatusInternalServerError, "user could not be unblocked", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errs)
 		return
 	}
+	logEntry.Info("Successfully unblocked the user")
 	sucess := response.ClientResponse(http.StatusOK, "Successfully unblocked the user", nil, nil)
 	c.JSON(http.StatusOK, sucess)
 }
@@ -711,6 +792,8 @@ func (au *AuthHandler) UnBlockUser(c *gin.Context) {
 // @Failure		500		{object}	response.Response{}
 // @Router			/admin/report/user   [GET]
 func (au *AuthHandler) ShowUserReports(c *gin.Context) {
+	logEntry := logging.GetLogger().WithField("context", "ShowUserReports")
+	logEntry.Info("Processing ShowUserReports")
 	pageStr := c.DefaultQuery("page", "1")
 	page, err := strconv.Atoi(pageStr)
 	if err != nil {
@@ -727,10 +810,12 @@ func (au *AuthHandler) ShowUserReports(c *gin.Context) {
 	}
 	users, err := au.GRPC_Client.ShowUserReports(page, pageSize)
 	if err != nil {
+		logEntry.WithError(err).Error("Error During ShowUserReports RPC call")
 		errs := response.ClientResponse(http.StatusInternalServerError, "couldn't retrieve users", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errs)
 		return
 	}
+	logEntry.Info("Successfully Retrieved all UserReports")
 	success := response.ClientResponse(http.StatusOK, "Successfully Retrieved all UserReports", users, nil)
 	c.JSON(http.StatusOK, success)
 }
@@ -747,6 +832,8 @@ func (au *AuthHandler) ShowUserReports(c *gin.Context) {
 // @Failure		500		{object}	response.Response{}
 // @Router			/admin/report/post   [GET]
 func (au *AuthHandler) ShowPostReports(c *gin.Context) {
+	logEntry := logging.GetLogger().WithField("context", "ShowPostReports")
+	logEntry.Info("Processing ShowPostReports")
 	pageStr := c.DefaultQuery("page", "1")
 	page, err := strconv.Atoi(pageStr)
 	if err != nil {
@@ -763,10 +850,12 @@ func (au *AuthHandler) ShowPostReports(c *gin.Context) {
 	}
 	users, err := au.GRPC_Client.ShowPostReports(page, pageSize)
 	if err != nil {
+		logEntry.WithError(err).Error("Error During ShowPostReports RPC call")
 		errs := response.ClientResponse(http.StatusInternalServerError, "couldn't retrieve users", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errs)
 		return
 	}
+	logEntry.Info("Successfully Retrieved all PostReports")
 	success := response.ClientResponse(http.StatusOK, "Successfully Retrieved all PostReports", users, nil)
 	c.JSON(http.StatusOK, success)
 }
@@ -783,6 +872,8 @@ func (au *AuthHandler) ShowPostReports(c *gin.Context) {
 // @Failure		500		{object}	response.Response{}
 // @Router			/admin/posts   [GET]
 func (au *AuthHandler) GetAllPosts(c *gin.Context) {
+	logEntry := logging.GetLogger().WithField("context", "GetAllPosts")
+	logEntry.Info("Processing GetAllPosts")
 	pageStr := c.DefaultQuery("page", "1")
 	page, err := strconv.Atoi(pageStr)
 	if err != nil {
@@ -799,10 +890,12 @@ func (au *AuthHandler) GetAllPosts(c *gin.Context) {
 	}
 	users, err := au.GRPC_Client.GetAllPosts(page, pageSize)
 	if err != nil {
+		logEntry.WithError(err).Error("Error During GetAllPosts RPC call")
 		errs := response.ClientResponse(http.StatusInternalServerError, "couldn't retrieve posts", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errs)
 		return
 	}
+	logEntry.Info("Successfully Retrieved all Posts")
 	success := response.ClientResponse(http.StatusOK, "Successfully Retrieved all Posts", users, nil)
 	c.JSON(http.StatusOK, success)
 }
@@ -818,6 +911,8 @@ func (au *AuthHandler) GetAllPosts(c *gin.Context) {
 // @Failure		500	{object}	response.Response{}
 // @Router			/admin/post     [DELETE]
 func (au *AuthHandler) RemovePost(c *gin.Context) {
+	logEntry := logging.GetLogger().WithField("context", "RemovePost")
+	logEntry.Info("Processing RemovePost")
 	postID := c.Query("post_id")
 	PostID, err := strconv.Atoi(postID)
 	if err != nil {
@@ -827,10 +922,12 @@ func (au *AuthHandler) RemovePost(c *gin.Context) {
 	}
 	err = au.GRPC_Client.RemovePost(PostID)
 	if err != nil {
+		logEntry.WithError(err).Error("Error During RemovePost RPC call")
 		errs := response.ClientResponse(http.StatusInternalServerError, "Couldn't Remove Post", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errs)
 		return
 	}
+	logEntry.Info("Successfully Removed Post")
 	sucess := response.ClientResponse(http.StatusOK, "Successfully Removed Post", nil, nil)
 	c.JSON(http.StatusOK, sucess)
 }
@@ -846,6 +943,8 @@ func (au *AuthHandler) RemovePost(c *gin.Context) {
 // @Failure		500	{object}	response.Response{}
 // @Router			/videocall/users     [GET]
 func (au *AuthHandler) VideoCallKey(c *gin.Context) {
+	logEntry := logging.GetLogger().WithField("context", "VideoCallKey")
+	logEntry.Info("Processing VideoCallKey")
 	userID, _ := c.Get("user_id")
 	UserID := c.Query("user")
 	oppositeUser, err := strconv.Atoi(UserID)
@@ -856,10 +955,12 @@ func (au *AuthHandler) VideoCallKey(c *gin.Context) {
 	}
 	key, err := au.GRPC_Client.VideoCallKey(userID.(int), oppositeUser)
 	if err != nil {
+		logEntry.WithError(err).Error("Error During VideoCallKey RPC call")
 		errs := response.ClientResponse(http.StatusInternalServerError, "Couldn't not reterive link", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errs)
 		return
 	}
+	logEntry.Info("Successfully Get a VideoCallKey And Private Link")
 	url := fmt.Sprintf("https://zsoxial.zhooze.shop//index?room=%s", key)
 	sucess := response.ClientResponse(http.StatusOK, "Successfully Get a VideoCallKey And Private Link", url, nil)
 	c.JSON(http.StatusOK, sucess)
