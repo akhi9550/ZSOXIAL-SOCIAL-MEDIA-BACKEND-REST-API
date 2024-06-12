@@ -240,3 +240,8 @@ type PostReports struct {
 type Users struct{
 	FollowingUser int  `json:"following_user"`
 }
+
+type ShowPostType struct {
+	ID   uint   `json:"id"`
+	Type string `json:"type"`
+}

@@ -8,7 +8,7 @@ type PostRepository interface {
 	CheckUserAvalilabilityWithUserID(userID int) bool
 	CheckMediaAvalilabilityWithID(typeID string) bool
 	CheckPostAvalilabilityWithID(postID int) bool
-	CheckPostedUserID(userID, PostID int)bool
+	CheckPostedUserID(userID, PostID int) bool
 	UserData(userID int) (models.UserData, error)
 	CreatePost(userID int, Caption string, TypeId string, file string, users []models.Tag) (models.Response, []models.Tag, error)
 	GetPost(postID int) (models.Responses, error)
@@ -47,4 +47,9 @@ type PostRepository interface {
 	CheckPostIDByID(postID int) bool
 	RemovePost(postID int) error
 	Home(users []models.Users) ([]models.Responses, error)
+	CheckPosttypeByName(postType string) bool
+	CreatePostType(postType string) error
+	ShowPostType() ([]models.ShowPostType, error)
+	CheckPostTypeIDByID(postTypeID int) bool
+	DeletePostType(postTypeID int) error
 }

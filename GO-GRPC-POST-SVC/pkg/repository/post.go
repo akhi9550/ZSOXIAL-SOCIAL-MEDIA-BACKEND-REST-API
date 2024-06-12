@@ -484,7 +484,7 @@ func (p *postRepository) Home(users []models.Users) ([]models.Responses, error) 
 			}
 		}
 	}
-	
+
 	sort.SliceStable(latestPosts, func(i, j int) bool {
 		return latestPosts[i].CreatedAt.After(latestPosts[j].CreatedAt)
 	})
@@ -496,4 +496,45 @@ func (p *postRepository) Home(users []models.Users) ([]models.Responses, error) 
 	allPosts := append(latestPosts[:5], remainingPosts...)
 
 	return allPosts, nil
+}
+
+func (p *postRepository) CheckPosttypeByName(postType string) bool {
+	var count int
+	err := p.DB.Raw(`SELECT COUNT(*) FROM post_types WHERE type = ?`, postType).Scan(&count).Error
+	if err != nil {
+		return false
+	}
+	return count > 0
+}
+
+func (p *postRepository) CreatePostType(postType string) error {
+	err := p.DB.Exec(`INSERT INTO post_types(type) VALUES (?)`, postType).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *postRepository) ShowPostType() ([]models.ShowPostType, error) {
+	var data []models.ShowPostType
+	err := p.DB.Raw(`SELECT * FROM post_types`).Scan(&data).Error
+	if err != nil {
+		return []models.ShowPostType{}, err
+	}
+	return data, nil
+}
+func (p *postRepository) CheckPostTypeIDByID(postTypeID int) bool {
+	var count int
+	err := p.DB.Raw(`SELECT COUNT(*) FROM post_types WHERE id = ?`, postTypeID).Scan(&count).Error
+	if err != nil {
+		return false
+	}
+	return count > 0
+}
+func (p *postRepository) DeletePostType(postTypeID int) error {
+	err := p.DB.Exec(`DELETE FROM post_types WHERE id = ?`, postTypeID).Error
+	if err != nil {
+		return err
+	}
+	return nil
 }

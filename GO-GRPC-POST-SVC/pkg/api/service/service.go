@@ -569,6 +569,7 @@ func (p *PostServer) CheckPostIDByID(ctx context.Context, req *pb.CheckPostIDByI
 		Exist: ok,
 	}, nil
 }
+
 func (p *PostServer) RemovePost(ctx context.Context, req *pb.RemovePostRequest) (*pb.RemovePostResponse, error) {
 	postID := req.PostID
 	err := p.postUseCase.RemovePost(int(postID))
@@ -607,4 +608,40 @@ func (p *PostServer) Home(ctx context.Context, req *pb.HomeRequest) (*pb.HomeRes
 	return &pb.HomeResponse{
 		Allpost: allPostResponses,
 	}, nil
+}
+
+func (p *PostServer) CreatePostType(ctx context.Context, req *pb.CreatePostTypeRequest) (*pb.CreatePostTypeResponse, error) {
+	postType := req.PostType
+	err := p.postUseCase.CreatePostType(postType)
+	if err != nil {
+		return &pb.CreatePostTypeResponse{}, err
+	}
+	return &pb.CreatePostTypeResponse{}, nil
+}
+
+func (p *PostServer) ShowPostType(ctx context.Context, req *pb.ShowPostTypeRequest) (*pb.ShowPostTypeResponse, error) {
+	data, err := p.postUseCase.ShowPostType()
+	if err != nil {
+		return &pb.ShowPostTypeResponse{}, err
+	}
+	var result []*pb.PostTypes
+	for _, v := range data {
+		posttypes := &pb.PostTypes{
+			Id:       int64(v.ID),
+			PostType: v.Type,
+		}
+		result = append(result, posttypes)
+	}
+	return &pb.ShowPostTypeResponse{
+		Types: result,
+	}, nil
+}
+
+func (p *PostServer) DeletePostType(ctx context.Context, req *pb.DeletePostTypeRequest) (*pb.DeletePostTypeResponse, error) {
+	postTypeID := req.PostTypeID
+	err := p.postUseCase.DeletePostType(int(postTypeID))
+	if err != nil {
+		return &pb.DeletePostTypeResponse{}, err
+	}
+	return &pb.DeletePostTypeResponse{}, nil
 }

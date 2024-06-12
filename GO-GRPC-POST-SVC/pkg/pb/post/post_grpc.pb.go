@@ -49,6 +49,9 @@ const (
 	PostService_CheckPostIDByID_FullMethodName     = "/post.PostService/CheckPostIDByID"
 	PostService_RemovePost_FullMethodName          = "/post.PostService/RemovePost"
 	PostService_Home_FullMethodName                = "/post.PostService/Home"
+	PostService_CreatePostType_FullMethodName      = "/post.PostService/CreatePostType"
+	PostService_ShowPostType_FullMethodName        = "/post.PostService/ShowPostType"
+	PostService_DeletePostType_FullMethodName      = "/post.PostService/DeletePostType"
 )
 
 // PostServiceClient is the client API for PostService service.
@@ -85,6 +88,9 @@ type PostServiceClient interface {
 	CheckPostIDByID(ctx context.Context, in *CheckPostIDByIDRequest, opts ...grpc.CallOption) (*CheckPostIDByIDResponse, error)
 	RemovePost(ctx context.Context, in *RemovePostRequest, opts ...grpc.CallOption) (*RemovePostResponse, error)
 	Home(ctx context.Context, in *HomeRequest, opts ...grpc.CallOption) (*HomeResponse, error)
+	CreatePostType(ctx context.Context, in *CreatePostTypeRequest, opts ...grpc.CallOption) (*CreatePostTypeResponse, error)
+	ShowPostType(ctx context.Context, in *ShowPostTypeRequest, opts ...grpc.CallOption) (*ShowPostTypeResponse, error)
+	DeletePostType(ctx context.Context, in *DeletePostTypeRequest, opts ...grpc.CallOption) (*DeletePostTypeResponse, error)
 }
 
 type postServiceClient struct {
@@ -365,6 +371,33 @@ func (c *postServiceClient) Home(ctx context.Context, in *HomeRequest, opts ...g
 	return out, nil
 }
 
+func (c *postServiceClient) CreatePostType(ctx context.Context, in *CreatePostTypeRequest, opts ...grpc.CallOption) (*CreatePostTypeResponse, error) {
+	out := new(CreatePostTypeResponse)
+	err := c.cc.Invoke(ctx, PostService_CreatePostType_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *postServiceClient) ShowPostType(ctx context.Context, in *ShowPostTypeRequest, opts ...grpc.CallOption) (*ShowPostTypeResponse, error) {
+	out := new(ShowPostTypeResponse)
+	err := c.cc.Invoke(ctx, PostService_ShowPostType_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *postServiceClient) DeletePostType(ctx context.Context, in *DeletePostTypeRequest, opts ...grpc.CallOption) (*DeletePostTypeResponse, error) {
+	out := new(DeletePostTypeResponse)
+	err := c.cc.Invoke(ctx, PostService_DeletePostType_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PostServiceServer is the server API for PostService service.
 // All implementations must embed UnimplementedPostServiceServer
 // for forward compatibility
@@ -399,6 +432,9 @@ type PostServiceServer interface {
 	CheckPostIDByID(context.Context, *CheckPostIDByIDRequest) (*CheckPostIDByIDResponse, error)
 	RemovePost(context.Context, *RemovePostRequest) (*RemovePostResponse, error)
 	Home(context.Context, *HomeRequest) (*HomeResponse, error)
+	CreatePostType(context.Context, *CreatePostTypeRequest) (*CreatePostTypeResponse, error)
+	ShowPostType(context.Context, *ShowPostTypeRequest) (*ShowPostTypeResponse, error)
+	DeletePostType(context.Context, *DeletePostTypeRequest) (*DeletePostTypeResponse, error)
 	mustEmbedUnimplementedPostServiceServer()
 }
 
@@ -495,6 +531,15 @@ func (UnimplementedPostServiceServer) RemovePost(context.Context, *RemovePostReq
 }
 func (UnimplementedPostServiceServer) Home(context.Context, *HomeRequest) (*HomeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Home not implemented")
+}
+func (UnimplementedPostServiceServer) CreatePostType(context.Context, *CreatePostTypeRequest) (*CreatePostTypeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreatePostType not implemented")
+}
+func (UnimplementedPostServiceServer) ShowPostType(context.Context, *ShowPostTypeRequest) (*ShowPostTypeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ShowPostType not implemented")
+}
+func (UnimplementedPostServiceServer) DeletePostType(context.Context, *DeletePostTypeRequest) (*DeletePostTypeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeletePostType not implemented")
 }
 func (UnimplementedPostServiceServer) mustEmbedUnimplementedPostServiceServer() {}
 
@@ -1049,6 +1094,60 @@ func _PostService_Home_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
+func _PostService_CreatePostType_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreatePostTypeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PostServiceServer).CreatePostType(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PostService_CreatePostType_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PostServiceServer).CreatePostType(ctx, req.(*CreatePostTypeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PostService_ShowPostType_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ShowPostTypeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PostServiceServer).ShowPostType(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PostService_ShowPostType_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PostServiceServer).ShowPostType(ctx, req.(*ShowPostTypeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PostService_DeletePostType_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeletePostTypeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PostServiceServer).DeletePostType(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PostService_DeletePostType_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PostServiceServer).DeletePostType(ctx, req.(*DeletePostTypeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // PostService_ServiceDesc is the grpc.ServiceDesc for PostService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1175,6 +1274,18 @@ var PostService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Home",
 			Handler:    _PostService_Home_Handler,
+		},
+		{
+			MethodName: "CreatePostType",
+			Handler:    _PostService_CreatePostType_Handler,
+		},
+		{
+			MethodName: "ShowPostType",
+			Handler:    _PostService_ShowPostType_Handler,
+		},
+		{
+			MethodName: "DeletePostType",
+			Handler:    _PostService_DeletePostType_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

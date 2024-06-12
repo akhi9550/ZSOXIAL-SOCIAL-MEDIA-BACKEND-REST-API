@@ -687,3 +687,43 @@ func (p *postUseCase) Home(userID int) ([]models.PostResponse, error) {
 	}
 	return AllPosts, nil
 }
+
+func (p *postUseCase) CreatePostType(postType string) error {
+	postTypeExist := p.postRepository.CheckPosttypeByName(postType)
+	if postTypeExist {
+		return errors.New("postType already exists")
+	}
+	err := p.postRepository.CreatePostType(postType)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *postUseCase) ShowPostType() ([]models.ShowPostType, error) {
+	data, err := p.postRepository.ShowPostType()
+	if err != nil {
+		return []models.ShowPostType{}, err
+	}
+	var result []models.ShowPostType
+	for _, v := range data {
+		posttype := models.ShowPostType{
+			ID:   v.ID,
+			Type: v.Type,
+		}
+		result = append(result, posttype)
+	}
+	return result, nil
+}
+
+func (p *postUseCase) DeletePostType(postTypeID int) error {
+	postTypesID := p.postRepository.CheckPostTypeIDByID(postTypeID)
+	if !postTypesID {
+		return errors.New("postTypeID doesn't exist")
+	}
+	err := p.postRepository.DeletePostType(postTypeID)
+	if err != nil {
+		return err
+	}
+	return nil
+}

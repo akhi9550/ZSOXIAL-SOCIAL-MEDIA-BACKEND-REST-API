@@ -29,4 +29,7 @@ type PostUseCase interface {
 	CheckPostIDByID(postID int) bool
 	RemovePost(postID int) error
 	Home(userID int) ([]models.PostResponse, error)
+	CreatePostType(postType string)error
+	ShowPostType()([]models.ShowPostType,error)
+	DeletePostType(postTypeID int)error
 }
