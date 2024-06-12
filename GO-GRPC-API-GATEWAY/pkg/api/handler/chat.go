@@ -7,6 +7,7 @@ import (
 
 	interfaces "github.com/akhi9550/api-gateway/pkg/client/interface"
 	"github.com/akhi9550/api-gateway/pkg/helper"
+	"github.com/akhi9550/api-gateway/pkg/logging"
 	"github.com/akhi9550/api-gateway/pkg/utils/models"
 	"github.com/akhi9550/api-gateway/pkg/utils/response"
 	"github.com/gin-gonic/gin"
@@ -32,7 +33,7 @@ func NewChatHandler(chatClient interfaces.ChatClient, helper *helper.Helper) *Ch
 	}
 }
 
-//WebSocket
+// WebSocket
 func (ch *ChatHandler) FriendMessage(c *gin.Context) {
 	fmt.Println("message called")
 	conn, err := upgrade.Upgrade(c.Writer, c.Request, nil)
@@ -75,8 +76,11 @@ func (ch *ChatHandler) FriendMessage(c *gin.Context) {
 // @Failure		500		{object}	response.Response{}
 // @Router			/chat/message   [GET]
 func (ch *ChatHandler) GetChat(c *gin.Context) {
+	logEntry := logging.GetLogger().WithField("context", "GetChat")
+	logEntry.Info("Processing GetChat")
 	var chatRequest models.ChatRequest
 	if err := c.ShouldBindJSON(&chatRequest); err != nil {
+		logEntry.WithError(err).Error("Error binding request body")
 		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
 		return
@@ -91,13 +95,52 @@ func (ch *ChatHandler) GetChat(c *gin.Context) {
 	userID := strconv.Itoa(userIDInterface.(int))
 	result, err := ch.GRPC_Client.GetChat(userID, chatRequest)
 	if err != nil {
+		logEntry.WithError(err).Error("Error during GetChat rpc call")
 		errs := response.ClientResponse(http.StatusBadRequest, "Failed to get chat details", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
 		return
 	}
-
+	logEntry.Info("Successfully retrieved chat details")
 	errs := response.ClientResponse(http.StatusOK, "Successfully retrieved chat details", result, nil)
 	c.JSON(http.StatusOK, errs)
+}
+
+// ////////////////////////////////////
+func (ch *ChatHandler) GroupMessage(c *gin.Context) {
+	userID, _ := c.Get("user_id")
+	groupID := c.Param("groupID")
+	conn, err := upgrade.Upgrade(c.Writer, c.Request, nil)
+	if err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "Websocket Connection Issue", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+		return
+	}
+	userID, ok := c.Get("user_id")
+	if !ok {
+		errs := response.ClientResponse(http.StatusBadRequest, "User ID in JWT claims is not a string", nil, "")
+		c.JSON(http.StatusBadRequest, errs)
+		return
+	}
+
+	defer func() {
+		groupKey := groupID + "_" + strconv.Itoa(userID.(int))
+		delete(User, groupKey)
+		conn.Close()
+	}()
+
+	user := strconv.Itoa(userID.(int))
+	groupKey := groupID + "_" + user
+	User[groupKey] = conn
+	for {
+		_, msg, err := conn.ReadMessage()
+		if err != nil {
+			errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
+			c.JSON(http.StatusBadRequest, errs)
+			return
+		}
+		ch.helper.SendMessageToGroup(User, msg, groupID, user)
+
+	}
 }
 
 // var upgrader = websocket.Upgrader{

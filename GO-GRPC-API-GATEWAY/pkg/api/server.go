@@ -38,6 +38,9 @@ func NewServerHTTP(authHandler *handler.AuthHandler, postHandler *handler.PostHa
 	r.GET("/admin/report/post", middleware.AdminAuthMiddleware(), authHandler.ShowPostReports)
 	r.GET("/admin/posts", middleware.AdminAuthMiddleware(), authHandler.GetAllPosts)
 	r.DELETE("/admin/post", middleware.AdminAuthMiddleware(), authHandler.RemovePost)
+	r.POST("/admin/post/type", middleware.AdminAuthMiddleware(), postHandler.CreatePostType)
+	r.GET("/admin/post/type", middleware.AdminAuthMiddleware(), postHandler.ShowPostType)
+	r.DELETE("/admin/post/type", middleware.AdminAuthMiddleware(), postHandler.DeletePostType)
 
 	r.POST("user/signup", authHandler.UserSignup)
 	r.POST("user/login", authHandler.Userlogin)
@@ -81,7 +84,8 @@ func NewServerHTTP(authHandler *handler.AuthHandler, postHandler *handler.PostHa
 			post.GET("", postHandler.GetUserPost)
 			post.PUT("", postHandler.UpdatePost)
 			post.DELETE("", postHandler.DeletePost)
-			post.GET("posts", postHandler.GetPost)
+			post.GET("/type", postHandler.ShowPostTypeUser)
+			post.GET("/posts", postHandler.GetPost)
 			post.GET("/getposts", postHandler.GetAllPost)
 			post.GET("/home", postHandler.Home)
 		}

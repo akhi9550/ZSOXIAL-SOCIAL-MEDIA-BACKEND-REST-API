@@ -820,7 +820,7 @@ func (au *AuthHandler) ShowUserReports(c *gin.Context) {
 	c.JSON(http.StatusOK, success)
 }
 
-// @Summary			Get User Reports
+// @Summary			Get Post Reports
 // @Description		Retrieve UserReports with pagination
 // @Tags			Admin Reports Management
 // @Accept			json
@@ -941,7 +941,7 @@ func (au *AuthHandler) RemovePost(c *gin.Context) {
 // @Param			user	query	string	true	"user"
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
-// @Router			/videocall/users     [GET]
+// @Router			/videocall/key     [GET]
 func (au *AuthHandler) VideoCallKey(c *gin.Context) {
 	logEntry := logging.GetLogger().WithField("context", "VideoCallKey")
 	logEntry.Info("Processing VideoCallKey")
@@ -961,7 +961,86 @@ func (au *AuthHandler) VideoCallKey(c *gin.Context) {
 		return
 	}
 	logEntry.Info("Successfully Get a VideoCallKey And Private Link")
-	url := fmt.Sprintf("https://zsoxial.zhooze.shop//index?room=%s", key)
+	url := fmt.Sprintf("https://zsoxial.zhooze.shop/index?room=%s", key)
 	sucess := response.ClientResponse(http.StatusOK, "Successfully Get a VideoCallKey And Private Link", url, nil)
 	c.JSON(http.StatusOK, sucess)
+}
+
+func (au *AuthHandler) CreateGroup(c *gin.Context) {
+	userID, _ := c.Get("user_id")
+	groupName := c.PostForm("name")
+	description := c.PostForm("description")
+	user := c.PostFormArray("user")
+	users, err := helper.ConvertStringToArray(user)
+	if err != nil {
+		return
+	}
+	req := models.GroupReq{
+		Name:        groupName,
+		Description: description,
+	}
+	file, err := c.FormFile("photo")
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "No file provided", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+	err = au.GRPC_Client.CreateGroup(userID.(int), req, users, file)
+	if err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+		return
+	}
+	success := response.ClientResponse(http.StatusCreated, "Successfully Created Group", nil, nil)
+	c.JSON(http.StatusCreated, success)
+}
+
+func (au *AuthHandler) ExitFormGroup(c *gin.Context) {
+	userID, _ := c.Get("user_id")
+	groupID := c.Query("group_id")
+	GroupID, err := strconv.Atoi(groupID)
+	if err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "GroupID not in right format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+		return
+	}
+	err = au.GRPC_Client.ExitFormGroup(userID.(int), GroupID)
+	if err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+		return
+	}
+	success := response.ClientResponse(http.StatusCreated, "Successfully Exit From Group", nil, nil)
+	c.JSON(http.StatusCreated, success)
+}
+
+func (au *AuthHandler) ShowGroups(c *gin.Context) {
+	userID, _ := c.Get("user_id")
+	data, err := au.GRPC_Client.ShowGroups(userID.(int))
+	if err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+		return
+	}
+	success := response.ClientResponse(http.StatusCreated, "Successfully Get Group", data, nil)
+	c.JSON(http.StatusCreated, success)
+}
+
+func (au *AuthHandler) ShowGroupMembers(c *gin.Context) {
+	userID, _ := c.Get("user_id")
+	groupID := c.Query("group_id")
+	GroupID, err := strconv.Atoi(groupID)
+	if err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "GroupID not in right format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+		return
+	}
+	data, err := au.GRPC_Client.ShowGroupMembers(userID.(int), GroupID)
+	if err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+		return
+	}
+	success := response.ClientResponse(http.StatusCreated, "Successfully Get Group", data, nil)
+	c.JSON(http.StatusCreated, success)
 }

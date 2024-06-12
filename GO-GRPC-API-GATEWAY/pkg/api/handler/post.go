@@ -6,6 +6,7 @@ import (
 
 	interfaces "github.com/akhi9550/api-gateway/pkg/client/interface"
 	"github.com/akhi9550/api-gateway/pkg/helper"
+	"github.com/akhi9550/api-gateway/pkg/logging"
 	"github.com/akhi9550/api-gateway/pkg/utils/models"
 	"github.com/akhi9550/api-gateway/pkg/utils/response"
 	"github.com/gin-gonic/gin"
@@ -41,7 +42,10 @@ func (p *PostHandler) CreatePost(c *gin.Context) {
 	caption := c.PostForm("caption")
 	typeid := c.PostForm("posttype")
 	user := c.PostFormArray("user")
-
+	users, err := helper.ConvertStringToArray(user)
+	if err != nil {
+		return
+	}
 	for _, i := range user {
 		if i == "1" {
 			return
@@ -57,7 +61,7 @@ func (p *PostHandler) CreatePost(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
-	data, err := p.GRPC_Client.CreatePost(userID.(int), req, file, user)
+	data, err := p.GRPC_Client.CreatePost(userID.(int), req, file, users)
 	if err != nil {
 		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
@@ -65,6 +69,26 @@ func (p *PostHandler) CreatePost(c *gin.Context) {
 	}
 	success := response.ClientResponse(http.StatusCreated, "User successfully Posted", data, nil)
 	c.JSON(http.StatusCreated, success)
+}
+
+// @Summary		Show PostType
+// @Description	 Show posttypes form user side
+// @Tags			Post
+// @Accept			json
+// @Produce		    json
+// @Security		Bearer
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/post/type     [GET]
+func (p *PostHandler) ShowPostTypeUser(c *gin.Context) {
+	data, err := p.GRPC_Client.ShowPostType()
+	if err != nil {
+		errs := response.ClientResponse(http.StatusInternalServerError, "Couldn't Remove Post", nil, err.Error())
+		c.JSON(http.StatusInternalServerError, errs)
+		return
+	}
+	sucess := response.ClientResponse(http.StatusOK, "Successfully Get Posttype", data, nil)
+	c.JSON(http.StatusOK, sucess)
 }
 
 // @Summary			Show User Posts
@@ -136,7 +160,10 @@ func (p *PostHandler) UpdatePost(c *gin.Context) {
 	caption := c.PostForm("caption")
 	typeid := c.PostForm("posttype")
 	user := c.PostFormArray("user")
-
+	users, err := helper.ConvertStringToArray(user)
+	if err != nil {
+		return
+	}
 	for _, i := range user {
 		if i == "1" {
 			return
@@ -150,7 +177,7 @@ func (p *PostHandler) UpdatePost(c *gin.Context) {
 		TypeID:  typeid,
 	}
 
-	data, err := p.GRPC_Client.UpdatePost(userID.(int), req, user)
+	data, err := p.GRPC_Client.UpdatePost(userID.(int), req, users)
 	if err != nil {
 		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
@@ -792,4 +819,91 @@ func (p *PostHandler) Home(c *gin.Context) {
 	}
 	success := response.ClientResponse(http.StatusOK, "Successfully Get HomePage", data, nil)
 	c.JSON(http.StatusOK, success)
+}
+
+// @Summary		Create PostType
+// @Description	 Admin can create a posttype
+// @Tags			Admin Posttype Management
+// @Accept			json
+// @Produce		    json
+// @Security		Bearer
+// @Param			Posttype	body		models.PostType	true	"details"
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/admin/post/type     [POST]
+func (p *PostHandler) CreatePostType(c *gin.Context) {
+	logEntry := logging.GetLogger().WithField("context", "CreatePostType")
+	logEntry.Info("Processing CreatePostType")
+	var Posttype models.PostType
+	if err := c.ShouldBindJSON(&Posttype); err != nil {
+		logEntry.WithError(err).Error("Error binding request body")
+		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+	}
+	err := p.GRPC_Client.CreatePostType(Posttype)
+	if err != nil {
+		logEntry.WithError(err).Error("Error During CreatePostType RPC call")
+		errs := response.ClientResponse(http.StatusInternalServerError, "Couldn't Create PostType", nil, err.Error())
+		c.JSON(http.StatusInternalServerError, errs)
+		return
+	}
+	logEntry.Info("Successfully Created Posttype")
+	sucess := response.ClientResponse(http.StatusOK, "Successfully Created Posttype", nil, nil)
+	c.JSON(http.StatusOK, sucess)
+}
+
+// @Summary		Show PostType
+// @Description	 Show posttypes form admin side
+// @Tags			Admin Posttype Management
+// @Accept			json
+// @Produce		    json
+// @Security		Bearer
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/admin/post/type     [GET]
+func (p *PostHandler) ShowPostType(c *gin.Context) {
+	logEntry := logging.GetLogger().WithField("context", "CreatePostType")
+	logEntry.Info("Processing CreatePostType")
+	data, err := p.GRPC_Client.ShowPostType()
+	if err != nil {
+		logEntry.WithError(err).Error("Error During GetPostType RPC call")
+		errs := response.ClientResponse(http.StatusInternalServerError, "Couldn't Get PostType", nil, err.Error())
+		c.JSON(http.StatusInternalServerError, errs)
+		return
+	}
+	logEntry.Info("Successfully Get Posttype")
+	sucess := response.ClientResponse(http.StatusOK, "Successfully Get Posttype", data, nil)
+	c.JSON(http.StatusOK, sucess)
+}
+
+// @Summary		Delete PostType
+// @Description	 Admin can create a posttype
+// @Tags			Admin Posttype Management
+// @Accept			json
+// @Produce		    json
+// @Security		Bearer
+// @Param			posttype_id	 query	string	true	"Posttype id"
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/admin/post/type     [DELETE]
+func (p *PostHandler) DeletePostType(c *gin.Context) {
+	logEntry := logging.GetLogger().WithField("context", "CreatePostType")
+	logEntry.Info("Processing CreatePostType")
+	PostTypeID := c.Query("posttype_id")
+	postTypeID, err := strconv.Atoi(PostTypeID)
+	if err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "PostTypeID not in right format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+		return
+	}
+	err = p.GRPC_Client.DeletePostType(postTypeID)
+	if err != nil {
+		logEntry.WithError(err).Error("Error During DeletePostType RPC call")
+		errs := response.ClientResponse(http.StatusInternalServerError, "Couldn't Delete PostType", nil, err.Error())
+		c.JSON(http.StatusInternalServerError, errs)
+		return
+	}
+	logEntry.Info("Successfully Deleted Posttype")
+	sucess := response.ClientResponse(http.StatusOK, "Successfully Deleted Posttype", nil, nil)
+	c.JSON(http.StatusOK, sucess)
 }

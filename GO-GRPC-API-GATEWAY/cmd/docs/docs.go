@@ -103,6 +103,124 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/post/type": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Show posttypes form admin side",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin Posttype Management"
+                ],
+                "summary": "Show PostType",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Admin can create a posttype",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin Posttype Management"
+                ],
+                "summary": "Create PostType",
+                "parameters": [
+                    {
+                        "description": "details",
+                        "name": "Posttype",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.PostType"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Admin can create a posttype",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin Posttype Management"
+                ],
+                "summary": "Delete PostType",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Posttype id",
+                        "name": "posttype_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/admin/posts": {
             "get": {
                 "security": [
@@ -168,7 +286,7 @@ const docTemplate = `{
                 "tags": [
                     "Admin Reports Management"
                 ],
-                "summary": "Get User Reports",
+                "summary": "Get Post Reports",
                 "parameters": [
                     {
                         "type": "string",
@@ -1440,6 +1558,40 @@ const docTemplate = `{
                 }
             }
         },
+        "/post/type": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Show posttypes form user side",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Post"
+                ],
+                "summary": "Show PostType",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/report/post": {
             "post": {
                 "security": [
@@ -2413,7 +2565,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/videocall/users": {
+        "/videocall/key": {
             "get": {
                 "security": [
                     {
@@ -2558,6 +2710,14 @@ const docTemplate = `{
                 },
                 "post_id": {
                     "type": "integer"
+                }
+            }
+        },
+        "models.PostType": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string"
                 }
             }
         },

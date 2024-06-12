@@ -34,4 +34,7 @@ type PostClient interface {
 	UnLikeStory(userID, storyID int) error
 	StoryDetails(userID, storyID int) (models.StoryDetails, error)
 	Home(userID int) ([]models.PostResponse, error)
+	CreatePostType(postType models.PostType) error
+	ShowPostType() ([]models.ShowPostType, error)
+	DeletePostType(postTypeID int) error
 }

@@ -67,6 +67,11 @@ definitions:
       post_id:
         type: integer
     type: object
+  models.PostType:
+    properties:
+      type:
+        type: string
+    type: object
   models.ReplyCommentReq:
     properties:
       comment_id:
@@ -203,6 +208,80 @@ paths:
       summary: Remove Post
       tags:
       - Admin Post Management
+  /admin/post/type:
+    delete:
+      consumes:
+      - application/json
+      description: Admin can create a posttype
+      parameters:
+      - description: Posttype id
+        in: query
+        name: posttype_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Delete PostType
+      tags:
+      - Admin Posttype Management
+    get:
+      consumes:
+      - application/json
+      description: Show posttypes form admin side
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Show PostType
+      tags:
+      - Admin Posttype Management
+    post:
+      consumes:
+      - application/json
+      description: Admin can create a posttype
+      parameters:
+      - description: details
+        in: body
+        name: Posttype
+        required: true
+        schema:
+          $ref: '#/definitions/models.PostType'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Create PostType
+      tags:
+      - Admin Posttype Management
   /admin/posts:
     get:
       consumes:
@@ -260,7 +339,7 @@ paths:
             $ref: '#/definitions/response.Response'
       security:
       - Bearer: []
-      summary: Get User Reports
+      summary: Get Post Reports
       tags:
       - Admin Reports Management
   /admin/report/user:
@@ -1044,6 +1123,27 @@ paths:
       summary: Show Specific Post
       tags:
       - Post
+  /post/type:
+    get:
+      consumes:
+      - application/json
+      description: Show posttypes form user side
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Show PostType
+      tags:
+      - Post
   /report/post:
     post:
       consumes:
@@ -1663,7 +1763,7 @@ paths:
       summary: Verify OTP
       tags:
       - User OTP Login
-  /videocall/users:
+  /videocall/key:
     get:
       consumes:
       - application/json

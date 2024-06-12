@@ -618,3 +618,39 @@ func (p *PostClient) Home(userID int) ([]models.PostResponse, error) {
 
 	return postResponses, nil
 }
+
+func (p *PostClient) CreatePostType(postType models.PostType) error {
+	_, err := p.Client.CreatePostType(context.Background(), &pb.CreatePostTypeRequest{
+		PostType: postType.Type,
+	})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *PostClient) ShowPostType() ([]models.ShowPostType, error) {
+	data, err := p.Client.ShowPostType(context.Background(), &pb.ShowPostTypeRequest{})
+	if err != nil {
+		return []models.ShowPostType{}, err
+	}
+	var result []models.ShowPostType
+	for _, v := range data.Types {
+		postType := models.ShowPostType{
+			ID:   uint(v.Id),
+			Type: v.PostType,
+		}
+		result = append(result, postType)
+	}
+	return result, nil
+}
+
+func (p *PostClient) DeletePostType(postTypeID int) error {
+	_, err := p.Client.DeletePostType(context.Background(), &pb.DeletePostTypeRequest{
+		PostTypeID: int64(postTypeID),
+	})
+	if err != nil {
+		return err
+	}
+	return nil
+}

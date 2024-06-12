@@ -34,4 +34,8 @@ type AuthClient interface {
 	RemovePost(postID int) error
 	SearchUser(req models.SearchUser) ([]models.SearchResult, error)
 	VideoCallKey(userID, oppositeUser int) (string, error)
+	CreateGroup(userID int,req models.GroupReq, users []string,file *multipart.FileHeader)error
+	ExitFormGroup(userID,groupID int)error
+	ShowGroups(userID int)([]models.Groups,error)
+	ShowGroupMembers(userID,groupID int)([]models.Mebmers,error)
 }

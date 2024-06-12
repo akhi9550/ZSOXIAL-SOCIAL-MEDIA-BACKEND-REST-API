@@ -2,6 +2,7 @@ package helper
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/akhi9550/api-gateway/pkg/config"
 	"github.com/golang-jwt/jwt"
@@ -70,4 +71,18 @@ func ExtractAdminFromToken(tokenString string) (*AuthAdminClaims, error) {
 
 	return claims, nil
 
+}
+
+func ConvertStringToArray(inputs []string) ([]string, error) {
+	var strArray []string
+
+	for _, input := range inputs {
+		// Remove any unwanted characters (like spaces) from the string
+		cleanedInput := strings.ReplaceAll(input, " ", "")
+
+		// Split the string by commas
+		strArray = append(strArray, strings.Split(cleanedInput, ",")...)
+	}
+
+	return strArray, nil
 }

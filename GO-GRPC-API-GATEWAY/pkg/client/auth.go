@@ -525,3 +525,77 @@ func (au *AuthClient) VideoCallKey(userID, oppositeUser int) (string, error) {
 	}
 	return key.Key, nil
 }
+
+func (au *AuthClient) CreateGroup(userID int, req models.GroupReq, users []string, file *multipart.FileHeader) error {
+	f, err := file.Open()
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+	fileData, err := io.ReadAll(f)
+	if err != nil {
+		return err
+	}
+	files := &pb.ProfilePhoto{Url: fileData}
+	members := &pb.Members{User: users}
+	_, err = au.Client.CreateGroup(context.Background(), &pb.CreateGroupRequest{
+		UserId:      int64(userID),
+		Name:        req.Name,
+		Description: req.Description,
+		Profile:     files,
+		Member:      members,
+	})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (au *AuthClient) ExitFormGroup(userID, groupID int) error {
+	_, err := au.Client.ExitFormGroup(context.Background(), &pb.ExitFormGroupRequest{
+		Userid:  int64(userID),
+		Groupid: int64(groupID),
+	})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (au *AuthClient) ShowGroups(userID int) ([]models.Groups, error) {
+	data, err := au.Client.ShowGroups(context.Background(), &pb.ShowGroupsRequest{
+		Userid: int64(userID),
+	})
+	if err != nil {
+		return []models.Groups{}, err
+	}
+	var result []models.Groups
+	for _, v := range data.Groups {
+		groups := models.Groups{
+			ID:      int(v.Id),
+			Name:    v.Name,
+			Profile: v.Profile,
+		}
+		result = append(result, groups)
+	}
+	return result, nil
+}
+
+func (au *AuthClient) ShowGroupMembers(userID, groupID int) ([]models.Mebmers, error) {
+	data, err := au.Client.ShowGroupMembers(context.Background(), &pb.ShowGroupMembersRequest{
+		Userid:  int64(userID),
+		Groupid: int64(groupID),
+	})
+	if err != nil {
+		return []models.Mebmers{}, err
+	}
+	var result []models.Mebmers
+	for _, v := range data.Members {
+		groups := models.Mebmers{
+			Username: v.Username,
+			Profile:  v.UserProfile,
+		}
+		result = append(result, groups)
+	}
+	return result, nil
+}

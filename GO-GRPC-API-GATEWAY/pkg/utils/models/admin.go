@@ -49,3 +49,12 @@ type PostReports struct {
 	PostID       uint   `json:"post_id"`
 	Report       string `json:"reports"`
 }
+
+type PostType struct {
+	Type string `json:"type"`
+}
+
+type ShowPostType struct {
+	ID   uint   `json:"id"`
+	Type string `json:"type"`
+}

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/IBM/sarama"
 	"github.com/akhi9550/api-gateway/pkg/config"
@@ -62,3 +63,18 @@ func KafkaProducer(message models.Message) error {
 	return nil
 }
 
+func (h *Helper) SendMessageToGroup(User map[string]*websocket.Conn, msg []byte, groupID, senderID string) {
+	for key, conn := range User {
+		if isUserInGroup(key, groupID) && key != senderID {
+			if err := conn.WriteMessage(websocket.TextMessage, msg); err != nil {
+				fmt.Printf("Error sending message to user %s: %s\n", key, err.Error())
+				continue
+			}
+			fmt.Printf("Message sent to user %s\n", key)
+		}
+	}
+}
+
+func isUserInGroup(userID, groupID string) bool {
+	return strings.HasPrefix(userID, groupID+"_")
+}

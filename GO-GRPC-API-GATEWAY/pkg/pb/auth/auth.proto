@@ -38,6 +38,58 @@ service AuthService {
     rpc RemovePost (RemovePostRequest) returns (RemovePostResponse){}
     rpc SearchUser (SearchUserRequest) returns (SearchUserResponse){}
     rpc VideoCallKey (VideoCallRequest) returns (VideoCallResponse){}
+    rpc CreateGroup (CreateGroupRequest) returns (CreateGroupResponse){}
+    rpc ExitFormGroup (ExitFormGroupRequest) returns (ExitFormGroupResponse){}
+    rpc ShowGroups (ShowGroupsRequest) returns (ShowGroupsResponse){}
+    rpc ShowGroupMembers (ShowGroupMembersRequest) returns (ShowGroupMembersResponse){}
+}
+
+message CreateGroupRequest{
+    int64 userId = 1;
+    string name = 2;
+    string description = 3;
+    ProfilePhoto profile = 4;
+    Members member = 5;
+}
+
+message ProfilePhoto {
+    bytes url = 1; 
+}
+
+message Members {
+    repeated string user = 1;
+}
+
+message CreateGroupResponse{}
+
+message ExitFormGroupRequest{
+    int64 userid = 1;
+    int64 groupid = 2;
+}
+
+message ExitFormGroupResponse{}
+
+message ShowGroupsRequest{
+    int64 userid = 1;
+}
+
+message ShowGroupsResponse{
+    repeated Groups groups = 1;
+}
+
+message ShowGroupMembersRequest{
+    int64 userid = 1;
+    int64 groupid = 2;
+}
+
+message ShowGroupMembersResponse{
+    repeated FollowResponse members = 1;
+}
+
+message Groups{
+    int64 id = 1;
+    string name = 2;
+    string profile = 3;
 }
 
 message UserSignUpRequest {

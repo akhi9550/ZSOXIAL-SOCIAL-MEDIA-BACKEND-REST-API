@@ -141,3 +141,19 @@ type TagUserId struct {
 type VideoCallKey struct {
 	Key string `json:"key"`
 }
+
+type GroupReq struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
+}
+
+type Groups struct {
+	ID      int    `json:"id"`
+	Name    string `json:"name"`
+	Profile string `json:"profile"`
+}
+
+type Mebmers struct{
+	Username string `json:"username"`
+	Profile       string `json:"profile"`
+}

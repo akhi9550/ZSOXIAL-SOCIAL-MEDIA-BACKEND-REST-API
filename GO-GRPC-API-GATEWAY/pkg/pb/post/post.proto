@@ -33,6 +33,9 @@ service PostService {
     rpc UnLikeStory (LikeStoryRequest) returns (LikeStoryResponse){}
     rpc StoryDetails (StoryDetailsRequest) returns (StoryDetailsResponse){}
     rpc Home (HomeRequest) returns (HomeResponse){}
+    rpc CreatePostType (CreatePostTypeRequest) returns (CreatePostTypeResponse){}
+    rpc ShowPostType (ShowPostTypeRequest) returns (ShowPostTypeResponse){}
+    rpc DeletePostType (DeletePostTypeRequest) returns (DeletePostTypeResponse){}
 }
 
 message CreatePostRequest {
@@ -345,3 +348,26 @@ message HomeRequest{
 message HomeResponse{
     repeated CreatePostResponse allpost = 1;
 }
+
+message CreatePostTypeRequest {
+    string postType = 1;
+}
+
+message CreatePostTypeResponse{}
+
+message ShowPostTypeRequest{}
+
+message PostTypes{
+    int64 id = 1;
+    string postType = 2;
+}
+
+message ShowPostTypeResponse{
+    repeated PostTypes Types = 1;
+}
+
+message DeletePostTypeRequest{
+    int64 postTypeID = 1;
+}
+
+message DeletePostTypeResponse{}

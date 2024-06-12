@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	interfaces "github.com/akhi9550/api-gateway/pkg/client/interface"
+	"github.com/akhi9550/api-gateway/pkg/logging"
 	"github.com/akhi9550/api-gateway/pkg/utils/models"
 	"github.com/akhi9550/api-gateway/pkg/utils/response"
 	"github.com/gin-gonic/gin"
@@ -30,8 +31,11 @@ func NewNotificationHandler(notificationClient interfaces.NotificationClient) *N
 // @Failure		500		{object}	response.Response{}
 // @Router			/notification   [GET]
 func (n *NotificationHandler) GetNotification(c *gin.Context) {
+	logEntry := logging.GetLogger().WithField("context", "GetNotification")
+	logEntry.Info("Processing GetNotification")
 	var notificationRequest models.NotificationPagination
 	if err := c.ShouldBindJSON(&notificationRequest); err != nil {
+		logEntry.WithError(err).Error("Error binding request body")
 		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
 		return
@@ -46,11 +50,12 @@ func (n *NotificationHandler) GetNotification(c *gin.Context) {
 
 	result, err := n.GRPC_Client.GetNotification(UserID, notificationRequest)
 	if err != nil {
+		logEntry.WithError(err).Error("Error during GetNotification rpc call")
 		errs := response.ClientResponse(http.StatusBadRequest, "Failed to get notification details", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
 		return
 	}
-
+	logEntry.Info("Successfully retrieved Notifications")
 	errs := response.ClientResponse(http.StatusOK, "Successfully retrieved Notifications", result, nil)
 	c.JSON(http.StatusOK, errs)
 }
