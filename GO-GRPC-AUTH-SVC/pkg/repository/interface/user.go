@@ -50,4 +50,10 @@ type UserRepository interface {
 	Follower(userID int) ([]models.FollowResp, error)
 	SearchUser(req models.SearchUser) ([]models.Users, error)
 	CheckUserAlreadyExistFromFollowers(userID, oppositeUser int) bool
+	CreateGroup(userID int, Name, Description string, users []models.Tag, url string)error
+	CheckGroupAvailabilityWithID(groupID int) bool
+	CheckGroupAvailability(userID, groupID int) bool
+	ExitFormGroup(userID int) error
+	ShowGroups(userID int) ([]models.Groups, error)
+	ShowGroupMembers( groupID int) ([]models.MebmersID, error)
 }

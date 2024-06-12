@@ -480,3 +480,103 @@ func (ur *userUseCase) VideoCallKey(userID, oppositeUser int) (string, error) {
 
 	return key, nil
 }
+
+func (ur *userUseCase) CreateGroup(userID int, data models.GroupReq, users []models.Tag, file []byte) error {
+	userExist := ur.userRepository.CheckUserAvailabilityWithUserID(int(userID))
+	if !userExist {
+		return errors.New("user doesn't exist")
+	}
+	fileUID := uuid.New()
+	fileName := fileUID.String()
+	s3Path := data.Name + fileName
+	url, err := helper.AddImageToAwsS3(file, s3Path)
+	if err != nil {
+		return errors.New("passing aws")
+	}
+
+	usersExist, err := ur.userRepository.CheckUserAvalilabilityWithTagUserID(users)
+	if !usersExist {
+		return errors.New("user doesn't exist")
+	}
+	if err != nil {
+		return errors.New("user doesn't exist")
+	}
+	err = ur.userRepository.CreateGroup(userID, data.Name, data.Description, users, url)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (ur *userUseCase) ExitFormGroup(userID, groupID int) error {
+	userExist := ur.userRepository.CheckUserAvailabilityWithUserID(userID)
+	if !userExist {
+		return errors.New("user doesn't exist")
+	}
+	groupExist := ur.userRepository.CheckGroupAvailabilityWithID(groupID)
+	if !groupExist {
+		return errors.New("group doesn't exist")
+	}
+	groupandUser := ur.userRepository.CheckGroupAvailability(userID, groupID)
+	if !groupandUser {
+		return errors.New("user doesn't exist from the group")
+	}
+	err := ur.userRepository.ExitFormGroup(userID)
+	if err != nil {
+		return errors.New("error From Exit form Group")
+	}
+	return nil
+}
+
+func (ur *userUseCase) ShowGroups(userID int) ([]models.Groups, error) {
+	userExist := ur.userRepository.CheckUserAvailabilityWithUserID(userID)
+	if !userExist {
+		return []models.Groups{}, errors.New("user doesn't exist")
+	}
+	data, err := ur.userRepository.ShowGroups(userID)
+	if err != nil {
+		return []models.Groups{}, err
+	}
+	var result []models.Groups
+	for _, v := range data {
+		groups := models.Groups{
+			ID:      v.ID,
+			Name:    v.Name,
+			Profile: v.Profile,
+		}
+		result = append(result, groups)
+	}
+	return result, nil
+}
+
+func (ur *userUseCase) ShowGroupMembers(userID, groupID int) ([]models.Mebmers, error) {
+	userExist := ur.userRepository.CheckUserAvailabilityWithUserID(userID)
+	if !userExist {
+		return []models.Mebmers{}, errors.New("user doesn't exist")
+	}
+	groupExist := ur.userRepository.CheckGroupAvailabilityWithID(groupID)
+	if !groupExist {
+		return []models.Mebmers{}, errors.New("user doesn't exist")
+	}
+	groupandUser := ur.userRepository.CheckGroupAvailability(userID, groupID)
+	if !groupandUser {
+		return []models.Mebmers{}, errors.New("user doesn't exist from the group")
+	}
+	data, err := ur.userRepository.ShowGroupMembers(userID)
+	if err != nil {
+		return []models.Mebmers{}, err
+	}
+	var response []models.Mebmers
+	for _, v := range data {
+		userData, err := ur.userRepository.UserData(int(v.ID))
+		if err != nil {
+			return nil, err
+		}
+		details := models.Mebmers{
+			Username: userData.Username,
+			Profile:  userData.Profile,
+		}
+		response = append(response, details)
+	}
+	return response, nil
+}

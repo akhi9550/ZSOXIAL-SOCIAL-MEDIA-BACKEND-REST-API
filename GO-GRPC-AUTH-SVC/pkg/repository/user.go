@@ -457,3 +457,65 @@ func (ur *userRepository) CheckUserAlreadyExistFromFollowers(userID, oppositeUse
 	}
 	return count > 0
 }
+
+func (ur *userRepository) CreateGroup(userID int, Name, Description string, users []models.Tag, url string) error {
+	var id int
+	err := ur.DB.Exec(`INSERT INTO groups(ownerID,name,description,profile) VALUES (?,?,?,?) RETURNING id`, userID, Name, Description, url).Scan(&id).Error
+	if err != nil {
+		return err
+	}
+	for _, i := range users {
+		err := ur.DB.Exec(`INSERT INTO group_members(ower_id,group_id,members) VALUES ( ?,?,? )`, userID, id, i.User).Error
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (ur *userRepository) CheckGroupAvailabilityWithID(groupID int) bool {
+	var count int
+	if err := ur.DB.Raw("SELECT COUNT(*) FROM groups WHERE id= ?", groupID).Scan(&count).Error; err != nil {
+		return false
+	}
+	return count > 0
+}
+
+func (ur *userRepository) CheckGroupAvailability(userID, groupID int) bool {
+	var count int
+	if err := ur.DB.Raw("SELECT COUNT(*) FROM group_members WHERE group_id= ? AND members = ? OR ower_id = ?", groupID, userID, userID).Scan(&count).Error; err != nil {
+		return false
+	}
+	return count > 0
+}
+
+func (ur *userRepository) ExitFormGroup(userID int) error {
+	err := ur.DB.Exec(`DELETE FROM group_members WHERE members=? OR ower_id=?`, userID).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (ur *userRepository) ShowGroups(userID int) ([]models.Groups, error) {
+	var groups []models.Groups
+	var groupID int
+	err := ur.DB.Raw(`SELECT group_id FROM group_members WHERE members=? OR ower_id=?`, userID).Scan(&groupID).Error
+	if err != nil {
+		return []models.Groups{}, err
+	}
+	err = ur.DB.Raw(`SELECT id,name,profile FROM groups WHERE id=?`, groupID).Scan(&groups).Error
+	if err != nil {
+		return []models.Groups{}, err
+	}
+	return groups, nil
+}
+
+func (ur *userRepository) ShowGroupMembers(groupID int) ([]models.MebmersID, error) {
+	var members []models.MebmersID
+	err := ur.DB.Raw(`SELECT members FROM group_members WHERE group_id=?`, groupID).Scan(&members).Error
+	if err != nil {
+		return []models.MebmersID{}, err
+	}
+	return members, nil
+}

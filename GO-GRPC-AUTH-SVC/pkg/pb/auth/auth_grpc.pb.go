@@ -51,6 +51,10 @@ const (
 	AuthService_RemovePost_FullMethodName                          = "/user.AuthService/RemovePost"
 	AuthService_SearchUser_FullMethodName                          = "/user.AuthService/SearchUser"
 	AuthService_VideoCallKey_FullMethodName                        = "/user.AuthService/VideoCallKey"
+	AuthService_CreateGroup_FullMethodName                         = "/user.AuthService/CreateGroup"
+	AuthService_ExitFormGroup_FullMethodName                       = "/user.AuthService/ExitFormGroup"
+	AuthService_ShowGroups_FullMethodName                          = "/user.AuthService/ShowGroups"
+	AuthService_ShowGroupMembers_FullMethodName                    = "/user.AuthService/ShowGroupMembers"
 )
 
 // AuthServiceClient is the client API for AuthService service.
@@ -89,6 +93,10 @@ type AuthServiceClient interface {
 	RemovePost(ctx context.Context, in *RemovePostRequest, opts ...grpc.CallOption) (*RemovePostResponse, error)
 	SearchUser(ctx context.Context, in *SearchUserRequest, opts ...grpc.CallOption) (*SearchUserResponse, error)
 	VideoCallKey(ctx context.Context, in *VideoCallRequest, opts ...grpc.CallOption) (*VideoCallResponse, error)
+	CreateGroup(ctx context.Context, in *CreateGroupRequest, opts ...grpc.CallOption) (*CreateGroupResponse, error)
+	ExitFormGroup(ctx context.Context, in *ExitFormGroupRequest, opts ...grpc.CallOption) (*ExitFormGroupResponse, error)
+	ShowGroups(ctx context.Context, in *ShowGroupsRequest, opts ...grpc.CallOption) (*ShowGroupsResponse, error)
+	ShowGroupMembers(ctx context.Context, in *ShowGroupMembersRequest, opts ...grpc.CallOption) (*ShowGroupMembersResponse, error)
 }
 
 type authServiceClient struct {
@@ -387,6 +395,42 @@ func (c *authServiceClient) VideoCallKey(ctx context.Context, in *VideoCallReque
 	return out, nil
 }
 
+func (c *authServiceClient) CreateGroup(ctx context.Context, in *CreateGroupRequest, opts ...grpc.CallOption) (*CreateGroupResponse, error) {
+	out := new(CreateGroupResponse)
+	err := c.cc.Invoke(ctx, AuthService_CreateGroup_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) ExitFormGroup(ctx context.Context, in *ExitFormGroupRequest, opts ...grpc.CallOption) (*ExitFormGroupResponse, error) {
+	out := new(ExitFormGroupResponse)
+	err := c.cc.Invoke(ctx, AuthService_ExitFormGroup_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) ShowGroups(ctx context.Context, in *ShowGroupsRequest, opts ...grpc.CallOption) (*ShowGroupsResponse, error) {
+	out := new(ShowGroupsResponse)
+	err := c.cc.Invoke(ctx, AuthService_ShowGroups_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) ShowGroupMembers(ctx context.Context, in *ShowGroupMembersRequest, opts ...grpc.CallOption) (*ShowGroupMembersResponse, error) {
+	out := new(ShowGroupMembersResponse)
+	err := c.cc.Invoke(ctx, AuthService_ShowGroupMembers_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthServiceServer is the server API for AuthService service.
 // All implementations must embed UnimplementedAuthServiceServer
 // for forward compatibility
@@ -423,6 +467,10 @@ type AuthServiceServer interface {
 	RemovePost(context.Context, *RemovePostRequest) (*RemovePostResponse, error)
 	SearchUser(context.Context, *SearchUserRequest) (*SearchUserResponse, error)
 	VideoCallKey(context.Context, *VideoCallRequest) (*VideoCallResponse, error)
+	CreateGroup(context.Context, *CreateGroupRequest) (*CreateGroupResponse, error)
+	ExitFormGroup(context.Context, *ExitFormGroupRequest) (*ExitFormGroupResponse, error)
+	ShowGroups(context.Context, *ShowGroupsRequest) (*ShowGroupsResponse, error)
+	ShowGroupMembers(context.Context, *ShowGroupMembersRequest) (*ShowGroupMembersResponse, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
 
@@ -525,6 +573,18 @@ func (UnimplementedAuthServiceServer) SearchUser(context.Context, *SearchUserReq
 }
 func (UnimplementedAuthServiceServer) VideoCallKey(context.Context, *VideoCallRequest) (*VideoCallResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VideoCallKey not implemented")
+}
+func (UnimplementedAuthServiceServer) CreateGroup(context.Context, *CreateGroupRequest) (*CreateGroupResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateGroup not implemented")
+}
+func (UnimplementedAuthServiceServer) ExitFormGroup(context.Context, *ExitFormGroupRequest) (*ExitFormGroupResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ExitFormGroup not implemented")
+}
+func (UnimplementedAuthServiceServer) ShowGroups(context.Context, *ShowGroupsRequest) (*ShowGroupsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ShowGroups not implemented")
+}
+func (UnimplementedAuthServiceServer) ShowGroupMembers(context.Context, *ShowGroupMembersRequest) (*ShowGroupMembersResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ShowGroupMembers not implemented")
 }
 func (UnimplementedAuthServiceServer) mustEmbedUnimplementedAuthServiceServer() {}
 
@@ -1115,6 +1175,78 @@ func _AuthService_VideoCallKey_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthService_CreateGroup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateGroupRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).CreateGroup(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_CreateGroup_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).CreateGroup(ctx, req.(*CreateGroupRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_ExitFormGroup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ExitFormGroupRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).ExitFormGroup(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_ExitFormGroup_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).ExitFormGroup(ctx, req.(*ExitFormGroupRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_ShowGroups_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ShowGroupsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).ShowGroups(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_ShowGroups_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).ShowGroups(ctx, req.(*ShowGroupsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_ShowGroupMembers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ShowGroupMembersRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).ShowGroupMembers(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_ShowGroupMembers_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).ShowGroupMembers(ctx, req.(*ShowGroupMembersRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AuthService_ServiceDesc is the grpc.ServiceDesc for AuthService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1249,6 +1381,22 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "VideoCallKey",
 			Handler:    _AuthService_VideoCallKey_Handler,
+		},
+		{
+			MethodName: "CreateGroup",
+			Handler:    _AuthService_CreateGroup_Handler,
+		},
+		{
+			MethodName: "ExitFormGroup",
+			Handler:    _AuthService_ExitFormGroup_Handler,
+		},
+		{
+			MethodName: "ShowGroups",
+			Handler:    _AuthService_ShowGroups_Handler,
+		},
+		{
+			MethodName: "ShowGroupMembers",
+			Handler:    _AuthService_ShowGroupMembers_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

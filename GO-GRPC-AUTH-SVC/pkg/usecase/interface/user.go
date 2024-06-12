@@ -27,4 +27,8 @@ type UserUseCase interface {
 	Follower(userID int) ([]models.FollowingResponse, error)
 	SearchUser(req models.SearchUser) ([]models.Users, error)
 	VideoCallKey(userID, oppositeUser int) (string, error)
+	CreateGroup(userID int, data models.GroupReq, users []models.Tag, file []byte)error
+	ExitFormGroup(userID,groupID int)error
+	ShowGroups(userID int)([]models.Groups,error)
+	ShowGroupMembers(userID,groupID int)([]models.Mebmers,error)
 }

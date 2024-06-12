@@ -530,3 +530,67 @@ func (au *AuthSever) VideoCallKey(ctx context.Context, req *pb.VideoCallRequest)
 		Key: key,
 	}, nil
 }
+
+func (au *AuthSever) CreateGroup(ctx context.Context, req *pb.CreateGroupRequest) (*pb.CreateGroupResponse, error) {
+	userID := req.UserId
+	groupReq := models.GroupReq{
+		Name:        req.Name,
+		Description: req.Description,
+	}
+	File := req.Profile.Url
+	var users []models.Tag
+	for _, user := range req.Member.User {
+		tag := models.Tag{User: user}
+		users = append(users, tag)
+	}
+	err := au.userUseCase.CreateGroup(int(userID), groupReq, users, File)
+	if err != nil {
+		return &pb.CreateGroupResponse{}, err
+	}
+	return &pb.CreateGroupResponse{}, nil
+}
+
+func (au *AuthSever) ExitFormGroup(ctx context.Context, req *pb.ExitFormGroupRequest) (*pb.ExitFormGroupResponse, error) {
+	err := au.userUseCase.ExitFormGroup(int(req.Userid), int(req.Groupid))
+	if err != nil {
+		return &pb.ExitFormGroupResponse{}, err
+	}
+	return &pb.ExitFormGroupResponse{}, nil
+}
+
+func (au *AuthSever) ShowGroups(ctx context.Context, req *pb.ShowGroupsRequest) (*pb.ShowGroupsResponse, error) {
+	data, err := au.userUseCase.ShowGroups(int(req.Userid))
+	if err != nil {
+		return &pb.ShowGroupsResponse{}, err
+	}
+	result := []*pb.Groups{}
+	for _, v := range data {
+		groups := &pb.Groups{
+			Id:      int64(v.ID),
+			Name:    v.Name,
+			Profile: v.Profile,
+		}
+		result = append(result, groups)
+	}
+	return &pb.ShowGroupsResponse{
+		Groups: result,
+	}, nil
+}
+
+func (au *AuthSever) ShowGroupMembers(ctx context.Context, req *pb.ShowGroupMembersRequest) (*pb.ShowGroupMembersResponse, error) {
+	data, err := au.userUseCase.ShowGroupMembers(int(req.Userid), int(req.Groupid))
+	if err != nil {
+		return &pb.ShowGroupMembersResponse{}, err
+	}
+	var response []*pb.FollowResponse
+	for _, v := range data {
+		requests := &pb.FollowResponse{
+			Username:    v.Username,
+			UserProfile: v.Profile,
+		}
+		response = append(response, requests)
+	}
+	return &pb.ShowGroupMembersResponse{
+		Members: response,
+	}, nil
+}
