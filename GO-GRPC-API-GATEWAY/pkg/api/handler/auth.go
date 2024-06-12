@@ -966,12 +966,27 @@ func (au *AuthHandler) VideoCallKey(c *gin.Context) {
 	c.JSON(http.StatusOK, sucess)
 }
 
+// @Summary		Create Groups
+// @Description	Multiple Users Can together
+// @Tags			Groups
+// @Accept			json
+// @Produce		    json
+// @Security		Bearer
+// @Param name formData string true "Name of the Group"
+// @Param description formData string true "Description of the Group"
+// @Param           photo formData file true "Photo of the post"
+// @Param user formData array true "Users associated with the Group. Provide multiple user IDs"
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/group     [post]
 func (au *AuthHandler) CreateGroup(c *gin.Context) {
 	userID, _ := c.Get("user_id")
 	groupName := c.PostForm("name")
 	description := c.PostForm("description")
 	user := c.PostFormArray("user")
+	fmt.Println("dat", user)
 	users, err := helper.ConvertStringToArray(user)
+	fmt.Println("dadddt", users)
 	if err != nil {
 		return
 	}
@@ -995,6 +1010,16 @@ func (au *AuthHandler) CreateGroup(c *gin.Context) {
 	c.JSON(http.StatusCreated, success)
 }
 
+// @Summary		Exit From Groups
+// @Description	Exit From Groups
+// @Tags			Groups
+// @Accept			json
+// @Produce		    json
+// @Security		Bearer
+// @Param			group_id	query	string	true	"group id"
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/group     [DELETE]
 func (au *AuthHandler) ExitFormGroup(c *gin.Context) {
 	userID, _ := c.Get("user_id")
 	groupID := c.Query("group_id")
@@ -1014,6 +1039,15 @@ func (au *AuthHandler) ExitFormGroup(c *gin.Context) {
 	c.JSON(http.StatusCreated, success)
 }
 
+// @Summary		Show All Groups 
+// @Description	Show All Groups
+// @Tags			Groups
+// @Accept			json
+// @Produce		    json
+// @Security		Bearer
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/group     [GET]
 func (au *AuthHandler) ShowGroups(c *gin.Context) {
 	userID, _ := c.Get("user_id")
 	data, err := au.GRPC_Client.ShowGroups(userID.(int))
@@ -1026,6 +1060,16 @@ func (au *AuthHandler) ShowGroups(c *gin.Context) {
 	c.JSON(http.StatusCreated, success)
 }
 
+// @Summary		Show All Members From Group
+// @Description	Show All Members From Group
+// @Tags			Groups
+// @Accept			json
+// @Produce		    json
+// @Security		Bearer
+// @Param			group_id	query	string	true	"group id"
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/group/members     [GET]
 func (au *AuthHandler) ShowGroupMembers(c *gin.Context) {
 	userID, _ := c.Get("user_id")
 	groupID := c.Query("group_id")
@@ -1041,6 +1085,6 @@ func (au *AuthHandler) ShowGroupMembers(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errs)
 		return
 	}
-	success := response.ClientResponse(http.StatusCreated, "Successfully Get Group", data, nil)
+	success := response.ClientResponse(http.StatusCreated, "Successfully Get Members From Group", data, nil)
 	c.JSON(http.StatusCreated, success)
 }

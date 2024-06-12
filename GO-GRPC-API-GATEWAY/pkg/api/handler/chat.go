@@ -33,7 +33,10 @@ func NewChatHandler(chatClient interfaces.ChatClient, helper *helper.Helper) *Ch
 	}
 }
 
-// WebSocket
+// @Summary		    WebSocket Chat
+// @Description		Establish a WebSocket connection for real-time chat messaging. This endpoint allows users to send and receive messages in real time.
+// @Tags			Chat
+// @Router			/zsoxial.zhooze.shop/chat   [GET]
 func (ch *ChatHandler) FriendMessage(c *gin.Context) {
 	fmt.Println("message called")
 	conn, err := upgrade.Upgrade(c.Writer, c.Request, nil)
@@ -105,7 +108,7 @@ func (ch *ChatHandler) GetChat(c *gin.Context) {
 	c.JSON(http.StatusOK, errs)
 }
 
-// ////////////////////////////////////
+//Group Chat
 func (ch *ChatHandler) GroupMessage(c *gin.Context) {
 	userID, _ := c.Get("user_id")
 	groupID := c.Param("groupID")
@@ -143,6 +146,7 @@ func (ch *ChatHandler) GroupMessage(c *gin.Context) {
 	}
 }
 
+//videocall backend
 // var upgrader = websocket.Upgrader{
 // 	CheckOrigin: func(r *http.Request) bool {
 // 		return true

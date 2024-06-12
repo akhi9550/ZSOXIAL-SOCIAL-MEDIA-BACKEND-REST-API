@@ -143,6 +143,13 @@ func NewServerHTTP(authHandler *handler.AuthHandler, postHandler *handler.PostHa
 		{
 			videoCall.GET("/key", authHandler.VideoCallKey)
 		}
+		group:=r.Group("/group")
+		{
+			group.POST("",authHandler.CreateGroup)
+			group.DELETE("",authHandler.ExitFormGroup)
+			group.GET("",authHandler.ShowGroups)
+			group.GET("/members",authHandler.ShowGroupMembers)
+		}
 	}
 
 	return &ServerHTTP{engine: r}

@@ -837,6 +837,121 @@ paths:
       summary: User Unfollow
       tags:
       - Follow
+  /group:
+    delete:
+      consumes:
+      - application/json
+      description: Exit From Groups
+      parameters:
+      - description: group id
+        in: query
+        name: group_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Exit From Groups
+      tags:
+      - Groups
+    get:
+      consumes:
+      - application/json
+      description: Show All Groups
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Show All Groups
+      tags:
+      - Groups
+    post:
+      consumes:
+      - application/json
+      description: Multiple Users Can together
+      parameters:
+      - description: Name of the Group
+        in: formData
+        name: name
+        required: true
+        type: string
+      - description: Description of the Group
+        in: formData
+        name: description
+        required: true
+        type: string
+      - description: Photo of the post
+        in: formData
+        name: photo
+        required: true
+        type: file
+      - description: Users associated with the Group. Provide multiple user IDs
+        in: formData
+        name: user
+        required: true
+        type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Create Groups
+      tags:
+      - Groups
+  /group/members:
+    get:
+      consumes:
+      - application/json
+      description: Show All Members From Group
+      parameters:
+      - description: group id
+        in: query
+        name: group_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Show All Members From Group
+      tags:
+      - Groups
   /like:
     put:
       consumes:
@@ -1790,6 +1905,14 @@ paths:
       summary: Generate Key For VideoCall
       tags:
       - VideoCall
+  /zsoxial.zhooze.shop/chat:
+    get:
+      description: Establish a WebSocket connection for real-time chat messaging.
+        This endpoint allows users to send and receive messages in real time.
+      responses: {}
+      summary: WebSocket Chat
+      tags:
+      - Chat
 securityDefinitions:
   Bearer:
     in: header
