@@ -53,6 +53,8 @@ type UserRepository interface {
 	CreateGroup(userID int, Name, Description string, users []models.Tag, url string)error
 	CheckGroupAvailabilityWithID(groupID int) bool
 	CheckGroupAvailability(userID, groupID int) bool
+	CheckUserOwnerOrMember(userID, groupID int) int 
+	DeleteFormGroup(userID,groupID int) error
 	ExitFormGroup(userID int) error
 	ShowGroups(userID int) ([]models.Groups, error)
 	ShowGroupMembers( groupID int) ([]models.MebmersID, error)

@@ -521,9 +521,18 @@ func (ur *userUseCase) ExitFormGroup(userID, groupID int) error {
 	if !groupandUser {
 		return errors.New("user doesn't exist from the group")
 	}
-	err := ur.userRepository.ExitFormGroup(userID)
-	if err != nil {
-		return errors.New("error From Exit form Group")
+	ownwerormember := ur.userRepository.CheckUserOwnerOrMember(userID, groupID)
+	if ownwerormember == 1 {
+		err := ur.userRepository.ExitFormGroup(userID)
+		if err != nil {
+			return errors.New("error From Exit from Group")
+		}
+	}
+	if ownwerormember > 1 {
+		err := ur.userRepository.DeleteFormGroup(userID, groupID)
+		if err != nil {
+			return errors.New("error From delete Group")
+		}
 	}
 	return nil
 }
@@ -562,7 +571,7 @@ func (ur *userUseCase) ShowGroupMembers(userID, groupID int) ([]models.Mebmers, 
 	if !groupandUser {
 		return []models.Mebmers{}, errors.New("user doesn't exist from the group")
 	}
-	data, err := ur.userRepository.ShowGroupMembers(userID)
+	data, err := ur.userRepository.ShowGroupMembers(groupID)
 	if err != nil {
 		return []models.Mebmers{}, err
 	}

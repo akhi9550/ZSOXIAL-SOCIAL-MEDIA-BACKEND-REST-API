@@ -194,5 +194,6 @@ type Mebmers struct {
 }
 
 type MebmersID struct {
-	ID int `json:"id" gorm:"column:member"`
+	ID int `json:"id" gorm:"column:members"`
 }
+

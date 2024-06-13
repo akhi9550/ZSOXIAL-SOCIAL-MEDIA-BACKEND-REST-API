@@ -2,7 +2,6 @@ package repository
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/akhi9550/auth-svc/pkg/domain"
 	interfaces "github.com/akhi9550/auth-svc/pkg/repository/interface"
@@ -111,7 +110,6 @@ func (ur *userRepository) SpecificUserDetails(userID int) (models.UsersDetails, 
 	var userDetails models.UsersDetails
 	err := ur.DB.Raw("SELECT firstname, lastname, username, dob, gender, phone, email, bio, imageurl FROM users WHERE id = ?", userID).Row().Scan(&userDetails.Firstname, &userDetails.Lastname, &userDetails.Username, &userDetails.Dob, &userDetails.Gender, &userDetails.Phone, &userDetails.Email, &userDetails.Bio, &userDetails.Imageurl)
 	if err != nil {
-		fmt.Println("Error retrieving user details:", err)
 		return models.UsersDetails{}, err
 	}
 	var followerCount int
@@ -134,7 +132,6 @@ func (ur *userRepository) UserDetails(userID int) (models.UsersProfileDetails, e
 	var userDetails models.UsersProfileDetails
 	err := ur.DB.Raw("SELECT firstname, lastname, username, dob, gender, phone, email, bio, imageurl FROM users WHERE id = ?", userID).Row().Scan(&userDetails.Firstname, &userDetails.Lastname, &userDetails.Username, &userDetails.Dob, &userDetails.Gender, &userDetails.Phone, &userDetails.Email, &userDetails.Bio, &userDetails.Imageurl)
 	if err != nil {
-		fmt.Println("Error retrieving user details:", err)
 		return models.UsersProfileDetails{}, err
 	}
 	return userDetails, nil
@@ -460,12 +457,12 @@ func (ur *userRepository) CheckUserAlreadyExistFromFollowers(userID, oppositeUse
 
 func (ur *userRepository) CreateGroup(userID int, Name, Description string, users []models.Tag, url string) error {
 	var id int
-	err := ur.DB.Exec(`INSERT INTO groups(ownerID,name,description,profile) VALUES (?,?,?,?) RETURNING id`, userID, Name, Description, url).Scan(&id).Error
+	err := ur.DB.Raw(`INSERT INTO groups(owner_id,name,description,profile) VALUES (?,?,?,?) RETURNING id`, userID, Name, Description, url).Scan(&id).Error
 	if err != nil {
 		return err
 	}
 	for _, i := range users {
-		err := ur.DB.Exec(`INSERT INTO group_members(ower_id,group_id,members) VALUES ( ?,?,? )`, userID, id, i.User).Error
+		err := ur.DB.Exec(`INSERT INTO group_members(owner_id,group_id,members) VALUES ( ?,?,? )`, userID, id, i.User).Error
 		if err != nil {
 			return err
 		}
@@ -483,14 +480,40 @@ func (ur *userRepository) CheckGroupAvailabilityWithID(groupID int) bool {
 
 func (ur *userRepository) CheckGroupAvailability(userID, groupID int) bool {
 	var count int
-	if err := ur.DB.Raw("SELECT COUNT(*) FROM group_members WHERE group_id= ? AND members = ? OR ower_id = ?", groupID, userID, userID).Scan(&count).Error; err != nil {
+	if err := ur.DB.Raw("SELECT COUNT(*) FROM group_members WHERE group_id= ? AND members = ? OR owner_id = ?", groupID, userID, userID).Scan(&count).Error; err != nil {
 		return false
 	}
 	return count > 0
 }
 
+func (ur *userRepository) CheckUserOwnerOrMember(userID, groupID int) int {
+	var count int
+	if err := ur.DB.Raw("SELECT COUNT(*) FROM group_members WHERE group_id= ? AND members = ? ", groupID, userID).Scan(&count).Error; err != nil {
+		return 0
+	}
+	if count == 1 {
+		return 1
+	}
+	if err := ur.DB.Raw("SELECT COUNT(*) FROM group_members WHERE group_id= ? AND owner_id = ?", groupID, userID).Scan(&count).Error; err != nil {
+		return 0
+	}
+	return count
+}
+
+func (ur *userRepository) DeleteFormGroup(userID, groupID int) error {
+	err := ur.DB.Exec(`DELETE FROM groups WHERE owner_id=? AND id=?`, userID, groupID).Error
+	if err != nil {
+		return err
+	}
+	err = ur.DB.Exec(`DELETE FROM group_members WHERE owner_id=?`, userID).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (ur *userRepository) ExitFormGroup(userID int) error {
-	err := ur.DB.Exec(`DELETE FROM group_members WHERE members=? OR ower_id=?`, userID).Error
+	err := ur.DB.Exec(`DELETE FROM group_members WHERE members=?`, userID).Error
 	if err != nil {
 		return err
 	}
@@ -499,23 +522,33 @@ func (ur *userRepository) ExitFormGroup(userID int) error {
 
 func (ur *userRepository) ShowGroups(userID int) ([]models.Groups, error) {
 	var groups []models.Groups
-	var groupID int
-	err := ur.DB.Raw(`SELECT group_id FROM group_members WHERE members=? OR ower_id=?`, userID).Scan(&groupID).Error
+	var groupID []int
+	err := ur.DB.Raw(`SELECT DISTINCT group_id FROM group_members WHERE members=? OR owner_id=?`, userID, userID).Scan(&groupID).Error
 	if err != nil {
 		return []models.Groups{}, err
 	}
-	err = ur.DB.Raw(`SELECT id,name,profile FROM groups WHERE id=?`, groupID).Scan(&groups).Error
-	if err != nil {
-		return []models.Groups{}, err
+	for _, id := range groupID {
+		var group models.Groups
+		err = ur.DB.Raw(`SELECT id, name, profile FROM groups WHERE id=?`, id).Scan(&group).Error
+		if err != nil {
+			return nil, err
+		}
+		groups = append(groups, group)
 	}
 	return groups, nil
 }
 
 func (ur *userRepository) ShowGroupMembers(groupID int) ([]models.MebmersID, error) {
 	var members []models.MebmersID
+	var id int
 	err := ur.DB.Raw(`SELECT members FROM group_members WHERE group_id=?`, groupID).Scan(&members).Error
 	if err != nil {
-		return []models.MebmersID{}, err
+		return nil, err
 	}
+	err = ur.DB.Raw(`SELECT owner_id FROM group_members WHERE group_id=?`, groupID).Scan(&id).Error
+	if err != nil {
+		return nil, err
+	}
+	members = append(members, models.MebmersID{ID: id})
 	return members, nil
 }

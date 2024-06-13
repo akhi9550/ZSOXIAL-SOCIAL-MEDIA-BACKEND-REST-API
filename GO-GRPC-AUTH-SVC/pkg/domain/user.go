@@ -43,3 +43,17 @@ type Followers struct {
 	FollowingUser uint      `json:"following_user"`
 	CreatedAt     time.Time `json:"created_at"`
 }
+
+type Groups struct {
+	ID          uint   `json:"id" gorm:"uniquekey; not null"`
+	OwnerID     int    `json:"owner_id"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Profile     string `json:"profile"`
+}
+
+type GroupMembers struct {
+	OwnerID int `json:"owner_id"`
+	GroupID int `json:"group_id"`
+	Members int `json:"members"`
+}
