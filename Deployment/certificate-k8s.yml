@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: zsoxial-certificate
+  namespace: zsoxial
+spec:
+  dnsNames:
+    - k8s.zsoxial.zhooze.shop
+  secretName: zsoxial-new-tls
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
