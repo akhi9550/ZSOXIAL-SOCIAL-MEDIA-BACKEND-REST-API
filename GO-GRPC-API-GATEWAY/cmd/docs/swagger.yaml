@@ -15,19 +15,6 @@ definitions:
       re_password:
         type: string
     type: object
-  models.ChatRequest:
-    properties:
-      friendID:
-        type: string
-      limit:
-        type: string
-      offset:
-        type: string
-    required:
-    - friendID
-    - limit
-    - offset
-    type: object
   models.ForgotPasswordSend:
     properties:
       phone:
@@ -47,13 +34,6 @@ definitions:
     - newpassword
     - otp
     - phone
-    type: object
-  models.NotificationPagination:
-    properties:
-      limit:
-        type: integer
-      offset:
-        type: integer
     type: object
   models.OTPData:
     properties:
@@ -536,12 +516,21 @@ paths:
       - application/json
       description: Retrieve UsersChats
       parameters:
-      - description: GetChat details
-        in: body
-        name: chatRequest
+      - description: ID of the friend to retrieve chat messages with
+        in: query
+        name: FriendID
         required: true
-        schema:
-          $ref: '#/definitions/models.ChatRequest'
+        type: string
+      - default: "1"
+        description: Limit of chat messages to return
+        in: query
+        name: Limit
+        type: string
+      - default: "10"
+        description: Offset for pagination
+        in: query
+        name: Offset
+        type: string
       produces:
       - application/json
       responses:
@@ -1012,12 +1001,16 @@ paths:
       - application/json
       description: Retrieve  User All Notifications
       parameters:
-      - description: Notification details
-        in: body
-        name: notificationRequest
-        required: true
-        schema:
-          $ref: '#/definitions/models.NotificationPagination'
+      - default: 1
+        description: Limit of notifications to return
+        in: query
+        name: limit
+        type: integer
+      - default: 10
+        description: Offset for pagination
+        in: query
+        name: offset
+        type: integer
       produces:
       - application/json
       responses:

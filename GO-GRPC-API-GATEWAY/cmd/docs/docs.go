@@ -637,13 +637,25 @@ const docTemplate = `{
                 "summary": "Get Users Chats",
                 "parameters": [
                     {
-                        "description": "GetChat details",
-                        "name": "chatRequest",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.ChatRequest"
-                        }
+                        "type": "string",
+                        "description": "ID of the friend to retrieve chat messages with",
+                        "name": "FriendID",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "1",
+                        "description": "Limit of chat messages to return",
+                        "name": "Limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "default": "10",
+                        "description": "Offset for pagination",
+                        "name": "Offset",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -1394,13 +1406,18 @@ const docTemplate = `{
                 "summary": "Show All Notifications",
                 "parameters": [
                     {
-                        "description": "Notification details",
-                        "name": "notificationRequest",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.NotificationPagination"
-                        }
+                        "type": "integer",
+                        "default": 1,
+                        "description": "Limit of notifications to return",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 10,
+                        "description": "Offset for pagination",
+                        "name": "offset",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -2825,25 +2842,6 @@ const docTemplate = `{
                 }
             }
         },
-        "models.ChatRequest": {
-            "type": "object",
-            "required": [
-                "friendID",
-                "limit",
-                "offset"
-            ],
-            "properties": {
-                "friendID": {
-                    "type": "string"
-                },
-                "limit": {
-                    "type": "string"
-                },
-                "offset": {
-                    "type": "string"
-                }
-            }
-        },
         "models.ForgotPasswordSend": {
             "type": "object",
             "properties": {
@@ -2870,17 +2868,6 @@ const docTemplate = `{
                 },
                 "phone": {
                     "type": "string"
-                }
-            }
-        },
-        "models.NotificationPagination": {
-            "type": "object",
-            "properties": {
-                "limit": {
-                    "type": "integer"
-                },
-                "offset": {
-                    "type": "integer"
                 }
             }
         },

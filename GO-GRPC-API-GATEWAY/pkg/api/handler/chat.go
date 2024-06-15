@@ -74,21 +74,23 @@ func (ch *ChatHandler) FriendMessage(c *gin.Context) {
 // @Accept			json
 // @Produce		    json
 // @Security		Bearer
-// @Param			chatRequest  	body		models.ChatRequest	true	"GetChat details"
+// @Param FriendID query string true "ID of the friend to retrieve chat messages with"
+// @Param Limit query string false "Limit of chat messages to return" default(1)
+// @Param Offset query string false "Offset for pagination" default(10)
 // @Success		200		{object}	response.Response{}
 // @Failure		500		{object}	response.Response{}
 // @Router			/chat/message   [GET]
 func (ch *ChatHandler) GetChat(c *gin.Context) {
 	logEntry := logging.GetLogger().WithField("context", "GetChat")
 	logEntry.Info("Processing GetChat")
-	var chatRequest models.ChatRequest
-	if err := c.ShouldBindJSON(&chatRequest); err != nil {
-		logEntry.WithError(err).Error("Error binding request body")
-		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
-		c.JSON(http.StatusBadRequest, errs)
-		return
+	FriendID := c.Query("FriendID")
+	page := c.DefaultQuery("Limit", "1")
+	pageSize := c.DefaultQuery("Offset", "10")
+	chatRequest := models.ChatRequest{
+		FriendID: FriendID,
+		Limit:    page,
+		Offset:   pageSize,
 	}
-
 	userIDInterface, exists := c.Get("user_id")
 	if !exists {
 		errs := response.ClientResponse(http.StatusBadRequest, "User ID not found in JWT claims", nil, "")
@@ -108,7 +110,7 @@ func (ch *ChatHandler) GetChat(c *gin.Context) {
 	c.JSON(http.StatusOK, errs)
 }
 
-//Group Chat
+// Group Chat
 func (ch *ChatHandler) GroupMessage(c *gin.Context) {
 	userID, _ := c.Get("user_id")
 	groupID := c.Param("groupID")

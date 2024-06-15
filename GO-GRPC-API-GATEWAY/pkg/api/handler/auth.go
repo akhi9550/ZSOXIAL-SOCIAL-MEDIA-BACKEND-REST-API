@@ -106,8 +106,8 @@ func (au *AuthHandler) Userlogin(c *gin.Context) {
 		return
 	}
 	logEntry.Info("Login successful for User")
-	success := response.ClientResponse(http.StatusCreated, "User successfully logged in with password", user, nil)
-	c.JSON(http.StatusCreated, success)
+	success := response.ClientResponse(http.StatusOK, "User successfully logged in with password", user, nil)
+	c.JSON(http.StatusOK, success)
 }
 
 // @Summary 	OTP login
@@ -682,8 +682,8 @@ func (au *AuthHandler) AdminLogin(c *gin.Context) {
 		return
 	}
 	logEntry.Info("Admin successfully logged in with password")
-	success := response.ClientResponse(http.StatusCreated, "Admin successfully logged in with password", admin, nil)
-	c.JSON(http.StatusCreated, success)
+	success := response.ClientResponse(http.StatusOK, "Admin successfully logged in with password", admin, nil)
+	c.JSON(http.StatusOK, success)
 }
 
 // @Summary		Show All Users
@@ -1035,11 +1035,11 @@ func (au *AuthHandler) ExitFormGroup(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errs)
 		return
 	}
-	success := response.ClientResponse(http.StatusCreated, "Successfully Exit From Group", nil, nil)
-	c.JSON(http.StatusCreated, success)
+	success := response.ClientResponse(http.StatusOK, "Successfully Exit From Group", nil, nil)
+	c.JSON(http.StatusOK, success)
 }
 
-// @Summary		Show All Groups 
+// @Summary		Show All Groups
 // @Description	Show All Groups
 // @Tags			Groups
 // @Accept			json
@@ -1056,8 +1056,8 @@ func (au *AuthHandler) ShowGroups(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errs)
 		return
 	}
-	success := response.ClientResponse(http.StatusCreated, "Successfully Get Group", data, nil)
-	c.JSON(http.StatusCreated, success)
+	success := response.ClientResponse(http.StatusOK, "Successfully Get Group", data, nil)
+	c.JSON(http.StatusOK, success)
 }
 
 // @Summary		Show All Members From Group
@@ -1085,6 +1085,6 @@ func (au *AuthHandler) ShowGroupMembers(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errs)
 		return
 	}
-	success := response.ClientResponse(http.StatusCreated, "Successfully Get Members From Group", data, nil)
-	c.JSON(http.StatusCreated, success)
+	success := response.ClientResponse(http.StatusOK, "Successfully Get Members From Group", data, nil)
+	c.JSON(http.StatusOK, success)
 }

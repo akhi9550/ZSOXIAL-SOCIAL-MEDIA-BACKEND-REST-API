@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"strconv"
 
 	interfaces "github.com/akhi9550/api-gateway/pkg/client/interface"
 	"github.com/akhi9550/api-gateway/pkg/logging"
@@ -26,20 +27,33 @@ func NewNotificationHandler(notificationClient interfaces.NotificationClient) *N
 // @Accept			json
 // @Produce		    json
 // @Security		Bearer
-// @Param			notificationRequest  	body		models.NotificationPagination	true	"Notification details"
+// @Param limit query int false "Limit of notifications to return" default(1)
+// @Param offset query int false "Offset for pagination" default(10)
 // @Success		200		{object}	response.Response{}
 // @Failure		500		{object}	response.Response{}
 // @Router			/notification   [GET]
 func (n *NotificationHandler) GetNotification(c *gin.Context) {
 	logEntry := logging.GetLogger().WithField("context", "GetNotification")
 	logEntry.Info("Processing GetNotification")
-	var notificationRequest models.NotificationPagination
-	if err := c.ShouldBindJSON(&notificationRequest); err != nil {
-		logEntry.WithError(err).Error("Error binding request body")
-		errs := response.ClientResponse(http.StatusBadRequest, "Details not in correct format", nil, err.Error())
-		c.JSON(http.StatusBadRequest, errs)
+	pageStr := c.DefaultQuery("limit", "1")
+	page, err := strconv.Atoi(pageStr)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "page number not in right format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
+	countStr := c.DefaultQuery("offset", "10")
+	pageSize, err := strconv.Atoi(countStr)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "user count in a page not in right format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+	notificationRequest := models.NotificationPagination{
+		Limit:  page,
+		Offset: pageSize,
+	}
+
 	userID, exists := c.Get("user_id")
 	if !exists {
 		errs := response.ClientResponse(http.StatusBadRequest, "User ID not found in JWT claims", nil, "")
