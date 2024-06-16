@@ -58,3 +58,24 @@ func (c *ChatRepository) UpdateReadAsMessage(userID, friendID string) error {
 	}
 	return nil
 }
+
+func (c *ChatRepository) GetGroupMessages(groupID string, limit, offset int) ([]models.Message, error) {
+	var messages []models.Message
+	filter := bson.M{"groupid": groupID}
+
+	option := options.Find().SetLimit(int64(limit)).SetSkip(int64(offset))
+	cursor, err := c.MessageCollection.Find(context.TODO(), filter, options.Find().SetSort(bson.D{{Key: "timestamp", Value: -1}}), option)
+	if err != nil {
+		return nil, err
+	}
+
+	defer cursor.Close(context.TODO())
+	for cursor.Next(context.TODO()) {
+		var message models.Message
+		if err := cursor.Decode(&message); err != nil {
+			return nil, err
+		}
+		messages = append(messages, message)
+	}
+	return messages, nil
+}

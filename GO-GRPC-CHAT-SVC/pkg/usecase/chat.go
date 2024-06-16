@@ -38,13 +38,13 @@ func (c *ChatUseCase) MessageConsumer() {
 	consumer, err := sarama.NewConsumer([]string{cfg.KafkaPort}, configs)
 	if err != nil {
 		fmt.Println("Error creating Kafka consumer:", err)
-		return
+		// return
 	}
 	defer consumer.Close()
 	partitionConsumer, err := consumer.ConsumePartition(cfg.KafkaTopic, 0, sarama.OffsetNewest)
 	if err != nil {
 		fmt.Println("Error creating partition consumer:", err)
-		return
+		// return
 	}
 	defer partitionConsumer.Close()
 	fmt.Println("Kafka consumer started")
@@ -88,4 +88,8 @@ func (c *ChatUseCase) GetFriendChat(userID, friendID string, pagination models.P
 	}
 	_ = c.chatRepository.UpdateReadAsMessage(userID, friendID)
 	return c.chatRepository.GetFriendChat(userID, friendID, pagination)
+}
+
+func (uc *ChatUseCase) GetGroupMessages(groupID string, limit, offset int) ([]models.Message, error) {
+	return uc.chatRepository.GetGroupMessages(groupID, limit, offset)
 }
