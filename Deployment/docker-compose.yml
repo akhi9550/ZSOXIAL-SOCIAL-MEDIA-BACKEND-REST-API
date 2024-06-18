@@ -51,7 +51,7 @@ services:
 
   api-gateway:
     image: akhi9550/zsoxial-api-gateway
-    # build: ./GO-GRPC-API-GATEWAY/
+    build: ./GO-GRPC-API-GATEWAY/
     restart: always
     depends_on:
       - postgres
@@ -64,7 +64,7 @@ services:
 
   auth-services:
     image: akhi9550/zsoxial-auth-service
-    # build: ./GO-GRPC-AUTH-SVC/
+    build: ./GO-GRPC-AUTH-SVC/
     restart: always
     depends_on:
       - postgres
@@ -101,7 +101,7 @@ services:
 
   post-service:
     image: akhi9550/zsoxial-post-service
-    # build: ./GO-GRPC-POST-SVC/
+    build: ./GO-GRPC-POST-SVC/
     depends_on:
       - postgres
       - kafka
