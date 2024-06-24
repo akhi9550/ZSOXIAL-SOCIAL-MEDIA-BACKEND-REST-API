@@ -132,3 +132,7 @@ Before running the project, you need to set the following environment variables 
 
 
 Make sure to provide the appropriate values for these environment variables to configure the project correctly.
+
+# Live Demo
+
+[SocialMediaBackedRestApi](https://zsoxial.zhooze.shop/swagger/index.html)
